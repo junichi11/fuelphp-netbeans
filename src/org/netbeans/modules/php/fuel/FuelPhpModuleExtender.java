@@ -48,11 +48,13 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
+import org.eclipse.jgit.api.Git;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
 import org.netbeans.modules.php.fuel.util.GithubUrlZipper;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
@@ -62,6 +64,7 @@ import org.openide.util.HelpCtx;
  */
 public class FuelPhpModuleExtender extends PhpModuleExtender {
     private static final String CONFIG_PHP = "fuel/app/config/config.php"; // NOI18N
+    private static final String GIT_GITHUB_COM_FUEL_FUEL_GIT = "git://github.com/fuel/fuel.git";
 	private NewProjectConfigurationPanel panel = null;
 
     @Override
@@ -98,20 +101,30 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
     }
 
     @Override
-    public Set<FileObject> extend(PhpModule pm) throws ExtendingException {
-		Map<String, String> downloadsMap = getPanel().getDownloadsMap();
-		String url = downloadsMap.get(getPanel().getVersionList().getSelectedValue().toString());
-		
-	    FileObject fo = pm.getSourceDirectory();
-		GithubUrlZipper zipper = new GithubUrlZipper(url, fo);
-		try {
-			zipper.unzip();
-		} catch (MalformedURLException ex) {
-			Exceptions.printStackTrace(ex);
-		} catch (IOException ex) {
-			Exceptions.printStackTrace(ex);
-		}
-		
+    public Set<FileObject> extend(PhpModule pm) throws ExtendingException {		            
+	    FileObject localPath = pm.getSourceDirectory();
+        if (getPanel().getUnzipRadioButton().isSelected()) {
+
+            Map<String, String> downloadsMap = getPanel().getDownloadsMap();
+            String url = downloadsMap.get(getPanel().getVersionList().getSelectedValue().toString());
+            GithubUrlZipper zipper = new GithubUrlZipper(url, localPath);
+            try {
+                zipper.unzip();
+            } catch (MalformedURLException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        } else {
+            // TODO submodule update >> NetBeans 7.2++
+            String remotePath = GIT_GITHUB_COM_FUEL_FUEL_GIT;
+            Git.cloneRepository()
+                .setURI(remotePath)
+                .setDirectory(FileUtil.toFile(localPath))
+                .call();
+        }
+
+		// set open file
 		Set<FileObject> files = new HashSet<FileObject>();
 		FileObject config;
 		config = pm.getSourceDirectory().getFileObject(CONFIG_PHP);

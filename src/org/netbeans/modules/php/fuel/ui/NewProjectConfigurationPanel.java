@@ -47,8 +47,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JRadioButton;
 import json.JSONArray;
 import json.JSONException;
 import json.JSONObject;
@@ -73,6 +75,7 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
      */
     public NewProjectConfigurationPanel() {
         initComponents();
+        this.unzipRadioButton.setSelected(true);
 		try {
 			// Get JSON
 			URL githubApi = new URL(GITHUB_API_REPOS_DOWNLOADS);
@@ -133,6 +136,18 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
 		return errorMessage;
 	}
 
+    public ButtonGroup getButtonGroup() {
+        return buttonGroup;
+    }
+
+    public JRadioButton getGitCloneRadioButton() {
+        return gitCloneRadioButton;
+    }
+
+    public JRadioButton getUnzipRadioButton() {
+        return unzipRadioButton;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -142,10 +157,14 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup = new javax.swing.ButtonGroup();
         selectVersionLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         versionList = new javax.swing.JList();
         gettingFileInfoLabel = new javax.swing.JLabel();
+        gitCloneRadioButton = new javax.swing.JRadioButton();
+        unzipRadioButton = new javax.swing.JRadioButton();
+        submoduleLabel = new javax.swing.JLabel();
 
         selectVersionLabel.setText(org.openide.util.NbBundle.getMessage(NewProjectConfigurationPanel.class, "NewProjectConfigurationPanel.selectVersionLabel.text")); // NOI18N
 
@@ -154,6 +173,14 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
 
         gettingFileInfoLabel.setText(org.openide.util.NbBundle.getMessage(NewProjectConfigurationPanel.class, "NewProjectConfigurationPanel.gettingFileInfoLabel.text")); // NOI18N
 
+        buttonGroup.add(gitCloneRadioButton);
+        gitCloneRadioButton.setText(org.openide.util.NbBundle.getMessage(NewProjectConfigurationPanel.class, "NewProjectConfigurationPanel.gitCloneRadioButton.text")); // NOI18N
+
+        buttonGroup.add(unzipRadioButton);
+        unzipRadioButton.setText(org.openide.util.NbBundle.getMessage(NewProjectConfigurationPanel.class, "NewProjectConfigurationPanel.unzipRadioButton.text")); // NOI18N
+
+        submoduleLabel.setText(org.openide.util.NbBundle.getMessage(NewProjectConfigurationPanel.class, "NewProjectConfigurationPanel.submoduleLabel.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -161,27 +188,40 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(selectVersionLabel)
+                    .addComponent(gitCloneRadioButton)
+                    .addComponent(unzipRadioButton)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gettingFileInfoLabel))
-                .addContainerGap(162, Short.MAX_VALUE))
+                    .addComponent(gettingFileInfoLabel)
+                    .addComponent(selectVersionLabel)
+                    .addComponent(submoduleLabel))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(unzipRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selectVersionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gettingFileInfoLabel)
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(gitCloneRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(submoduleLabel)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JLabel gettingFileInfoLabel;
+    private javax.swing.JRadioButton gitCloneRadioButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel selectVersionLabel;
+    private javax.swing.JLabel submoduleLabel;
+    private javax.swing.JRadioButton unzipRadioButton;
     private javax.swing.JList versionList;
     // End of variables declaration//GEN-END:variables
 }
