@@ -41,92 +41,91 @@
  */
 package org.netbeans.modules.php.fuel;
 
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-import org.netbeans.modules.php.api.phpmodule.BadgeIcon;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import javax.swing.JComponent;
+import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
-import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
-import org.netbeans.modules.php.spi.commands.FrameworkCommandSupport;
-import org.netbeans.modules.php.spi.editor.EditorExtender;
-import org.netbeans.modules.php.spi.phpmodule.PhpFrameworkProvider;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleActionsExtender;
+import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
+import org.netbeans.modules.php.fuel.util.GithubUrlZipper;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleIgnoredFilesExtender;
 import org.openide.filesystems.FileObject;
-import org.openide.util.ImageUtilities;
-import org.openide.util.NbBundle;
+import org.openide.util.Exceptions;
+import org.openide.util.HelpCtx;
 
 /**
  *
  * @author junichi11
  */
-public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
-    
-    private static final FuelPhpFrameworkProvider INSTANCE = new FuelPhpFrameworkProvider();
-    private static final String ICON_PATH = "org/netbeans/modules/php/fuel/resources/fuel_badge_8.png"; // NOI18N
-    private final BadgeIcon badgeIcon;
-    
-    @PhpFrameworkProvider.Registration(position=700)
-    public static FuelPhpFrameworkProvider getInstance(){
-        return INSTANCE;
-    }
-    
-    private FuelPhpFrameworkProvider(){
-        super(NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkName"), NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkDescription"));
-        badgeIcon = new BadgeIcon(
-                ImageUtilities.loadImage(ICON_PATH),
-                FuelPhpFrameworkProvider.class.getResource("/" + ICON_PATH)); // NOI18N
+public class FuelPhpModuleExtender extends PhpModuleExtender {
+    private static final String CONFIG_PHP = "fuel/app/config/config.php"; // NOI18N
+	private NewProjectConfigurationPanel panel = null;
+
+    @Override
+    public void addChangeListener(ChangeListener cl) {
     }
 
     @Override
-    public BadgeIcon getBadgeIcon() {
-        return badgeIcon;
-    }
-    
-    @Override
-    public boolean isInPhpModule(PhpModule pm) {
-        FileObject oil = pm.getSourceDirectory().getFileObject("oil"); // NOI18N
-        if(oil != null){
-            return true;
-        }
-        return false;
+    public void removeChangeListener(ChangeListener cl) {
     }
 
     @Override
-    public File[] getConfigurationFiles(PhpModule pm) {
-        List<File> files = new LinkedList<File>();
-	
-        return files.toArray(new File[files.size()]);
+    public JComponent getComponent() {
+	    return getPanel();
     }
 
     @Override
-    public PhpModuleExtender createPhpModuleExtender(PhpModule pm) {
-        return new FuelPhpModuleExtender();
-    }
-
-    @Override
-    public PhpModuleProperties getPhpModuleProperties(PhpModule pm) {
-        return new PhpModuleProperties();
-    }
-
-    @Override
-    public PhpModuleActionsExtender getActionsExtender(PhpModule pm) {
+    public HelpCtx getHelp() {
         return null;
     }
 
     @Override
-    public PhpModuleIgnoredFilesExtender getIgnoredFilesExtender(PhpModule pm) {
-        return null;
+    public boolean isValid() {
+	    return getPanel().getErrorMessage() == null;
     }
 
     @Override
-    public FrameworkCommandSupport getFrameworkCommandSupport(PhpModule pm) {
-        return null;
+    public String getErrorMessage() {
+	    return getPanel().getErrorMessage();
     }
 
     @Override
-    public EditorExtender getEditorExtender(PhpModule pm) {
-        return null;
+    public String getWarningMessage() {
+	    return null;
+    }
+
+    @Override
+    public Set<FileObject> extend(PhpModule pm) throws ExtendingException {
+		Map<String, String> downloadsMap = getPanel().getDownloadsMap();
+		String url = downloadsMap.get(getPanel().getVersionList().getSelectedValue().toString());
+		
+	    FileObject fo = pm.getSourceDirectory();
+		GithubUrlZipper zipper = new GithubUrlZipper(url, fo);
+		try {
+			zipper.unzip();
+		} catch (MalformedURLException ex) {
+			Exceptions.printStackTrace(ex);
+		} catch (IOException ex) {
+			Exceptions.printStackTrace(ex);
+		}
+		
+		Set<FileObject> files = new HashSet<FileObject>();
+		FileObject config;
+		config = pm.getSourceDirectory().getFileObject(CONFIG_PHP);
+		if(config != null){
+			files.add(config);
+		}
+
+		return files;
+    }
+    
+    public NewProjectConfigurationPanel getPanel(){
+		if(panel == null){
+			panel = new NewProjectConfigurationPanel();
+		}
+		return panel;
     }
 }
