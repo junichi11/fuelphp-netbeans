@@ -51,9 +51,9 @@ import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
-import json.JSONArray;
-import json.JSONException;
-import json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.openide.util.Exceptions;
 

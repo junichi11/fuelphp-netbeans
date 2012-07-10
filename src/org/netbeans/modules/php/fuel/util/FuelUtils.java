@@ -45,8 +45,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import json.JSONArray;
-import json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.openide.util.Exceptions;
 
 /**
