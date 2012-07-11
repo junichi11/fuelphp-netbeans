@@ -51,6 +51,7 @@ import javax.swing.event.ChangeListener;
 import org.eclipse.jgit.api.Git;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
+import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.fuel.util.GithubUrlZipper;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
 import org.openide.filesystems.FileObject;
@@ -124,15 +125,18 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 .call();
         }
 
-		// set open file
-		Set<FileObject> files = new HashSet<FileObject>();
-		FileObject config;
-		config = pm.getSourceDirectory().getFileObject(CONFIG_PHP);
-		if(config != null){
-			files.add(config);
-		}
+        // set open file
+        Set<FileObject> files = new HashSet<FileObject>();
+        FileObject config;
+        config = pm.getSourceDirectory().getFileObject(CONFIG_PHP);
+        if(config != null){
+            files.add(config);
+        }
+		
+        // add a file to nbproject directory for auto completion
+        FuelUtils.getAutoCompletionFile();
 
-		return files;
+        return files;
     }
     
     public NewProjectConfigurationPanel getPanel(){

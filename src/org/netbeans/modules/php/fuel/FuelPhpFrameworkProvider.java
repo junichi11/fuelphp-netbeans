@@ -112,7 +112,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
     @Override
     public PhpModuleActionsExtender getActionsExtender(PhpModule pm) {
-        return null;
+        return new FuelPhpActionsExtender();
     }
 
     @Override

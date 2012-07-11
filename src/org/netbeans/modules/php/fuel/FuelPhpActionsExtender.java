@@ -39,61 +39,31 @@
  *
  * Portions Copyrighted 2012 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel.util;
+package org.netbeans.modules.php.fuel;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.netbeans.modules.php.api.phpmodule.PhpModule;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.Action;
+import org.netbeans.modules.php.fuel.ui.actions.CreateAutoCompletionFileAction;
+import org.netbeans.modules.php.spi.phpmodule.PhpModuleActionsExtender;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author junichi11
  */
-public final class FuelUtils {
-    private static final String FUEL_AUTOCOMPLETION_PHP = "org-netbeans-modules-php-fuel/fuel_autocompletion.php"; // NOI18N
-    private static final String NBPROJECT_DIR_NAME = "nbproject"; // NOI18N
+public class FuelPhpActionsExtender extends PhpModuleActionsExtender{
 
-    public static JSONArray getJsonArray(URL url) throws IOException {
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8")); // NOI18N
-            StringBuilder contents = new StringBuilder();
-            String str;
-            while ((str = reader.readLine()) != null) {
-                contents.append(str);
-            }
+    @Override
+    public List<? extends Action> getActions() {
+        ArrayList<Action> actions = new ArrayList<Action>();
+        actions.add(CreateAutoCompletionFileAction.getInstance());
+        return actions;
+    }
 
-            JSONArray jsonArray = new JSONArray(contents.toString());
-            return jsonArray;
-        } catch (JSONException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return null;
+    @Override
+    public String getMenuName() {
+        return NbBundle.getMessage(FuelPhpActionsExtender.class, "LBL_MenuName"); // NOI18N
     }
     
-    public static void getAutoCompletionFile(){
-        PhpModule pm = PhpModule.inferPhpModule();
-		FileObject projectDirectory = pm.getProjectDirectory();
-		FileObject nbprojectDirectory = projectDirectory.getFileObject(NBPROJECT_DIR_NAME);
-        FileObject autoCompletionFile = FileUtil.getConfigFile(FUEL_AUTOCOMPLETION_PHP);
-        
-        if(nbprojectDirectory.getFileObject(autoCompletionFile.getNameExt()) != null){
-            // already exists
-            return;
-        }
-		
-        if(nbprojectDirectory != null && autoCompletionFile != null){
-            try {
-                autoCompletionFile.copy(nbprojectDirectory, autoCompletionFile.getName(), autoCompletionFile.getExt());
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-		}
-    }
 }
