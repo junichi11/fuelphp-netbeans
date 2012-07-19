@@ -22,15 +22,15 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="gitCloneRadioButton" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="gitCloneRadioButton" max="32767" attributes="0"/>
                   <Component id="unzipRadioButton" min="-2" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="226" max="-2" attributes="0"/>
                   <Component id="gettingFileInfoLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="selectVersionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="submoduleLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="gitCommandLabel" alignment="0" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="22" max="32767" attributes="0"/>
+              <EmptySpace pref="139" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -42,14 +42,14 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="selectVersionLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="107" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="95" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="gettingFileInfoLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="gitCloneRadioButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="submoduleLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="20" max="32767" attributes="0"/>
+              <Component id="gitCommandLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="45" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -95,6 +95,9 @@
           <ResourceString bundle="org/netbeans/modules/php/fuel/ui/Bundle.properties" key="NewProjectConfigurationPanel.gitCloneRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gitCloneRadioButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="unzipRadioButton">
       <Properties>
@@ -106,10 +109,10 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="submoduleLabel">
+    <Component class="javax.swing.JLabel" name="gitCommandLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/netbeans/modules/php/fuel/ui/Bundle.properties" key="NewProjectConfigurationPanel.submoduleLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/netbeans/modules/php/fuel/ui/Bundle.properties" key="NewProjectConfigurationPanel.gitCommandLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

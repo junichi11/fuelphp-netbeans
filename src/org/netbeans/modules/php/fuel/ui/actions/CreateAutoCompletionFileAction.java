@@ -75,6 +75,6 @@ public final class CreateAutoCompletionFileAction extends BaseAction {
             // noting
             return;
         }
-        FuelUtils.getAutoCompletionFile();
+        FuelUtils.getAutoCompletionFile(pm.getProjectDirectory());
     }
 }

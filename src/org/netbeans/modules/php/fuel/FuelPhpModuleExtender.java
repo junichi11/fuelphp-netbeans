@@ -48,14 +48,12 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
-import org.eclipse.jgit.api.Git;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.fuel.util.GithubUrlZipper;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
@@ -64,8 +62,21 @@ import org.openide.util.HelpCtx;
  * @author junichi11
  */
 public class FuelPhpModuleExtender extends PhpModuleExtender {
+    private static final String ADD_COMMAND = "add";
+    private static final String BRANCH_MASTER_MERGE = "branch.master.merge";
+    private static final String BRANCH_MASTER_REMOTE = "branch.master.remote";
+    private static final String CONFIG_COMMAND = "config";
     private static final String CONFIG_PHP = "fuel/app/config/config.php"; // NOI18N
+    private static final String GIT = "git";
+    private static final String GIT_DIR = "--git-dir=";
     private static final String GIT_GITHUB_COM_FUEL_FUEL_GIT = "git://github.com/fuel/fuel.git";
+    private static final String GIT_REPO = "/.git";
+    private static final String INIT_COMMAND = "init";
+    private static final String ORIGIN = "origin";
+    private static final String PULL_COMMAND = "pull";
+    private static final String REFS_HEADS = "refs/heads/1.2/master";
+    private static final String REMOTE_COMMAND = "remote";
+    private static final String WORK_TREE = "--work-tree=";
 	private NewProjectConfigurationPanel panel = null;
 
     @Override
@@ -117,12 +128,44 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 Exceptions.printStackTrace(ex);
             }
         } else {
-            // TODO submodule update >> NetBeans 7.2++
-            String remotePath = GIT_GITHUB_COM_FUEL_FUEL_GIT;
-            Git.cloneRepository()
-                .setURI(remotePath)
-                .setDirectory(FileUtil.toFile(localPath))
-                .call();
+            try {
+                String repoPath = localPath.getPath();
+                String gitDir = GIT_DIR + repoPath + GIT_REPO;
+                String workTree = WORK_TREE + repoPath;
+                
+                String[] initCommand = {GIT, INIT_COMMAND, repoPath};
+                String[] remoteAddCommand = {GIT, gitDir, workTree, REMOTE_COMMAND, ADD_COMMAND, ORIGIN, GIT_GITHUB_COM_FUEL_FUEL_GIT};
+                String[] configMergeCommand = {GIT, gitDir, workTree, CONFIG_COMMAND, BRANCH_MASTER_MERGE, REFS_HEADS};
+                String[] configRemoteCommand = {GIT,  gitDir, workTree, CONFIG_COMMAND, BRANCH_MASTER_REMOTE, ORIGIN};
+                String[] pullCommand = {GIT, gitDir, workTree, PULL_COMMAND};   
+                String[] submodulesCommand = {"/bin/bash", "-c", "cd " + repoPath + ";git submodule update --init --recursive"}; // NOI18N
+                
+                // Run git Command
+                getPanel().setGitCommandLabel(INIT_COMMAND);
+                Process initProcess = Runtime.getRuntime().exec(initCommand);
+                initProcess.waitFor();
+                getPanel().setGitCommandLabel(REMOTE_COMMAND + " " + ADD_COMMAND);
+                Process remoteProcess = Runtime.getRuntime().exec(remoteAddCommand);
+                remoteProcess.waitFor();
+                getPanel().setGitCommandLabel(CONFIG_COMMAND + " " + BRANCH_MASTER_MERGE);
+                Process configMergeProcess = Runtime.getRuntime().exec(configMergeCommand);
+                configMergeProcess.waitFor();
+                getPanel().setGitCommandLabel(CONFIG_COMMAND + " " + BRANCH_MASTER_REMOTE);
+                Process configRemoteProcess = Runtime.getRuntime().exec(configRemoteCommand);
+                configRemoteProcess.waitFor();
+                getPanel().setGitCommandLabel(PULL_COMMAND);
+                Process pullProcess = Runtime.getRuntime().exec(pullCommand);
+                pullProcess.waitFor();
+                getPanel().setGitCommandLabel("submodule update --init --recursive"); // NOI18N
+                Process submoduleProcess = Runtime.getRuntime().exec(submodulesCommand);
+                submoduleProcess.waitFor();
+                getPanel().setGitCommandLabel("Complete"); // NOI18N
+                
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
 
         // set open file
@@ -134,7 +177,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
         }
 		
         // add a file to nbproject directory for auto completion
-        FuelUtils.getAutoCompletionFile();
+        FuelUtils.getAutoCompletionFile(pm.getProjectDirectory());
 
         return files;
     }

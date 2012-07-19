@@ -77,9 +77,10 @@ public final class FuelUtils {
         return null;
     }
     
-    public static void getAutoCompletionFile(){
-        PhpModule pm = PhpModule.inferPhpModule();
-		FileObject projectDirectory = pm.getProjectDirectory();
+    public static void getAutoCompletionFile(FileObject projectDirectory){
+        if(projectDirectory == null){
+            return;
+        }
 		FileObject nbprojectDirectory = projectDirectory.getFileObject(NBPROJECT_DIR_NAME);
         FileObject autoCompletionFile = FileUtil.getConfigFile(FUEL_AUTOCOMPLETION_PHP);
         
