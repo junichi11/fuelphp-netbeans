@@ -42,7 +42,9 @@
 package org.netbeans.modules.php.fuel.ui.actions;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.netbeans.modules.csl.api.UiUtils;
 import org.netbeans.modules.csl.spi.ParserResult;
 import org.netbeans.modules.parsing.api.ParserManager;
@@ -57,8 +59,11 @@ import org.netbeans.modules.php.editor.CodeUtils;
 import org.netbeans.modules.php.editor.parser.api.Utils;
 import org.netbeans.modules.php.editor.parser.astnodes.*;
 import org.netbeans.modules.php.editor.parser.astnodes.visitors.DefaultVisitor;
+import org.netbeans.modules.php.fuel.ui.GoToViewPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.spi.actions.GoToViewAction;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -71,6 +76,8 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
     private static final long serialVersionUID = -3029428763923922512L;
     private final FileObject controller;
     private final int offset;
+    private static final String VIEW_CLASS = "View"; // NOI18N
+    private static final String VIEW_MODEL_CLASS = "ViewModel"; // NOI18N
 
     public FuelPhpGoToViewAction(FileObject controller, int offset) {
         assert FuelUtils.isController(controller);
@@ -95,9 +102,48 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
             return false;
         }
         
-        FileObject view = getView(actionName);
-        if(view != null){
-            UiUtils.open(view, DEFAULT_OFFSET);
+        Map<String, String> viewMap = getView(actionName);
+        if(viewMap.isEmpty()){
+            return false;
+        }
+
+        // get view or view model, infer view from view model        
+        FileObject viewsDirectory = FuelUtils.getViewsDirectory(controller);
+        FileObject viewModelDirectory = FuelUtils.getViewModelDirectory(controller);
+        FileObject views = null;
+        FileObject viewModel = null;
+        FileObject openFile = null;
+
+        if(viewMap.containsKey(VIEW_MODEL_CLASS)){
+            viewModel = viewModelDirectory.getFileObject(viewMap.get(VIEW_MODEL_CLASS));
+            views = viewsDirectory.getFileObject(viewMap.get(VIEW_MODEL_CLASS));
+        }else if(viewMap.containsKey(VIEW_CLASS)){
+            openFile = viewsDirectory.getFileObject(viewMap.get(VIEW_CLASS));
+        }else{
+            return false;
+        }
+
+        // select view or view model
+        if((viewModel != null) && (views != null)){
+            // open dialog
+            GoToViewPanel panel = new GoToViewPanel();
+            DialogDescriptor d = new DialogDescriptor(panel, "Select View"); // NOI18N
+            if(DialogDisplayer.getDefault().notify(d) == DialogDescriptor.CANCEL_OPTION){
+                // don't open file
+                return true;
+            }
+            
+            String selected = panel.getViewList().getSelectedValue().toString();
+            if(selected.equals(VIEW_CLASS)){
+                openFile = views;
+            }else{
+                openFile = viewModel;
+            }
+        }
+        
+        // open view file
+        if(openFile != null){
+            UiUtils.open(openFile, DEFAULT_OFFSET);
             return true;
         }
         
@@ -107,17 +153,10 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
     /**
      * Get view 
      * @param actionName controller action name
-     * @return view file FileObject. If don't exist view file, return null.
+     * @return view file Map. If don't exist view file, return null.
      */
-    public FileObject getView(String actionName){
-        String viewPath = parseAction(actionName);
-        
-        FileObject viewsDirectory = FuelUtils.getViewsDirectory(controller);
-        if(viewsDirectory == null || viewPath.isEmpty()){
-            return null;
-        }
-        
-        return viewsDirectory.getFileObject(viewPath);
+    public Map<String, String> getView(String actionName){
+        return parseAction(actionName);
     }
     
     /**
@@ -125,9 +164,9 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
      * @param name controller action name
      * @return views file path from views directory
      */
-    private String parseAction(final String name){
+    private Map<String, String> parseAction(final String name){
         
-        final StringBuilder viewPath = new StringBuilder();
+        final Map<String, String> viewPath = new HashMap<String, String>();
         try {
             ParserManager.parse(Collections.singleton(Source.create(controller)), new UserTask() {
 
@@ -136,21 +175,20 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
                     ParserResult parseResult = (ParserResult) resultIterator.getParserResult();
                     final FuelPhpControllerVisitor controllerVisitor = new FuelPhpControllerVisitor(name);
                     controllerVisitor.scan(Utils.getRoot(parseResult));
-                    viewPath.append(controllerVisitor.getViewPath());
+                    viewPath.putAll(controllerVisitor.getViewPath());
                 }
             });
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
         }
         
-        return viewPath.toString();
+        return viewPath;
     }
     
     private static final class FuelPhpControllerVisitor extends DefaultVisitor{
         private static final String FORGE_METHOD = "forge"; // NOI18N
-        private static final String VIEW_CLASS = "View"; // NOI18N
         
-        private final StringBuilder viewPath = new StringBuilder();
+        private final Map<String, String> viewPath= new HashMap<String, String>();
         private String actionName;
         private String methodName = null;
 
@@ -158,10 +196,10 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
             this.actionName = actionName;
         }
 
-        public String getViewPath(){
-            String path = ""; // NOI18N
+        public Map<String, String> getViewPath(){
+            Map<String, String> path = new HashMap<String, String>(); // NOI18N
             synchronized(viewPath){
-                path = viewPath.toString();
+                path = viewPath;
             }
             return path;
         }
@@ -175,8 +213,11 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
         @Override
         public void visit(StaticMethodInvocation node) {
             super.visit(node);
-            Expression className = node.getClassName();
-            if(!VIEW_CLASS.equals(CodeUtils.extractQualifiedName(className)) || !methodName.equals(actionName)){
+            Expression classNameExpression = node.getClassName();
+            String className = CodeUtils.extractQualifiedName(classNameExpression);
+            if(!VIEW_CLASS.equals(className)
+                && !VIEW_MODEL_CLASS.equals(className)
+                || !methodName.equals(actionName)){
                 return;
             }
             FunctionInvocation fi = node.getMethod();
@@ -184,6 +225,8 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
             if(!FORGE_METHOD.equals(invokedMethodName)){
                 return;
             }
+            
+            // get method parameters
             List<Expression> parameters = fi.getParameters();
             Expression e = null;
             
@@ -201,7 +244,7 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
             
             if(!path.isEmpty() && actionName.equals(methodName)){
                 synchronized(viewPath){
-                    viewPath.append(path).append(".php"); // NOI18N
+                    viewPath.put(className, path + ".php"); // NOI18N
                 }
             }
         }
