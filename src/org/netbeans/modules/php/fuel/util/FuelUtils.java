@@ -216,7 +216,7 @@ public final class FuelUtils {
      * @return  name starts with "action_", then return true.
      */
     public static boolean isActionName(String name){
-        return name.startsWith(ACTION_PREFIX);
+        return name.startsWith(ACTION_PREFIX) && !name.equals(ACTION_PREFIX);
     }    
     
     /**
