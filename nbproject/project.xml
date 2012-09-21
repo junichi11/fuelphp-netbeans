@@ -100,8 +100,8 @@
             </test-dependencies>
             <public-packages/>
             <class-path-extension>
-                <runtime-relative-path>ext/json.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/json.jar</binary-origin>
+                <runtime-relative-path>ext/json-for-fuelphp-netbeans.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/json-for-fuelphp-netbeans.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
