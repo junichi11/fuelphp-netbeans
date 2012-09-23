@@ -48,6 +48,7 @@ import javax.swing.JList;
  * @author junichi11
  */
 public class GoToViewPanel extends javax.swing.JPanel {
+
     private static final long serialVersionUID = 2917328074018802542L;
 
     /**

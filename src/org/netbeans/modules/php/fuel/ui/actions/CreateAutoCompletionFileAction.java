@@ -48,8 +48,8 @@ import org.netbeans.modules.php.spi.actions.BaseAction;
 import org.openide.util.NbBundle;
 
 public final class CreateAutoCompletionFileAction extends BaseAction {
-    private static final long serialVersionUID = -184055354346701901L;
 
+    private static final long serialVersionUID = -184055354346701901L;
     private static final CreateAutoCompletionFileAction INSTANCE = new CreateAutoCompletionFileAction();
 
     private CreateAutoCompletionFileAction() {
@@ -71,7 +71,7 @@ public final class CreateAutoCompletionFileAction extends BaseAction {
 
     @Override
     protected void actionPerformed(PhpModule pm) {
-        if(!FuelPhpFrameworkProvider.getInstance().isInPhpModule(pm)){
+        if (!FuelPhpFrameworkProvider.getInstance().isInPhpModule(pm)) {
             // noting
             return;
         }

@@ -62,17 +62,17 @@ import org.openide.util.NbBundle;
  * @author junichi11
  */
 public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
-    
+
     private static final FuelPhpFrameworkProvider INSTANCE = new FuelPhpFrameworkProvider();
     private static final String ICON_PATH = "org/netbeans/modules/php/fuel/resources/fuel_badge_8.png"; // NOI18N
     private final BadgeIcon badgeIcon;
-    
-    @PhpFrameworkProvider.Registration(position=700)
-    public static FuelPhpFrameworkProvider getInstance(){
+
+    @PhpFrameworkProvider.Registration(position = 700)
+    public static FuelPhpFrameworkProvider getInstance() {
         return INSTANCE;
     }
-    
-    private FuelPhpFrameworkProvider(){
+
+    private FuelPhpFrameworkProvider() {
         super(NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkName"), NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkDescription"));
         badgeIcon = new BadgeIcon(
                 ImageUtilities.loadImage(ICON_PATH),
@@ -83,11 +83,11 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     public BadgeIcon getBadgeIcon() {
         return badgeIcon;
     }
-    
+
     @Override
     public boolean isInPhpModule(PhpModule pm) {
         FileObject oil = pm.getSourceDirectory().getFileObject("oil"); // NOI18N
-        if(oil != null){
+        if (oil != null) {
             return true;
         }
         return false;
@@ -96,7 +96,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     @Override
     public File[] getConfigurationFiles(PhpModule pm) {
         List<File> files = new LinkedList<File>();
-	
+
         return files.toArray(new File[files.size()]);
     }
 

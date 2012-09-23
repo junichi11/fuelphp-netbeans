@@ -50,7 +50,8 @@ import org.openide.filesystems.FileObject;
  *
  * @author junichi11
  */
-public class GithubUrlZipper extends UrlZipper{
+public class GithubUrlZipper extends UrlZipper {
+
     public static final String EXT_ZIP = ".zip";
     public static final String HTTPS_GITHUB_COM = "https://github.com";
     public static final String HTTP_CLOUD_GITHUB_COM = "http://cloud.github.com";
@@ -65,7 +66,7 @@ public class GithubUrlZipper extends UrlZipper{
 
     @Override
     protected ZipInputStream getZipInputStream() throws MalformedURLException, IOException {
-        if(url.startsWith(HTTPS_GITHUB_COM) && url.endsWith(EXT_ZIP)){
+        if (url.startsWith(HTTPS_GITHUB_COM) && url.endsWith(EXT_ZIP)) {
             url = url.replace(HTTPS_GITHUB_COM, HTTP_CLOUD_GITHUB_COM);
         }
         return super.getZipInputStream();

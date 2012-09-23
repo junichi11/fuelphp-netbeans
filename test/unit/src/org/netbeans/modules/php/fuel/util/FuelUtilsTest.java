@@ -48,8 +48,8 @@ import org.netbeans.junit.NbTestCase;
  *
  * @author junichi11
  */
-public class FuelUtilsTest extends NbTestCase{
-    
+public class FuelUtilsTest extends NbTestCase {
+
     public FuelUtilsTest(String name) {
         super(name);
     }

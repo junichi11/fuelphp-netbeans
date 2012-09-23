@@ -62,6 +62,7 @@ import org.openide.util.HelpCtx;
  * @author junichi11
  */
 public class FuelPhpModuleExtender extends PhpModuleExtender {
+
     private static final String ADD_COMMAND = "add";
     private static final String BRANCH_MASTER_MERGE = "branch.master.merge";
     private static final String BRANCH_MASTER_REMOTE = "branch.master.remote";
@@ -77,7 +78,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
     private static final String REFS_HEADS = "refs/heads/1.2/master";
     private static final String REMOTE_COMMAND = "remote";
     private static final String WORK_TREE = "--work-tree=";
-	private NewProjectConfigurationPanel panel = null;
+    private NewProjectConfigurationPanel panel = null;
 
     @Override
     public void addChangeListener(ChangeListener cl) {
@@ -89,7 +90,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
 
     @Override
     public JComponent getComponent() {
-	    return getPanel();
+        return getPanel();
     }
 
     @Override
@@ -99,22 +100,22 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
 
     @Override
     public boolean isValid() {
-	    return getPanel().getErrorMessage() == null;
+        return getPanel().getErrorMessage() == null;
     }
 
     @Override
     public String getErrorMessage() {
-	    return getPanel().getErrorMessage();
+        return getPanel().getErrorMessage();
     }
 
     @Override
     public String getWarningMessage() {
-	    return null;
+        return null;
     }
 
     @Override
-    public Set<FileObject> extend(PhpModule pm) throws ExtendingException {		            
-	    FileObject localPath = pm.getSourceDirectory();
+    public Set<FileObject> extend(PhpModule pm) throws ExtendingException {
+        FileObject localPath = pm.getSourceDirectory();
         if (getPanel().getUnzipRadioButton().isSelected()) {
 
             Map<String, String> downloadsMap = getPanel().getDownloadsMap();
@@ -132,14 +133,14 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 String repoPath = localPath.getPath();
                 String gitDir = GIT_DIR + repoPath + GIT_REPO;
                 String workTree = WORK_TREE + repoPath;
-                
+
                 String[] initCommand = {GIT, INIT_COMMAND, repoPath};
                 String[] remoteAddCommand = {GIT, gitDir, workTree, REMOTE_COMMAND, ADD_COMMAND, ORIGIN, GIT_GITHUB_COM_FUEL_FUEL_GIT};
                 String[] configMergeCommand = {GIT, gitDir, workTree, CONFIG_COMMAND, BRANCH_MASTER_MERGE, REFS_HEADS};
-                String[] configRemoteCommand = {GIT,  gitDir, workTree, CONFIG_COMMAND, BRANCH_MASTER_REMOTE, ORIGIN};
-                String[] pullCommand = {GIT, gitDir, workTree, PULL_COMMAND};   
+                String[] configRemoteCommand = {GIT, gitDir, workTree, CONFIG_COMMAND, BRANCH_MASTER_REMOTE, ORIGIN};
+                String[] pullCommand = {GIT, gitDir, workTree, PULL_COMMAND};
                 String[] submodulesCommand = {"/bin/bash", "-c", "cd " + repoPath + ";git submodule update --init --recursive"}; // NOI18N
-                
+
                 // Run git Command
                 getPanel().setGitCommandLabel(INIT_COMMAND);
                 Process initProcess = Runtime.getRuntime().exec(initCommand);
@@ -160,7 +161,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 Process submoduleProcess = Runtime.getRuntime().exec(submodulesCommand);
                 submoduleProcess.waitFor();
                 getPanel().setGitCommandLabel("Complete"); // NOI18N
-                
+
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
@@ -172,20 +173,20 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
         Set<FileObject> files = new HashSet<FileObject>();
         FileObject config;
         config = pm.getSourceDirectory().getFileObject(CONFIG_PHP);
-        if(config != null){
+        if (config != null) {
             files.add(config);
         }
-		
+
         // add a file to nbproject directory for auto completion
         FuelUtils.getAutoCompletionFile(pm.getProjectDirectory());
 
         return files;
     }
-    
-    public NewProjectConfigurationPanel getPanel(){
-		if(panel == null){
-			panel = new NewProjectConfigurationPanel();
-		}
-		return panel;
+
+    public NewProjectConfigurationPanel getPanel() {
+        if (panel == null) {
+            panel = new NewProjectConfigurationPanel();
+        }
+        return panel;
     }
 }

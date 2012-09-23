@@ -54,47 +54,48 @@ import org.openide.util.Lookup;
  *
  * @author junichi11
  */
-public class FuelPhpGoToActionAction extends GoToActionAction{
+public class FuelPhpGoToActionAction extends GoToActionAction {
+
     private static final long serialVersionUID = 7088563533898976812L;
     private FileObject view;
     private int offset;
-    
+
     public FuelPhpGoToActionAction(FileObject view, int offset) {
         this.view = view;
         this.offset = offset;
     }
-    
+
     @Override
     public boolean goToAction() {
         FileObject controller = FuelUtils.getInferedController(view);
-        if(controller == null){
+        if (controller == null) {
             return false;
         }
-        
+
         UiUtils.open(controller, getActionOffset(controller));
         return true;
     }
-    
+
     /**
      * Get action method offset
+     *
      * @param controller controller FileObject
      * @return offset
      */
-    private int getActionOffset(FileObject controller){
+    private int getActionOffset(FileObject controller) {
         EditorSupport editorSupport = Lookup.getDefault().lookup(EditorSupport.class);
         Collection<PhpClass> phpClasses = editorSupport.getClasses(controller);
-        
+
         // find target action method
-        for(PhpClass phpClass : phpClasses){
-            for(PhpClass.Method method : phpClass.getMethods()){
+        for (PhpClass phpClass : phpClasses) {
+            for (PhpClass.Method method : phpClass.getMethods()) {
                 String methodName = method.getName();
-                if(methodName.equals(FuelUtils.getInferedActionName(view))){
+                if (methodName.equals(FuelUtils.getInferedActionName(view))) {
                     return method.getOffset();
                 }
             }
         }
-        
+
         return DEFAULT_OFFSET;
     }
-    
 }

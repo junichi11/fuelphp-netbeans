@@ -72,7 +72,8 @@ import org.openide.util.Lookup;
  *
  * @author junichi11
  */
-public class FuelPhpGoToViewAction extends GoToViewAction{
+public class FuelPhpGoToViewAction extends GoToViewAction {
+
     private static final long serialVersionUID = -3029428763923922512L;
     private final FileObject controller;
     private final int offset;
@@ -84,92 +85,94 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
         this.controller = controller;
         this.offset = offset;
     }
-    
+
     /**
      * Find the view file, then open the view file.
-     * @return Find the view file, then return true.  
+     *
+     * @return Find the view file, then return true.
      */
     @Override
     public boolean goToView() {
         EditorSupport editorSupport = Lookup.getDefault().lookup(EditorSupport.class);
         PhpBaseElement element = editorSupport.getElement(controller, offset);
-        if(!(element instanceof PhpClass.Method)){
-            return false;
-        }
-        
-        String actionName = element.getName();
-        if(!FuelUtils.isActionName(actionName)){
-            return false;
-        }
-        
-        Map<String, String> viewMap = getView(actionName);
-        if(viewMap.isEmpty()){
+        if (!(element instanceof PhpClass.Method)) {
             return false;
         }
 
-        // get view or view model, infer view from view model        
+        String actionName = element.getName();
+        if (!FuelUtils.isActionName(actionName)) {
+            return false;
+        }
+
+        Map<String, String> viewMap = getView(actionName);
+        if (viewMap.isEmpty()) {
+            return false;
+        }
+
+        // get view or view model, infer view from view model
         FileObject viewsDirectory = FuelUtils.getViewsDirectory(controller);
         FileObject viewModelDirectory = FuelUtils.getViewModelDirectory(controller);
         FileObject views = null;
         FileObject viewModel = null;
         FileObject openFile = null;
 
-        if(viewMap.containsKey(VIEW_MODEL_CLASS)){
+        if (viewMap.containsKey(VIEW_MODEL_CLASS)) {
             viewModel = viewModelDirectory.getFileObject(viewMap.get(VIEW_MODEL_CLASS));
             views = viewsDirectory.getFileObject(viewMap.get(VIEW_MODEL_CLASS));
-        }else if(viewMap.containsKey(VIEW_CLASS)){
+        } else if (viewMap.containsKey(VIEW_CLASS)) {
             openFile = viewsDirectory.getFileObject(viewMap.get(VIEW_CLASS));
-        }else{
+        } else {
             return false;
         }
 
         // select view or view model
-        if((viewModel != null) && (views != null)){
+        if ((viewModel != null) && (views != null)) {
             // open dialog
             GoToViewPanel panel = new GoToViewPanel();
             DialogDescriptor d = new DialogDescriptor(panel, "Select View"); // NOI18N
-            if(DialogDisplayer.getDefault().notify(d) == DialogDescriptor.CANCEL_OPTION){
+            if (DialogDisplayer.getDefault().notify(d) == DialogDescriptor.CANCEL_OPTION) {
                 // don't open file
                 return true;
             }
-            
+
             String selected = panel.getViewList().getSelectedValue().toString();
-            if(selected.equals(VIEW_CLASS)){
+            if (selected.equals(VIEW_CLASS)) {
                 openFile = views;
-            }else{
+            } else {
                 openFile = viewModel;
             }
         }
-        
+
         // open view file
-        if(openFile != null){
+        if (openFile != null) {
             UiUtils.open(openFile, DEFAULT_OFFSET);
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
-     * Get view 
+     * Get view
+     *
      * @param actionName controller action name
      * @return view file Map. If don't exist view file, return null.
      */
-    public Map<String, String> getView(String actionName){
+    public Map<String, String> getView(String actionName) {
         return parseAction(actionName);
     }
-    
+
     /**
      * Parse Controller file
+     *
      * @param name controller action name
      * @return views file path from views directory
      */
-    private Map<String, String> parseAction(final String name){
-        
+    private Map<String, String> parseAction(final String name) {
+
         final Map<String, String> viewPath = new HashMap<String, String>();
         try {
             ParserManager.parse(Collections.singleton(Source.create(controller)), new UserTask() {
-
                 @Override
                 public void run(ResultIterator resultIterator) throws Exception {
                     ParserResult parseResult = (ParserResult) resultIterator.getParserResult();
@@ -181,14 +184,14 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
         }
-        
+
         return viewPath;
     }
-    
-    private static final class FuelPhpControllerVisitor extends DefaultVisitor{
+
+    private static final class FuelPhpControllerVisitor extends DefaultVisitor {
+
         private static final String FORGE_METHOD = "forge"; // NOI18N
-        
-        private final Map<String, String> viewPath= new HashMap<String, String>();
+        private final Map<String, String> viewPath = new HashMap<String, String>();
         private String actionName;
         private String methodName = null;
 
@@ -196,9 +199,9 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
             this.actionName = actionName;
         }
 
-        public Map<String, String> getViewPath(){
+        public Map<String, String> getViewPath() {
             Map<String, String> path = new HashMap<String, String>(); // NOI18N
-            synchronized(viewPath){
+            synchronized (viewPath) {
                 path = viewPath;
             }
             return path;
@@ -215,39 +218,38 @@ public class FuelPhpGoToViewAction extends GoToViewAction{
             super.visit(node);
             Expression classNameExpression = node.getClassName();
             String className = CodeUtils.extractQualifiedName(classNameExpression);
-            if(!VIEW_CLASS.equals(className)
-                && !VIEW_MODEL_CLASS.equals(className)
-                || !methodName.equals(actionName)){
+            if (!VIEW_CLASS.equals(className)
+                    && !VIEW_MODEL_CLASS.equals(className)
+                    || !methodName.equals(actionName)) {
                 return;
             }
             FunctionInvocation fi = node.getMethod();
             String invokedMethodName = CodeUtils.extractFunctionName(fi);
-            if(!FORGE_METHOD.equals(invokedMethodName)){
+            if (!FORGE_METHOD.equals(invokedMethodName)) {
                 return;
             }
-            
+
             // get method parameters
             List<Expression> parameters = fi.getParameters();
             Expression e = null;
-            
-            if(!parameters.isEmpty()){
+
+            if (!parameters.isEmpty()) {
                 e = parameters.get(0);
             }
-            
+
             String path = ""; // NOI18N
-            if(e instanceof Scalar){
-                Scalar s = (Scalar)e;
-                if(s.getScalarType() == Scalar.Type.STRING){
+            if (e instanceof Scalar) {
+                Scalar s = (Scalar) e;
+                if (s.getScalarType() == Scalar.Type.STRING) {
                     path = s.getStringValue().replace("'", ""); // NOI18N
                 }
             }
-            
-            if(!path.isEmpty() && actionName.equals(methodName)){
-                synchronized(viewPath){
+
+            if (!path.isEmpty() && actionName.equals(methodName)) {
+                synchronized (viewPath) {
                     viewPath.put(className, path + ".php"); // NOI18N
                 }
             }
         }
-        
     }
 }

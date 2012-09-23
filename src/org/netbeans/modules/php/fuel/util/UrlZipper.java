@@ -61,59 +61,58 @@ public class UrlZipper {
     protected String url;
     protected String unzipRootDirName;
     protected FileObject baseDir;
-    
 
-    public UrlZipper(String url, FileObject baseDir, String unziipRootDirName){
+    public UrlZipper(String url, FileObject baseDir, String unziipRootDirName) {
         this.url = url;
         this.baseDir = baseDir;
         this.unzipRootDirName = unziipRootDirName;
     }
-    
-    public UrlZipper(String url, FileObject baseDir){
+
+    public UrlZipper(String url, FileObject baseDir) {
         this.url = url;
         this.baseDir = baseDir;
-	    this.unzipRootDirName = ""; // NOI18N
+        this.unzipRootDirName = ""; // NOI18N
     }
-    
-    protected ZipInputStream getZipInputStream() throws MalformedURLException, IOException{
+
+    protected ZipInputStream getZipInputStream() throws MalformedURLException, IOException {
         URL zipUrl = new URL(url);
         ZipInputStream zi = new ZipInputStream(zipUrl.openStream());
-        
+
         return zi;
     }
 
     public void unzip() throws MalformedURLException, IOException {
-        if(baseDir == null){
+        if (baseDir == null) {
             return;
         }
-        
+
         ZipInputStream zipInputStream = getZipInputStream();
         String zipRootDirName = ""; // NOI18N
         ZipEntry zipEntry = zipInputStream.getNextEntry();
-        if(zipEntry !=null){
+        if (zipEntry != null) {
             zipRootDirName = zipEntry.getName();
             zipInputStream.closeEntry();
         }
-        
-        while((zipEntry = zipInputStream.getNextEntry()) != null){
+
+        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             // change from zipRootDirName to unzipRootDirName
-            String unzipFileName  = ""; // NOI18N
-            if(unzipRootDirName.equals("")){ // NOI18N
+            String unzipFileName = ""; // NOI18N
+            if (unzipRootDirName.equals("")) { // NOI18N
                 unzipFileName = zipEntry.getName().replace(zipRootDirName, ""); // NOI18N
-            }else{
+            } else {
                 unzipFileName = zipEntry.getName().replace(zipRootDirName, unzipRootDirName + "/"); // NOI18N
             }
             File unzipBaseDir = FileUtil.toFile(baseDir);
-            
+
             File unzipFile = new File(unzipBaseDir, unzipFileName);
-            
+
             // if zipentry is directrory, make dir
-            if(zipEntry.isDirectory()){
+            if (zipEntry.isDirectory()) {
                 unzipFile.mkdir();
                 zipInputStream.closeEntry();
                 continue;
             }
-            
+
             // write data
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(unzipFile));
             int data = 0;

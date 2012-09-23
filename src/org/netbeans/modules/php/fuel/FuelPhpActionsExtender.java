@@ -58,7 +58,7 @@ import org.openide.util.NbBundle;
  *
  * @author junichi11
  */
-public class FuelPhpActionsExtender extends PhpModuleActionsExtender{
+public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
 
     @Override
     public List<? extends Action> getActions() {
@@ -91,5 +91,4 @@ public class FuelPhpActionsExtender extends PhpModuleActionsExtender{
     public boolean isActionWithView(FileObject fo) {
         return FuelUtils.isController(fo);
     }
-    
 }

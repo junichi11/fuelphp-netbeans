@@ -61,6 +61,7 @@ import org.openide.util.Lookup;
  * @author junichi11
  */
 public final class FuelUtils {
+
     private static final String ACTION_PREFIX = "action_"; // NOI18N
     private static final String CONTROLLER_PREFIX = "Controller_"; // NOI18N
     private static final int DEFAULT_OFFSET = 0;
@@ -88,187 +89,197 @@ public final class FuelUtils {
         }
         return null;
     }
-    
-    public static void getAutoCompletionFile(FileObject projectDirectory){
-        if(projectDirectory == null){
+
+    public static void getAutoCompletionFile(FileObject projectDirectory) {
+        if (projectDirectory == null) {
             return;
         }
-		FileObject nbprojectDirectory = projectDirectory.getFileObject(NBPROJECT_DIR_NAME);
+        FileObject nbprojectDirectory = projectDirectory.getFileObject(NBPROJECT_DIR_NAME);
         FileObject autoCompletionFile = FileUtil.getConfigFile(FUEL_AUTOCOMPLETION_PHP);
-        
-        if(nbprojectDirectory.getFileObject(autoCompletionFile.getNameExt()) != null){
+
+        if (nbprojectDirectory.getFileObject(autoCompletionFile.getNameExt()) != null) {
             // already exists
             return;
         }
-		
-        if(nbprojectDirectory != null && autoCompletionFile != null){
+
+        if (nbprojectDirectory != null && autoCompletionFile != null) {
             try {
                 autoCompletionFile.copy(nbprojectDirectory, autoCompletionFile.getName(), autoCompletionFile.getExt());
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
-		}
+        }
     }
-    
+
     /**
      * Check controller file
+     *
      * @param controller controller FileObject
      * @return if prefix is "Controller_", return true.
      */
-    public static boolean isController(FileObject controller){
-        if(controller == null){
+    public static boolean isController(FileObject controller) {
+        if (controller == null) {
             return false;
         }
         EditorSupport editorSupport = Lookup.getDefault().lookup(EditorSupport.class);
         Collection<PhpClass> phpClasses = editorSupport.getClasses(controller);
-        if(phpClasses.size() != 1){
+        if (phpClasses.size() != 1) {
             return false;
         }
-        
+
         PhpClass phpClass = null;
-        for(PhpClass pc : phpClasses){
+        for (PhpClass pc : phpClasses) {
             phpClass = pc;
         }
-        
-        if(phpClass == null){
+
+        if (phpClass == null) {
             return false;
         }
-         
+
         return phpClass.getName().startsWith(CONTROLLER_PREFIX);
     }
-    
+
     /**
      * Check view file
+     *
      * @param view view FileObject
      * @return if the view file is in views directory, return true.
      */
-    public static boolean isView(FileObject view){
-        if(view == null || !EXT_PHP.equals(view.getExt())){
+    public static boolean isView(FileObject view) {
+        if (view == null || !EXT_PHP.equals(view.getExt())) {
             return false;
         }
         FileObject viewsDirectory = getViewsDirectory(view);
 
         String viewsDirectoryPath = viewsDirectory.getPath();
         String viewPath = view.getPath();
-        
+
         return viewPath.startsWith(viewsDirectoryPath);
     }
-    
+
     /**
      * Check view model file
+     *
      * @param viewModel view model FileObject
      * @return if the view model file is in view model directory, return true.
      */
-    public static boolean isViewModel(FileObject viewModel){
-        if(viewModel == null || !EXT_PHP.equals(viewModel.getExt())){
+    public static boolean isViewModel(FileObject viewModel) {
+        if (viewModel == null || !EXT_PHP.equals(viewModel.getExt())) {
             return false;
         }
         FileObject viewModelDirectory = getViewModelDirectory(viewModel);
-        
+
         String viewModelDirectoryPath = viewModelDirectory.getPath();
         String viewModelPath = viewModel.getPath();
-        
+
         return viewModelPath.startsWith(viewModelDirectoryPath);
     }
 
     /**
      * Get views directory (fuel/app/views)
+     *
      * @param fo FileObject
      * @return views directory FileObject
      */
-    public static FileObject getViewsDirectory(FileObject fo){
+    public static FileObject getViewsDirectory(FileObject fo) {
         PhpModule pm = PhpModule.forFileObject(fo);
-        if(pm == null){
+        if (pm == null) {
             return null;
         }
         return pm.getSourceDirectory().getFileObject(FUEL_APP_VIEWS_DIR);
     }
-    
+
     /**
      * Get controller directory (fuel/app/classes/controller)
+     *
      * @param fo FileObject
      * @return controller directory FileObject
      */
-    public static FileObject getControllerDirectory(FileObject fo){
+    public static FileObject getControllerDirectory(FileObject fo) {
         PhpModule pm = PhpModule.forFileObject(fo);
-        if(pm == null){
+        if (pm == null) {
             return null;
         }
         return pm.getSourceDirectory().getFileObject(FUEL_APP_CLASSES_CONTROLLER_DIR);
     }
-    
+
     /**
      * Get controller directory (fuel/app/classes/controller)
+     *
      * @param fo FileObject
      * @return controller directory FileObject
      */
-    public static FileObject getViewModelDirectory(FileObject fo){
+    public static FileObject getViewModelDirectory(FileObject fo) {
         PhpModule pm = PhpModule.forFileObject(fo);
-        if(pm == null){
+        if (pm == null) {
             return null;
         }
         return pm.getSourceDirectory().getFileObject(FUEL_APP_CLASSES_VIEW_DIR);
     }
-    
+
     /**
      * Check action name
+     *
      * @param name action name
-     * @return  name starts with "action_", then return true.
+     * @return name starts with "action_", then return true.
      */
-    public static boolean isActionName(String name){
+    public static boolean isActionName(String name) {
         return name.startsWith(ACTION_PREFIX) && !name.equals(ACTION_PREFIX);
-    }    
-    
+    }
+
     /**
-     * Get infered controller 
+     * Get infered controller
+     *
      * @param view view file
      * @return controller FileObject
      */
-    public static FileObject getInferedController(FileObject view){
-        if(!isView(view) && !isViewModel(view)){
+    public static FileObject getInferedController(FileObject view) {
+        if (!isView(view) && !isViewModel(view)) {
             return null;
         }
         // view file path from views directory
         String viewPath = getViewPath(view);
         String controllerPath = viewPath.replace("/" + view.getNameExt(), "") + ".php"; // NOI18N
-        
+
         // get controller
         FileObject controller = getControllerDirectory(view).getFileObject(controllerPath);
-        if(!isController(controller)){
+        if (!isController(controller)) {
             return null;
         }
         return controller;
     }
-    
+
     /**
      * Get view file path from views / view model directory
+     *
      * @param view
      * @return view file relative path. contain extension.
      */
-    private static String getViewPath(FileObject view){
+    private static String getViewPath(FileObject view) {
         String viewDirectoryPath = null;
         String viewPath = view.getPath();;
-        if(isView(view)){
+        if (isView(view)) {
             viewDirectoryPath = getViewsDirectory(view).getPath();
-        } else if(isViewModel(view)){
+        } else if (isViewModel(view)) {
             viewDirectoryPath = getViewModelDirectory(view).getPath();
-        }else{
+        } else {
             return null;
         }
         String replacePath = viewPath.replace(viewDirectoryPath, ""); // NOI18N
-        if(replacePath.startsWith("/")){ // NOI18N
+        if (replacePath.startsWith("/")) { // NOI18N
             replacePath = replacePath.replaceFirst("/", ""); // NOI18N
         }
         return replacePath;
     }
-    
+
     /**
      * Get infered controller action name
+     *
      * @param view view FileObject
      * @return action name.
      */
-    public static String getInferedActionName(FileObject view){
-        if(!isView(view) && !isViewModel(view)){
+    public static String getInferedActionName(FileObject view) {
+        if (!isView(view) && !isViewModel(view)) {
             return null;
         }
         return ACTION_PREFIX + view.getName();
