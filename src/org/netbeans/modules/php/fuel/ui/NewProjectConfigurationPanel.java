@@ -73,47 +73,48 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
     public NewProjectConfigurationPanel() {
         initComponents();
         this.unzipRadioButton.setSelected(true);
-		try {
-			// Get JSON
-			URL githubApi = new URL(GITHUB_API_REPOS_DOWNLOADS);
-			JSONArray jsonArray = FuelUtils.getJsonArray(githubApi);
-            
-			String[] downloadsArray = new String[jsonArray.length()];
-			for(int i = 0; i < jsonArray.length(); i++){
-				JSONObject jObject = (JSONObject) jsonArray.get(i);
-				downloadsArray[i] = jObject.getString(GITHUB_API_REPOS_DOWNLOADS_NAME); // NOI18N
-				downloadsMap.put(jObject.getString(GITHUB_API_REPOS_DOWNLOADS_NAME), jObject.getString(GITHUB_API_REPOS_DOWNLOADS_HTML_URL)); // NOI18N
-			}
-			
-            Arrays.sort(downloadsArray, new Comparator<String>(){
+        try {
+            // Get JSON
+            URL githubApi = new URL(GITHUB_API_REPOS_DOWNLOADS);
+            JSONArray jsonArray = FuelUtils.getJsonArray(githubApi);
+
+            String[] downloadsArray = new String[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jObject = (JSONObject) jsonArray.get(i);
+                downloadsArray[i] = jObject.getString(GITHUB_API_REPOS_DOWNLOADS_NAME); // NOI18N
+                downloadsMap.put(jObject.getString(GITHUB_API_REPOS_DOWNLOADS_NAME), jObject.getString(GITHUB_API_REPOS_DOWNLOADS_HTML_URL)); // NOI18N
+            }
+
+            Arrays.sort(downloadsArray, new Comparator<String>() {
                 public static final String COMPARE_SPLIT_PATTERN = "[., -]"; // NOI18N
+
                 @Override
-				public int compare(String a, String b) {
-					String[] aArray = a.split(COMPARE_SPLIT_PATTERN);
-					String[] bArray = b.split(COMPARE_SPLIT_PATTERN);
-					for(int i = 0; i < aArray.length; i++){
-						try {
-							Integer aInt = Integer.parseInt(aArray[i]);
-							Integer bInt = Integer.parseInt(bArray[i]);
-							if (aInt == bInt) {
-								continue;
-							} else{
-								return bInt - aInt;
-							}
-						} catch (NumberFormatException ex) {
-							return 1;
-						}
-					}
-					return 1;
-				}
-			});
-			versionList.setListData(downloadsArray);
-			versionList.setSelectedIndex(0);
-		} catch (JSONException ex) {
-			Exceptions.printStackTrace(ex);
-		} catch (IOException ex){
-			errorMessage = "Is not connected to the network.";
-		}
+                public int compare(String a, String b) {
+                    String[] aArray = a.split(COMPARE_SPLIT_PATTERN);
+                    String[] bArray = b.split(COMPARE_SPLIT_PATTERN);
+                    for (int i = 0; i < aArray.length; i++) {
+                        try {
+                            Integer aInt = Integer.parseInt(aArray[i]);
+                            Integer bInt = Integer.parseInt(bArray[i]);
+                            if (aInt == bInt) {
+                                continue;
+                            } else {
+                                return bInt - aInt;
+                            }
+                        } catch (NumberFormatException ex) {
+                            return 1;
+                        }
+                    }
+                    return 1;
+                }
+            });
+            versionList.setListData(downloadsArray);
+            versionList.setSelectedIndex(0);
+        } catch (JSONException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            errorMessage = "Is not connected to the network.";
+        }
         gettingFileInfoLabel.setText(errorMessage);
     }
 
@@ -129,9 +130,9 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
         return versionList;
     }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
     public ButtonGroup getButtonGroup() {
         return buttonGroup;
@@ -144,8 +145,8 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
     public JRadioButton getUnzipRadioButton() {
         return unzipRadioButton;
     }
-    
-    public void setGitCommandLabel(String command){
+
+    public void setGitCommandLabel(String command) {
         gitCommandLabel.setText(command);
     }
 
@@ -233,7 +234,6 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
             gitCloneRadioButton.setEnabled(false);
         }
     }//GEN-LAST:event_gitCloneRadioButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JLabel gettingFileInfoLabel;
