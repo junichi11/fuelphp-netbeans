@@ -56,6 +56,28 @@ public class FuelZipFilterTest extends NbTestCase {
     }
 
     /**
+     * Test of accept method, of class FuelZipFilter.
+     */
+    @Test
+    public void testAccept() {
+        FuelZipFilter filter = new FuelZipFilter();
+        ZipEntry entry = null;
+        entry = new ZipEntry("docs/correct.php");
+        assertTrue(filter.accept(entry));
+        entry = new ZipEntry("correct.md");
+        assertTrue(filter.accept(entry));
+        entry = new ZipEntry("sample/fuel/correct.php");
+        assertTrue(filter.accept(entry));
+        entry = new ZipEntry("sample/public/");
+        assertTrue(filter.accept(entry));
+        entry = new ZipEntry("fuel1.3");
+        assertTrue(filter.accept(entry));
+
+        entry = new ZipEntry("fuel1.3/");
+        assertFalse(filter.accept(entry));
+    }
+
+    /**
      * Test of getPath method, of class FuelZipFilter.
      */
     @Test

@@ -61,13 +61,21 @@ public class FuelZipFilter implements ZipFilter {
 
     @Override
     public boolean accept(ZipEntry entry) {
+        String name = entry.getName();
+        String[] splitPath = splitPath(name);
+        int length = splitPath.length;
+
+        if(length == 1 && entry.isDirectory()){
+            return false;
+        }
+
         return true;
     }
 
     @Override
     public String getPath(ZipEntry entry) {
         String name = entry.getName();
-        String[] splits = name.split("/"); // NOI18N
+        String[] splits = splitPath(name);
         String topDirectory = splits[0];
         int length = splits.length;
         if (!topDirectories.contains(topDirectory)) {
@@ -76,5 +84,9 @@ public class FuelZipFilter implements ZipFilter {
             }
         }
         return name;
+    }
+
+    private String[] splitPath(String path) {
+        return path.split("/"); // NOI18N
     }
 }
