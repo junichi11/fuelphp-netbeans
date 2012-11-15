@@ -41,34 +41,40 @@
  */
 package org.netbeans.modules.php.fuel.util;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.zip.ZipInputStream;
-import org.openide.filesystems.FileObject;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.ZipEntry;
 
 /**
  *
  * @author junichi11
  */
-public class GithubUrlZipper extends UrlZipper {
+public class FuelZipFilter implements ZipFilter {
 
-    public static final String EXT_ZIP = ".zip";
-    public static final String HTTPS_GITHUB_COM = "https://github.com";
-    public static final String HTTP_CLOUD_GITHUB_COM = "http://cloud.github.com";
+    private Set<String> topDirectories = new HashSet<String>();
 
-    public GithubUrlZipper(String url, FileObject baseDir, ZipFilter filter) {
-        super(url, baseDir, filter);
-    }
-
-    public GithubUrlZipper(String url, FileObject baseDir, ZipFilter filter, String unziipRootDirName) {
-        super(url, baseDir, filter, unziipRootDirName);
+    public FuelZipFilter() {
+        topDirectories.add("docs"); // NOI18N
+        topDirectories.add("fuel"); // NOI18N
+        topDirectories.add("public"); // NOI18N
     }
 
     @Override
-    protected ZipInputStream getZipInputStream() throws MalformedURLException, IOException {
-        if (url.startsWith(HTTPS_GITHUB_COM) && url.endsWith(EXT_ZIP)) {
-            url = url.replace(HTTPS_GITHUB_COM, HTTP_CLOUD_GITHUB_COM);
+    public boolean accept(ZipEntry entry) {
+        return true;
+    }
+
+    @Override
+    public String getPath(ZipEntry entry) {
+        String name = entry.getName();
+        String[] splits = name.split("/"); // NOI18N
+        String topDirectory = splits[0];
+        int length = splits.length;
+        if (!topDirectories.contains(topDirectory)) {
+            if (length != 1) {
+                name = name.replaceFirst(topDirectory + "/", ""); // NOI18N
+            }
         }
-        return super.getZipInputStream();
+        return name;
     }
 }

@@ -41,34 +41,49 @@
  */
 package org.netbeans.modules.php.fuel.util;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.zip.ZipInputStream;
-import org.openide.filesystems.FileObject;
+import java.util.zip.ZipEntry;
+import org.junit.Test;
+import org.netbeans.junit.NbTestCase;
 
 /**
  *
  * @author junichi11
  */
-public class GithubUrlZipper extends UrlZipper {
+public class FuelZipFilterTest extends NbTestCase {
 
-    public static final String EXT_ZIP = ".zip";
-    public static final String HTTPS_GITHUB_COM = "https://github.com";
-    public static final String HTTP_CLOUD_GITHUB_COM = "http://cloud.github.com";
-
-    public GithubUrlZipper(String url, FileObject baseDir, ZipFilter filter) {
-        super(url, baseDir, filter);
+    public FuelZipFilterTest(String name) {
+        super(name);
     }
 
-    public GithubUrlZipper(String url, FileObject baseDir, ZipFilter filter, String unziipRootDirName) {
-        super(url, baseDir, filter, unziipRootDirName);
-    }
+    /**
+     * Test of getPath method, of class FuelZipFilter.
+     */
+    @Test
+    public void testGetPath() {
+        FuelZipFilter filter = new FuelZipFilter();
+        ZipEntry entry = null;
+        entry = new ZipEntry("docs/correct.php");
+        assertEquals("docs/correct.php", filter.getPath(entry));
 
-    @Override
-    protected ZipInputStream getZipInputStream() throws MalformedURLException, IOException {
-        if (url.startsWith(HTTPS_GITHUB_COM) && url.endsWith(EXT_ZIP)) {
-            url = url.replace(HTTPS_GITHUB_COM, HTTP_CLOUD_GITHUB_COM);
-        }
-        return super.getZipInputStream();
+        entry = new ZipEntry("fuel1.3/docs/correct.php");
+        assertEquals("docs/correct.php", filter.getPath(entry));
+
+        entry = new ZipEntry("fuel/correct.php");
+        assertEquals("fuel/correct.php", filter.getPath(entry));
+
+        entry = new ZipEntry("fuel1.3/fuel/correct.php");
+        assertEquals("fuel/correct.php", filter.getPath(entry));
+
+        entry = new ZipEntry("public/correct.php");
+        assertEquals("public/correct.php", filter.getPath(entry));
+
+        entry = new ZipEntry("fuel1.3/public/correct.php");
+        assertEquals("public/correct.php", filter.getPath(entry));
+
+        entry = new ZipEntry("correct.php");
+        assertEquals("correct.php", filter.getPath(entry));
+
+        entry = new ZipEntry("fuelphp1.4/correct.php");
+        assertEquals("correct.php", filter.getPath(entry));
     }
 }

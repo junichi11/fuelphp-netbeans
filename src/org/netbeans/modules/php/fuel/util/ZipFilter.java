@@ -41,34 +41,15 @@
  */
 package org.netbeans.modules.php.fuel.util;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.zip.ZipInputStream;
-import org.openide.filesystems.FileObject;
+import java.util.zip.ZipEntry;
 
 /**
  *
  * @author junichi11
  */
-public class GithubUrlZipper extends UrlZipper {
+public interface ZipFilter {
 
-    public static final String EXT_ZIP = ".zip";
-    public static final String HTTPS_GITHUB_COM = "https://github.com";
-    public static final String HTTP_CLOUD_GITHUB_COM = "http://cloud.github.com";
+    public boolean accept(ZipEntry entry);
 
-    public GithubUrlZipper(String url, FileObject baseDir, ZipFilter filter) {
-        super(url, baseDir, filter);
-    }
-
-    public GithubUrlZipper(String url, FileObject baseDir, ZipFilter filter, String unziipRootDirName) {
-        super(url, baseDir, filter, unziipRootDirName);
-    }
-
-    @Override
-    protected ZipInputStream getZipInputStream() throws MalformedURLException, IOException {
-        if (url.startsWith(HTTPS_GITHUB_COM) && url.endsWith(EXT_ZIP)) {
-            url = url.replace(HTTPS_GITHUB_COM, HTTP_CLOUD_GITHUB_COM);
-        }
-        return super.getZipInputStream();
-    }
+    public String getPath(ZipEntry entry);
 }

@@ -61,17 +61,21 @@ public class UrlZipper {
     protected String url;
     protected String unzipRootDirName;
     protected FileObject baseDir;
+    protected ZipFilter filter;
 
-    public UrlZipper(String url, FileObject baseDir, String unziipRootDirName) {
+
+    public UrlZipper(String url, FileObject baseDir, ZipFilter filter, String unziipRootDirName) {
         this.url = url;
         this.baseDir = baseDir;
         this.unzipRootDirName = unziipRootDirName;
+        this.filter = filter;
     }
 
-    public UrlZipper(String url, FileObject baseDir) {
+    public UrlZipper(String url, FileObject baseDir, ZipFilter filter){
         this.url = url;
         this.baseDir = baseDir;
         this.unzipRootDirName = ""; // NOI18N
+        this.filter = filter;
     }
 
     protected ZipInputStream getZipInputStream() throws MalformedURLException, IOException {
@@ -87,23 +91,15 @@ public class UrlZipper {
         }
 
         ZipInputStream zipInputStream = getZipInputStream();
-        String zipRootDirName = ""; // NOI18N
-        ZipEntry zipEntry = zipInputStream.getNextEntry();
-        if (zipEntry != null) {
-            zipRootDirName = zipEntry.getName();
-            zipInputStream.closeEntry();
-        }
+        ZipEntry zipEntry = null;
 
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-            // change from zipRootDirName to unzipRootDirName
-            String unzipFileName = ""; // NOI18N
-            if (unzipRootDirName.equals("")) { // NOI18N
-                unzipFileName = zipEntry.getName().replace(zipRootDirName, ""); // NOI18N
-            } else {
-                unzipFileName = zipEntry.getName().replace(zipRootDirName, unzipRootDirName + "/"); // NOI18N
+            if(!filter.accept(zipEntry)){
+                continue;
             }
+            // change from zipRootDirName to unzipRootDirName
+            String unzipFileName = filter.getPath(zipEntry);
             File unzipBaseDir = FileUtil.toFile(baseDir);
-
             File unzipFile = new File(unzipBaseDir, unzipFileName);
 
             // if zipentry is directrory, make dir
@@ -111,6 +107,11 @@ public class UrlZipper {
                 unzipFile.mkdir();
                 zipInputStream.closeEntry();
                 continue;
+            } else {
+                File parentFile = unzipFile.getParentFile();
+                if(!parentFile.exists()){
+                    parentFile.mkdirs();
+                }
             }
 
             // write data

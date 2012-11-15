@@ -51,6 +51,7 @@ import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
+import org.netbeans.modules.php.fuel.util.FuelZipFilter;
 import org.netbeans.modules.php.fuel.util.GithubUrlZipper;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
 import org.openide.filesystems.FileObject;
@@ -75,7 +76,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
     private static final String INIT_COMMAND = "init";
     private static final String ORIGIN = "origin";
     private static final String PULL_COMMAND = "pull";
-    private static final String REFS_HEADS = "refs/heads/1.2/master";
+    private static final String REFS_HEADS = "refs/heads/1.4/master";
     private static final String REMOTE_COMMAND = "remote";
     private static final String WORK_TREE = "--work-tree=";
     private NewProjectConfigurationPanel panel = null;
@@ -120,7 +121,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
 
             Map<String, String> downloadsMap = getPanel().getDownloadsMap();
             String url = downloadsMap.get(getPanel().getVersionList().getSelectedValue().toString());
-            GithubUrlZipper zipper = new GithubUrlZipper(url, localPath);
+            GithubUrlZipper zipper = new GithubUrlZipper(url, localPath, new FuelZipFilter());
             try {
                 zipper.unzip();
             } catch (MalformedURLException ex) {
