@@ -149,8 +149,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
     @Override
     public PhpModuleIgnoredFilesExtender getIgnoredFilesExtender(PhpModule pm) {
-        // TODO hide doc directory
-        return null;
+        return new FuelPhpIgnoredFilesExtender(pm);
     }
 
     @Override
