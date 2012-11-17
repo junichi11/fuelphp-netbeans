@@ -41,71 +41,52 @@
  */
 package org.netbeans.modules.php.fuel.util;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
-import org.junit.Test;
-import org.netbeans.junit.NbTestCase;
 
 /**
  *
  * @author junichi11
  */
-public class FuelZipFilterTest extends NbTestCase {
+public class FuelZipEntryFilter implements ZipEntryFilter {
 
-    public FuelZipFilterTest(String name) {
-        super(name);
+    private Set<String> topDirectories = new HashSet<String>();
+
+    public FuelZipEntryFilter() {
+        topDirectories.add("docs"); // NOI18N
+        topDirectories.add("fuel"); // NOI18N
+        topDirectories.add("public"); // NOI18N
     }
 
-    /**
-     * Test of accept method, of class FuelZipFilter.
-     */
-    @Test
-    public void testAccept() {
-        FuelZipFilter filter = new FuelZipFilter();
-        ZipEntry entry = null;
-        entry = new ZipEntry("docs/correct.php");
-        assertTrue(filter.accept(entry));
-        entry = new ZipEntry("correct.md");
-        assertTrue(filter.accept(entry));
-        entry = new ZipEntry("sample/fuel/correct.php");
-        assertTrue(filter.accept(entry));
-        entry = new ZipEntry("sample/public/");
-        assertTrue(filter.accept(entry));
-        entry = new ZipEntry("fuel1.3");
-        assertTrue(filter.accept(entry));
+    @Override
+    public boolean accept(ZipEntry entry) {
+        String name = entry.getName();
+        String[] splitPath = splitPath(name);
+        int length = splitPath.length;
 
-        entry = new ZipEntry("fuel1.3/");
-        assertFalse(filter.accept(entry));
+        if (length == 1 && entry.isDirectory()) {
+            return false;
+        }
+
+        return true;
     }
 
-    /**
-     * Test of getPath method, of class FuelZipFilter.
-     */
-    @Test
-    public void testGetPath() {
-        FuelZipFilter filter = new FuelZipFilter();
-        ZipEntry entry = null;
-        entry = new ZipEntry("docs/correct.php");
-        assertEquals("docs/correct.php", filter.getPath(entry));
+    @Override
+    public String getPath(ZipEntry entry) {
+        String name = entry.getName();
+        String[] splits = splitPath(name);
+        String topDirectory = splits[0];
+        int length = splits.length;
+        if (!topDirectories.contains(topDirectory)) {
+            if (length != 1) {
+                name = name.replaceFirst(topDirectory + "/", ""); // NOI18N
+            }
+        }
+        return name;
+    }
 
-        entry = new ZipEntry("fuel1.3/docs/correct.php");
-        assertEquals("docs/correct.php", filter.getPath(entry));
-
-        entry = new ZipEntry("fuel/correct.php");
-        assertEquals("fuel/correct.php", filter.getPath(entry));
-
-        entry = new ZipEntry("fuel1.3/fuel/correct.php");
-        assertEquals("fuel/correct.php", filter.getPath(entry));
-
-        entry = new ZipEntry("public/correct.php");
-        assertEquals("public/correct.php", filter.getPath(entry));
-
-        entry = new ZipEntry("fuel1.3/public/correct.php");
-        assertEquals("public/correct.php", filter.getPath(entry));
-
-        entry = new ZipEntry("correct.php");
-        assertEquals("correct.php", filter.getPath(entry));
-
-        entry = new ZipEntry("fuelphp1.4/correct.php");
-        assertEquals("correct.php", filter.getPath(entry));
+    private String[] splitPath(String path) {
+        return path.split("/"); // NOI18N
     }
 }

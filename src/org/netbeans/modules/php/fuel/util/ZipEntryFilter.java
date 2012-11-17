@@ -47,7 +47,7 @@ import java.util.zip.ZipEntry;
  *
  * @author junichi11
  */
-public interface ZipFilter {
+public interface ZipEntryFilter {
 
     public boolean accept(ZipEntry entry);
 

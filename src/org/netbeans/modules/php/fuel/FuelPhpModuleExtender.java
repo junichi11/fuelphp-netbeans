@@ -51,7 +51,7 @@ import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
-import org.netbeans.modules.php.fuel.util.FuelZipFilter;
+import org.netbeans.modules.php.fuel.util.FuelZipEntryFilter;
 import org.netbeans.modules.php.fuel.util.GithubUrlZipper;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
 import org.openide.filesystems.FileObject;
@@ -121,7 +121,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
 
             Map<String, String> downloadsMap = getPanel().getDownloadsMap();
             String url = downloadsMap.get(getPanel().getVersionList().getSelectedValue().toString());
-            GithubUrlZipper zipper = new GithubUrlZipper(url, localPath, new FuelZipFilter());
+            GithubUrlZipper zipper = new GithubUrlZipper(url, localPath, new FuelZipEntryFilter());
             try {
                 zipper.unzip();
             } catch (MalformedURLException ex) {

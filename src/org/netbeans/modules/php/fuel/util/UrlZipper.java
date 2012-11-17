@@ -61,17 +61,16 @@ public class UrlZipper {
     protected String url;
     protected String unzipRootDirName;
     protected FileObject baseDir;
-    protected ZipFilter filter;
+    protected ZipEntryFilter filter;
 
-
-    public UrlZipper(String url, FileObject baseDir, ZipFilter filter, String unziipRootDirName) {
+    public UrlZipper(String url, FileObject baseDir, ZipEntryFilter filter, String unziipRootDirName) {
         this.url = url;
         this.baseDir = baseDir;
         this.unzipRootDirName = unziipRootDirName;
         this.filter = filter;
     }
 
-    public UrlZipper(String url, FileObject baseDir, ZipFilter filter){
+    public UrlZipper(String url, FileObject baseDir, ZipEntryFilter filter) {
         this.url = url;
         this.baseDir = baseDir;
         this.unzipRootDirName = ""; // NOI18N
@@ -94,7 +93,7 @@ public class UrlZipper {
         ZipEntry zipEntry = null;
 
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-            if(!filter.accept(zipEntry)){
+            if (!filter.accept(zipEntry)) {
                 continue;
             }
             // change from zipRootDirName to unzipRootDirName
@@ -109,7 +108,7 @@ public class UrlZipper {
                 continue;
             } else {
                 File parentFile = unzipFile.getParentFile();
-                if(!parentFile.exists()){
+                if (!parentFile.exists()) {
                     parentFile.mkdirs();
                 }
             }

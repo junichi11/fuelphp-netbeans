@@ -56,11 +56,11 @@ public class GithubUrlZipper extends UrlZipper {
     public static final String HTTPS_GITHUB_COM = "https://github.com";
     public static final String HTTP_CLOUD_GITHUB_COM = "http://cloud.github.com";
 
-    public GithubUrlZipper(String url, FileObject baseDir, ZipFilter filter) {
+    public GithubUrlZipper(String url, FileObject baseDir, ZipEntryFilter filter) {
         super(url, baseDir, filter);
     }
 
-    public GithubUrlZipper(String url, FileObject baseDir, ZipFilter filter, String unziipRootDirName) {
+    public GithubUrlZipper(String url, FileObject baseDir, ZipEntryFilter filter, String unziipRootDirName) {
         super(url, baseDir, filter, unziipRootDirName);
     }
 
