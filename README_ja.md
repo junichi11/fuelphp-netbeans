@@ -19,7 +19,10 @@
 
 プロジェクトメニュー > FuelPHP > 自動補完用のファイルの作成 から自動補完用のファイルを作成します。
 nbprojectフォルダに追加されます。
-c.f. https://gist.github.com/2364280 (kenjis)
+
+c.f.
+- https://gist.github.com/2364280 (kenjis)
+- https://gist.github.com/4094832 (wate)
 
 新規プロジェクトからプロジェクトを作成した場合、自動的に追加します。
 

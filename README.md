@@ -1,4 +1,4 @@
-#About 
+#About
 
 This NetBeans plugin provides support for FuelPHP Framework.
 
@@ -18,7 +18,10 @@ This NetBeans plugin provides support for FuelPHP Framework.
 
 Create a new file for auto completion from Project Menu > FuelPHP > create auto completion file
 It's added to nbproject directory.
-c.f. https://gist.github.com/2364280 (kenjis)
+
+c.f.
+- https://gist.github.com/2364280 (kenjis)
+- https://gist.github.com/4094832 (wate)
 
 If create a project from new project, add it automatically.
 
