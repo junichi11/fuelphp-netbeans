@@ -54,6 +54,7 @@ import org.netbeans.modules.php.spi.phpmodule.PhpModuleActionsExtender;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleIgnoredFilesExtender;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
@@ -96,6 +97,25 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     @Override
     public File[] getConfigurationFiles(PhpModule pm) {
         List<File> files = new LinkedList<File>();
+        FileObject sourceDirectory = pm.getSourceDirectory();
+        FileObject config = null;
+        if (sourceDirectory != null) {
+            config = sourceDirectory.getFileObject("fuel/app/config"); // NOI18N
+        }
+        if (config != null) {
+            FileObject[] children = config.getChildren();
+            for (FileObject child : children) {
+                if (!child.isFolder()) {
+                    files.add(FileUtil.toFile(child));
+                } else {
+                    for (FileObject c : child.getChildren()) {
+                        if (!c.isFolder()) {
+                            files.add(FileUtil.toFile(c));
+                        }
+                    }
+                }
+            }
+        }
 
         return files.toArray(new File[files.size()]);
     }
@@ -107,7 +127,19 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
     @Override
     public PhpModuleProperties getPhpModuleProperties(PhpModule pm) {
-        return new PhpModuleProperties();
+        PhpModuleProperties properties = new PhpModuleProperties();
+        FileObject sourceDirectory = pm.getSourceDirectory();
+        // webroot directory
+        FileObject webroot = sourceDirectory.getFileObject("public");
+        if (webroot != null) {
+            properties = properties.setWebRoot(webroot);
+        }
+        // test directory
+        FileObject testDirectory = sourceDirectory.getFileObject("fuel/app/tests"); // NOI18N
+        if (testDirectory != null) {
+            properties = properties.setTests(testDirectory);
+        }
+        return properties;
     }
 
     @Override
@@ -117,6 +149,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
     @Override
     public PhpModuleIgnoredFilesExtender getIgnoredFilesExtender(PhpModule pm) {
+        // TODO hide doc directory
         return null;
     }
 
