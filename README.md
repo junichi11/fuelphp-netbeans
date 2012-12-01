@@ -8,6 +8,7 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - create a new FuelPHP Project from New Project Option(Done)
 - create a file for auto completion(Done)
 - Action : go to view , go to action (Done)
+- Support for custom fuel directory name
 
 ## Install
 
@@ -38,6 +39,13 @@ If create a project from new project, add it automatically.
 - Right-click in the view or view model file.
 - Navigate
 - Go to action
+
+### Custom fuel directory name
+
+If you use "myfuel" name instead of "fuel" directory name, please set as the following.
+
+1. Project properties > Framework > FuelPHP
+2. fuel name : your fuel directoy name (e.g. myfuel)
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)
