@@ -51,6 +51,7 @@ import org.json.JSONException;
 import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -66,9 +67,9 @@ public final class FuelUtils {
     private static final String CONTROLLER_PREFIX = "Controller_"; // NOI18N
     private static final int DEFAULT_OFFSET = 0;
     private static final String EXT_PHP = "php"; // NOI18N
-    private static final String FUEL_APP_CLASSES_CONTROLLER_DIR = "fuel/app/classes/controller"; // NOI18N
-    private static final String FUEL_APP_CLASSES_VIEW_DIR = "fuel/app/classes/view";
-    private static final String FUEL_APP_VIEWS_DIR = "fuel/app/views"; // NOI18N
+    private static final String FUEL_APP_CLASSES_CONTROLLER_DIR = "%s/app/classes/controller"; // NOI18N
+    private static final String FUEL_APP_CLASSES_VIEW_DIR = "%s/app/classes/view";
+    private static final String FUEL_APP_VIEWS_DIR = "%s/app/views"; // NOI18N
     private static final String FUEL_AUTOCOMPLETION_PHP = "org-netbeans-modules-php-fuel/fuel_autocompletion.php"; // NOI18N
     private static final String NBPROJECT_DIR_NAME = "nbproject"; // NOI18N
     private static final String UTF8 = "UTF-8"; // NOI18N
@@ -186,7 +187,8 @@ public final class FuelUtils {
         if (pm == null) {
             return null;
         }
-        return pm.getSourceDirectory().getFileObject(FUEL_APP_VIEWS_DIR);
+        String viewsPath = String.format(FUEL_APP_VIEWS_DIR, FuelPhpPreferences.getFuelName(pm));
+        return pm.getSourceDirectory().getFileObject(viewsPath);
     }
 
     /**
@@ -200,7 +202,8 @@ public final class FuelUtils {
         if (pm == null) {
             return null;
         }
-        return pm.getSourceDirectory().getFileObject(FUEL_APP_CLASSES_CONTROLLER_DIR);
+        String controllerPath = String.format(FUEL_APP_CLASSES_CONTROLLER_DIR, FuelPhpPreferences.getFuelName(pm));
+        return pm.getSourceDirectory().getFileObject(controllerPath);
     }
 
     /**
@@ -214,7 +217,8 @@ public final class FuelUtils {
         if (pm == null) {
             return null;
         }
-        return pm.getSourceDirectory().getFileObject(FUEL_APP_CLASSES_VIEW_DIR);
+        String viewPath = String.format(FUEL_APP_CLASSES_VIEW_DIR, FuelPhpPreferences.getFuelName(pm));
+        return pm.getSourceDirectory().getFileObject(viewPath);
     }
 
     /**
