@@ -42,18 +42,25 @@
 package org.netbeans.modules.php.fuel;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.netbeans.modules.php.api.phpmodule.BadgeIcon;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
+import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.spi.commands.FrameworkCommandSupport;
 import org.netbeans.modules.php.spi.editor.EditorExtender;
 import org.netbeans.modules.php.spi.phpmodule.PhpFrameworkProvider;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleActionsExtender;
+import org.netbeans.modules.php.spi.phpmodule.PhpModuleCustomizerExtender;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleIgnoredFilesExtender;
+import org.openide.filesystems.FileChangeAdapter;
+import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
@@ -67,6 +74,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     private static final FuelPhpFrameworkProvider INSTANCE = new FuelPhpFrameworkProvider();
     private static final String ICON_PATH = "org/netbeans/modules/php/fuel/resources/fuel_badge_8.png"; // NOI18N
     private final BadgeIcon badgeIcon;
+    private Map<PhpModule, FileObject> fuelDirectory = new HashMap<PhpModule, FileObject>();
 
     @PhpFrameworkProvider.Registration(position = 700)
     public static FuelPhpFrameworkProvider getInstance() {
@@ -87,10 +95,36 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
     @Override
     public boolean isInPhpModule(PhpModule pm) {
-        FileObject oil = pm.getSourceDirectory().getFileObject("oil"); // NOI18N
-        if (oil != null) {
+        FileObject sourceDirectory = pm.getSourceDirectory();
+        FileObject oil = sourceDirectory.getFileObject("oil"); // NOI18N
+        if (oil == null) {
+            return false;
+        }
+        FileObject fuel = fuelDirectory.get(pm);
+        if (fuel != null) {
             return true;
         }
+        // add file change listener
+        String fuelName = FuelPhpPreferences.getFuelName(pm);
+        fuel = sourceDirectory.getFileObject(fuelName);
+        if (fuel != null) {
+            fuel.addFileChangeListener(new FileChangeAdapter() {
+
+                @Override
+                public void fileRenamed(FileRenameEvent fe) {
+                    FileObject file = fe.getFile();
+                    String newFuelName = file.getName();
+                    PhpModule phpModule = PhpModule.forFileObject(file);
+                    String fuelName = FuelPhpPreferences.getFuelName(phpModule);
+                    if (newFuelName != null && !newFuelName.equals(fuelName)) {
+                        FuelPhpPreferences.setFuelName(phpModule, newFuelName);
+                    }
+                }
+            });
+            fuelDirectory.put(pm, fuel);
+            return true;
+        }
+
         return false;
     }
 
@@ -100,7 +134,8 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
         FileObject sourceDirectory = pm.getSourceDirectory();
         FileObject config = null;
         if (sourceDirectory != null) {
-            config = sourceDirectory.getFileObject("fuel/app/config"); // NOI18N
+            String configPath = FuelPhpPreferences.getFuelName(pm) + "/app/config"; // NOI18N
+            config = sourceDirectory.getFileObject(configPath);
         }
         if (config != null) {
             FileObject[] children = config.getChildren();
@@ -135,6 +170,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
             properties = properties.setWebRoot(webroot);
         }
         // test directory
+        // Since this method is only called when create new project, fuel name is fixed.
         FileObject testDirectory = sourceDirectory.getFileObject("fuel/app/tests"); // NOI18N
         if (testDirectory != null) {
             properties = properties.setTests(testDirectory);
@@ -160,5 +196,10 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     @Override
     public EditorExtender getEditorExtender(PhpModule pm) {
         return null;
+    }
+
+    @Override
+    public PhpModuleCustomizerExtender createPhpModuleCustomizerExtender(PhpModule phpModule) {
+        return new FuelPhpModuleCustomizerExtender(phpModule);
     }
 }
