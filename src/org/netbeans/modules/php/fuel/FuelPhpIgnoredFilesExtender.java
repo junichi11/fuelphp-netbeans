@@ -46,7 +46,6 @@ import java.util.Collections;
 import java.util.Set;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleIgnoredFilesExtender;
-import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -58,14 +57,8 @@ public class FuelPhpIgnoredFilesExtender extends PhpModuleIgnoredFilesExtender {
     private File docs;
 
     public FuelPhpIgnoredFilesExtender(PhpModule pm) {
-        FileObject sourceDirectory = pm.getSourceDirectory();
-        FileObject docDirectory = null;
-        if (sourceDirectory != null) {
-            docDirectory = sourceDirectory.getFileObject("docs"); // NOI18N
-        }
-        if (docDirectory != null) {
-            docs = FileUtil.toFile(docDirectory);
-        }
+	assert pm != null;
+	docs = new File(FileUtil.toFile(pm.getProjectDirectory()), "docs");
     }
 
     @Override
