@@ -43,8 +43,10 @@ package org.netbeans.modules.php.fuel.ui.actions;
 
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.FuelPhpFrameworkProvider;
+import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.spi.actions.BaseAction;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 public final class CreateAutoCompletionFileAction extends BaseAction {
@@ -75,6 +77,11 @@ public final class CreateAutoCompletionFileAction extends BaseAction {
             // noting
             return;
         }
-        FuelUtils.getAutoCompletionFile(pm.getProjectDirectory());
+        boolean useTestCaseMethod = FuelPhpPreferences.useTestCaseMethod(pm);
+        try {
+            FuelUtils.createAutoCompletionFile(pm, useTestCaseMethod);
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 }

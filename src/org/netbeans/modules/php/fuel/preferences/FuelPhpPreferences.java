@@ -51,6 +51,7 @@ import org.netbeans.modules.php.api.phpmodule.PhpModule;
 public class FuelPhpPreferences {
 
     private static final String FUEL_NAME = "fuel-name"; // NOI18N
+    private static final String USE_TEST_CASE = "use-test-case"; // NOI18N
     private static final String DEFAULT_FUEL_NAME = "fuel"; // NOI18N
 
     public static String getFuelName(PhpModule phpModule) {
@@ -63,6 +64,14 @@ public class FuelPhpPreferences {
 
     public static void setFuelName(PhpModule phpModule, String fuelName) {
         getPreferences(phpModule).put(FUEL_NAME, fuelName);
+    }
+
+    public static boolean useTestCaseMethod(PhpModule phpModule) {
+        return getPreferences(phpModule).getBoolean(USE_TEST_CASE, false);
+    }
+
+    public static void setUseTestCaseMethod(PhpModule phpModule, boolean use) {
+        getPreferences(phpModule).putBoolean(USE_TEST_CASE, use);
     }
 
     private static Preferences getPreferences(PhpModule phpModule) {

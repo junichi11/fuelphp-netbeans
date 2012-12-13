@@ -62,10 +62,12 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
     private FuelPhpCustomizerPanel panel;
     private PhpModule phpModule;
     private String fuelName;
+    private boolean useTestCaseMethod;
 
     public FuelPhpModuleCustomizerExtender(PhpModule phpModule) {
         this.phpModule = phpModule;
         fuelName = FuelPhpPreferences.getFuelName(phpModule);
+        useTestCaseMethod = FuelPhpPreferences.useTestCaseMethod(phpModule);
     }
 
     @Override
@@ -103,6 +105,11 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
 
     @Override
     public EnumSet<Change> save(PhpModule phpModule) {
+        boolean tempUseTestCaseMethod = panel.useTestCaseMethod();
+        if(useTestCaseMethod != tempUseTestCaseMethod){
+            FuelPhpPreferences.setUseTestCaseMethod(phpModule, tempUseTestCaseMethod);
+        }
+
         String newFuelName = panel.getFuelNameTextField().getText();
         if(!newFuelName.equals("") && !newFuelName.equals(fuelName)){
             FuelPhpPreferences.setFuelName(phpModule, newFuelName);
@@ -116,6 +123,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
         if(panel == null){
             panel = new FuelPhpCustomizerPanel();
             panel.setFuelNameTextField(fuelName);
+            panel.setUseTestCaseMethod(useTestCaseMethod);
         }
         return panel;
     }

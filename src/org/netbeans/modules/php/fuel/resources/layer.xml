@@ -10,5 +10,6 @@
 	</folder>
 	<folder name="org-netbeans-modules-php-fuel">
 		<file name="fuel_autocompletion.php" url="fuel_autocompletion.php"/>
+		<file name="fuel_autocompletion_testcase.txt" url="fuel_autocompletion_testcase.txt"/>
 	</folder>
 </filesystem>

@@ -46,6 +46,8 @@ import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
@@ -80,6 +82,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
     private static final String REMOTE_COMMAND = "remote";
     private static final String WORK_TREE = "--work-tree=";
     private NewProjectConfigurationPanel panel = null;
+    private static final Logger LOGGER = Logger.getLogger(FuelPhpModuleExtender.class.getName());
 
     @Override
     public void addChangeListener(ChangeListener cl) {
@@ -177,9 +180,12 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
         if (config != null) {
             files.add(config);
         }
-
-        // add a file to nbproject directory for auto completion
-        FuelUtils.getAutoCompletionFile(pm.getProjectDirectory());
+        try {
+            // add a file to nbproject directory for auto completion
+            FuelUtils.createAutoCompletionFile(pm, true);
+        } catch (Exception ex) {
+            LOGGER.log(Level.WARNING, "Can't create a file for auto completion", ex);
+        }
 
         return files;
     }

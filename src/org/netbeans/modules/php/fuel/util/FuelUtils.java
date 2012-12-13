@@ -44,17 +44,27 @@ package org.netbeans.modules.php.fuel.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
 /**
@@ -71,8 +81,17 @@ public final class FuelUtils {
     private static final String FUEL_APP_CLASSES_VIEW_DIR = "%s/app/classes/view";
     private static final String FUEL_APP_VIEWS_DIR = "%s/app/views"; // NOI18N
     private static final String FUEL_AUTOCOMPLETION_PHP = "org-netbeans-modules-php-fuel/fuel_autocompletion.php"; // NOI18N
+    private static final String FUEL_AUTOCOMPLETION_TESTCASE_TXT = "org-netbeans-modules-php-fuel/fuel_autocompletion_testcase.txt"; // NOI18N
     private static final String NBPROJECT_DIR_NAME = "nbproject"; // NOI18N
     private static final String UTF8 = "UTF-8"; // NOI18N
+    private static final String CLASS_REGEX = "^(class |abstract class )((.+) extends .+|(.+) implements .+|(.+))$";
+    private static final String FUEL_AUTOCOMPLETION = "fuel_autocompletion";
+    private static final String PHP_EXT = "php";
+    private static final String FUEL_AUTOCOMPLETION_WITH_EXT = FUEL_AUTOCOMPLETION + "." + PHP_EXT;
+    private static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png";
+    private static final String SUCCESS_MSG = "Complete success : " + NBPROJECT_DIR_NAME + "/" + FUEL_AUTOCOMPLETION_WITH_EXT;
+    private static final String NOTIFY_TITLE = "Create auto completion file";
+    private static final String FAIL_MSG = "Fail : Not Found fuel/core";
 
     public static JSONArray getJsonArray(URL url) throws IOException {
         try {
@@ -110,6 +129,115 @@ public final class FuelUtils {
                 Exceptions.printStackTrace(ex);
             }
         }
+    }
+
+    public static void createAutoCompletionFile(PhpModule phpModule, boolean useTestCaseMethod) throws Exception {
+        FileObject coreDirectory = getCoreDirectory(phpModule);
+        FileObject nbprojectDirectory = phpModule.getProjectDirectory().getFileObject(NBPROJECT_DIR_NAME);
+        if (nbprojectDirectory == null) {
+            // notification
+            NotificationDisplayer.getDefault().notify(NOTIFY_TITLE, ImageUtilities.loadImageIcon(FUEL_ICON_16, true), "Fail", null);
+            return;
+        }
+        FileObject completionFile = nbprojectDirectory.getFileObject(FUEL_AUTOCOMPLETION_WITH_EXT);
+        if (completionFile == null) {
+            completionFile = nbprojectDirectory.createData(FUEL_AUTOCOMPLETION, PHP_EXT);
+        }
+        if (coreDirectory != null) {
+            FileObject classesDirectory = coreDirectory.getFileObject("classes"); // NOI18N
+            FileObject[] children = classesDirectory.getChildren();
+            Arrays.sort(children, new FileObjectComparator());
+
+            PrintWriter printWriter = new PrintWriter(completionFile.getOutputStream());
+            printWriter.println("<?php"); // NOI18N
+            try {
+                writeAutoCompletionFile(printWriter, children, useTestCaseMethod);
+            } finally {
+                printWriter.close();
+            }
+        } else {
+            NotificationDisplayer.getDefault().notify(NOTIFY_TITLE, ImageUtilities.loadImageIcon(FUEL_ICON_16, true), FAIL_MSG, null);
+            return;
+        }
+        NotificationDisplayer.getDefault().notify(NOTIFY_TITLE, ImageUtilities.loadImageIcon(FUEL_ICON_16, true), SUCCESS_MSG, null);
+    }
+
+    /**
+     * Write auto completion file
+     *
+     * @param printWriter
+     * @param inputDirectories
+     * @throws IOException
+     */
+    private static void writeAutoCompletionFile(PrintWriter printWriter, FileObject[] inputDirectories, boolean useTestMethod) throws IOException {
+        if (inputDirectories == null) {
+            return;
+        }
+        for (FileObject input : inputDirectories) {
+            if (input.isFolder()) {
+                FileObject[] children = input.getChildren();
+                Arrays.sort(children, new FileObjectComparator());
+                writeAutoCompletionFile(printWriter, input.getChildren(), useTestMethod);
+            } else {
+                List<String> lines = input.asLines();
+                for (String line : lines) {
+                    if (line.startsWith("interface")) { // NOI18N
+                        break;
+                    }
+                    String writeString = "";
+                    Pattern pattern = Pattern.compile(CLASS_REGEX);
+                    Matcher matcher = pattern.matcher(line);
+                    if (matcher.find()) {
+                        String className = "";
+                        for (int i = 0; i < 3; i++) {
+                            String match = matcher.group(3 + i);
+                            if (match != null && !match.isEmpty()) {
+                                className = matcher.group(3 + i);
+                            }
+                        }
+                        writeString = matcher.group(1) + className + " extends Fuel\\Core\\" + className + " {}";
+                        if (useTestMethod && writeString.contains("TestCase")) { // NOI18N
+                            writeTestCaseMethod(printWriter);
+                        }
+                        printWriter.println(writeString);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Write TestCase method. This is option.
+     *
+     * @param printWriter
+     */
+    private static void writeTestCaseMethod(PrintWriter printWriter) throws IOException {
+        FileObject testCaseCompletionFile = FileUtil.getConfigFile(FUEL_AUTOCOMPLETION_TESTCASE_TXT);
+        for (String line : testCaseCompletionFile.asLines()) {
+            printWriter.println(line);
+        }
+    }
+
+    /**
+     * Get fuel directory
+     *
+     * @param phpModule
+     * @return
+     */
+    public static FileObject getFuelDirectory(PhpModule phpModule) {
+        String fuelName = FuelPhpPreferences.getFuelName(phpModule);
+        return phpModule.getSourceDirectory().getFileObject(fuelName);
+    }
+
+    /**
+     * get fuel core directory
+     *
+     * @param phpModule
+     * @return
+     */
+    public static FileObject getCoreDirectory(PhpModule phpModule) {
+        String fuelName = FuelPhpPreferences.getFuelName(phpModule);
+        return phpModule.getSourceDirectory().getFileObject(fuelName + "/core"); // NOI18N
     }
 
     /**
@@ -287,5 +415,34 @@ public final class FuelUtils {
             return null;
         }
         return ACTION_PREFIX + view.getName();
+    }
+
+    private static class FileObjectComparator implements Comparator<FileObject> {
+
+        @Override
+        public int compare(FileObject o1, FileObject o2) {
+            if (o1.isFolder() && o2.isData()) {
+                return -1;
+            }
+            if (o1.isData() && o2.isFolder()) {
+                return 1;
+            }
+            if ((o1.isFolder() && o2.isFolder())
+                    || (o1.isData() && o2.isData())) {
+                List<String> list = new ArrayList<String>();
+                String name1 = o1.getName();
+                String name2 = o2.getName();
+
+                list.add(name1);
+                list.add(name2);
+                Collections.sort(list);
+                if (name1.equals(list.get(0))) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+            return 0;
+        }
     }
 }

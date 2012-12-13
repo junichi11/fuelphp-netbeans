@@ -41,6 +41,7 @@
  */
 package org.netbeans.modules.php.fuel.ui;
 
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -66,6 +67,14 @@ public class FuelPhpCustomizerPanel extends JPanel {
         fuelNameTextField.setText(fuelName);
     }
 
+    public boolean useTestCaseMethod() {
+        return useTestCaseMethodCheckBox.isSelected();
+    }
+
+    public void setUseTestCaseMethod(boolean use) {
+        this.useTestCaseMethodCheckBox.setSelected(use);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -77,11 +86,14 @@ public class FuelPhpCustomizerPanel extends JPanel {
 
         fuelNameLabel = new javax.swing.JLabel();
         fuelNameTextField = new javax.swing.JTextField();
+        useTestCaseMethodCheckBox = new javax.swing.JCheckBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(fuelNameLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.fuelNameLabel.text")); // NOI18N
 
         fuelNameTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.fuelNameTextField.text")); // NOI18N
         fuelNameTextField.setToolTipText(org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.fuelNameTextField.toolTipText")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(useTestCaseMethodCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.useTestCaseMethodCheckBox.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -89,10 +101,13 @@ public class FuelPhpCustomizerPanel extends JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fuelNameLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fuelNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(106, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(fuelNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fuelNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(useTestCaseMethodCheckBox))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -101,11 +116,14 @@ public class FuelPhpCustomizerPanel extends JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fuelNameLabel)
                     .addComponent(fuelNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(260, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(useTestCaseMethodCheckBox)
+                .addContainerGap(230, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel fuelNameLabel;
     private javax.swing.JTextField fuelNameTextField;
+    private javax.swing.JCheckBox useTestCaseMethodCheckBox;
     // End of variables declaration//GEN-END:variables
 }
