@@ -9,6 +9,7 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - create a file for auto completion(Done)
 - Action : go to view , go to action (Done)
 - Support for custom fuel directory name
+- Support for view path code completion
 
 ## Install
 
@@ -46,6 +47,18 @@ If you use "myfuel" name instead of "fuel" directory name, please set as the fol
 
 1. Project properties > Framework > FuelPHP
 2. fuel name : your fuel directoy name (e.g. myfuel)
+
+## View path code completion
+Plugin provides support for view path code completion.
+e.g.
+
+```php
+View::forge('[Ctrl+Space]');
+View::forge('welcome/[Ctrl+Space]');
+ViewModel::forge('[Ctrl+Space]');
+// popup directory and file names
+```
+If you push enter key at the directory name, please, run [Ctrl+Space] again. And directory childrenis displayed on popup list.
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)
