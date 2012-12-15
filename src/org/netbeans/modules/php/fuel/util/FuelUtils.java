@@ -59,6 +59,7 @@ import org.json.JSONException;
 import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.fuel.FuelPhpFrameworkProvider;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.filesystems.FileObject;
@@ -312,11 +313,21 @@ public final class FuelUtils {
      */
     public static FileObject getViewsDirectory(FileObject fo) {
         PhpModule pm = PhpModule.forFileObject(fo);
-        if (pm == null) {
+        return getViewsDirectory(pm);
+    }
+
+    /**
+     * Get views directory (fuel/app/views)
+     *
+     * @param phpModule PhpModule
+     * @return views directory FileObject
+     */
+    public static FileObject getViewsDirectory(PhpModule phpModule) {
+        if (phpModule == null) {
             return null;
         }
-        String viewsPath = String.format(FUEL_APP_VIEWS_DIR, FuelPhpPreferences.getFuelName(pm));
-        return pm.getSourceDirectory().getFileObject(viewsPath);
+        String viewsPath = String.format(FUEL_APP_VIEWS_DIR, FuelPhpPreferences.getFuelName(phpModule));
+        return phpModule.getSourceDirectory().getFileObject(viewsPath);
     }
 
     /**
@@ -335,18 +346,28 @@ public final class FuelUtils {
     }
 
     /**
-     * Get controller directory (fuel/app/classes/controller)
+     * Get controller directory (fuel/app/classes/view)
      *
      * @param fo FileObject
-     * @return controller directory FileObject
+     * @return view model directory FileObject
      */
     public static FileObject getViewModelDirectory(FileObject fo) {
         PhpModule pm = PhpModule.forFileObject(fo);
-        if (pm == null) {
+        return getViewModelDirectory(pm);
+    }
+
+    /**
+     * Get controller directory (fuel/app/classes/view)
+     *
+     * @param phpMoudle PhpModule
+     * @return view model directory FileObject
+     */
+    public static FileObject getViewModelDirectory(PhpModule phpModule) {
+        if (phpModule == null) {
             return null;
         }
-        String viewPath = String.format(FUEL_APP_CLASSES_VIEW_DIR, FuelPhpPreferences.getFuelName(pm));
-        return pm.getSourceDirectory().getFileObject(viewPath);
+        String viewPath = String.format(FUEL_APP_CLASSES_VIEW_DIR, FuelPhpPreferences.getFuelName(phpModule));
+        return phpModule.getSourceDirectory().getFileObject(viewPath);
     }
 
     /**
@@ -415,6 +436,16 @@ public final class FuelUtils {
             return null;
         }
         return ACTION_PREFIX + view.getName();
+    }
+
+    /**
+     * Check whether FuelPHP
+     *
+     * @param phpMoudle
+     * @return true if in fuelphp module, otherwise false.
+     */
+    public static boolean isFuelPHP(PhpModule phpMoudle) {
+        return FuelPhpFrameworkProvider.getInstance().isInPhpModule(phpMoudle);
     }
 
     private static class FileObjectComparator implements Comparator<FileObject> {
