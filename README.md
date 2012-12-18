@@ -10,6 +10,7 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - Action : go to view , go to action (Done)
 - Support for custom fuel directory name
 - Support for view path code completion
+- MVC Node
 
 ## Install
 
@@ -41,7 +42,7 @@ If create a project from new project, add it automatically.
 - Navigate
 - Go to action
 
-### Custom fuel directory name
+## Custom fuel directory name
 
 If you use "myfuel" name instead of "fuel" directory name, please set as the following.
 
@@ -59,6 +60,26 @@ ViewModel::forge('[Ctrl+Space]');
 // popup directory and file names
 ```
 If you push enter key at the directory name, please, run [Ctrl+Space] again. And directory childrenis displayed on popup list.
+
+## MVC Node
+Create MVC(model, views, controller) nodes on the project pane.
+```
+myproject
+├─controller (fuel/app/classes/controller)
+├─model (fuel/app/classes/model)
+├─views (fuel/app/views)
+├─source files
+├─test files
+├─important files
+├─include path
+```
+
+If you would like to hide the MVC directories in the source files,
+please move to `Project properties > Framework > FuelPHP` and check "ignore..."
+
+If you check "ignore...",
+active position isn't moved to the source files node when you create a new file at the MVC nodes.
+Otherwise go to there.
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)

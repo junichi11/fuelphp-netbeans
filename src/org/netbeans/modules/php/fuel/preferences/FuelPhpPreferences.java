@@ -52,6 +52,7 @@ public class FuelPhpPreferences {
 
     private static final String FUEL_NAME = "fuel-name"; // NOI18N
     private static final String USE_TEST_CASE = "use-test-case"; // NOI18N
+    private static final String IGNORE_MVC_NODE = "ignore-mvc-node"; // NOI18N
     private static final String DEFAULT_FUEL_NAME = "fuel"; // NOI18N
 
     public static String getFuelName(PhpModule phpModule) {
@@ -72,6 +73,14 @@ public class FuelPhpPreferences {
 
     public static void setUseTestCaseMethod(PhpModule phpModule, boolean use) {
         getPreferences(phpModule).putBoolean(USE_TEST_CASE, use);
+    }
+
+    public static boolean ignoreMVCNode(PhpModule phpModule) {
+        return getPreferences(phpModule).getBoolean(IGNORE_MVC_NODE, true);
+    }
+
+    public static void setIgnoreMVCNode(PhpModule phpModule, boolean ignore) {
+        getPreferences(phpModule).putBoolean(IGNORE_MVC_NODE, ignore);
     }
 
     private static Preferences getPreferences(PhpModule phpModule) {

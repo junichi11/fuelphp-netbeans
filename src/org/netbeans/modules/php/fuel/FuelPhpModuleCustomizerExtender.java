@@ -1,6 +1,5 @@
 package org.netbeans.modules.php.fuel;
 
-
 import java.util.EnumSet;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
@@ -63,11 +62,13 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
     private PhpModule phpModule;
     private String fuelName;
     private boolean useTestCaseMethod;
+    private boolean ignoreMVCNode;
 
     public FuelPhpModuleCustomizerExtender(PhpModule phpModule) {
         this.phpModule = phpModule;
         fuelName = FuelPhpPreferences.getFuelName(phpModule);
         useTestCaseMethod = FuelPhpPreferences.useTestCaseMethod(phpModule);
+        ignoreMVCNode = FuelPhpPreferences.ignoreMVCNode(phpModule);
     }
 
     @Override
@@ -100,30 +101,38 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
 
     @Override
     public String getErrorMessage() {
-        return "";
+        return null;
     }
 
     @Override
     public EnumSet<Change> save(PhpModule phpModule) {
+        EnumSet<Change> enumSet = null;
         boolean tempUseTestCaseMethod = panel.useTestCaseMethod();
-        if(useTestCaseMethod != tempUseTestCaseMethod){
+        if (useTestCaseMethod != tempUseTestCaseMethod) {
             FuelPhpPreferences.setUseTestCaseMethod(phpModule, tempUseTestCaseMethod);
         }
 
+        boolean tmpIgnoreMVCNode = panel.ignoreMVCNode();
+        if (ignoreMVCNode != tmpIgnoreMVCNode) {
+            FuelPhpPreferences.setIgnoreMVCNode(phpModule, tmpIgnoreMVCNode);
+            enumSet = EnumSet.of(Change.IGNORED_FILES_CHANGE);
+        }
+
         String newFuelName = panel.getFuelNameTextField().getText();
-        if(!newFuelName.equals("") && !newFuelName.equals(fuelName)){
+        if (!newFuelName.equals("") && !newFuelName.equals(fuelName)) {
             FuelPhpPreferences.setFuelName(phpModule, newFuelName);
             return EnumSet.of(Change.FRAMEWORK_CHANGE);
         }
 
-        return null;
+        return enumSet;
     }
 
     private FuelPhpCustomizerPanel getPanel() {
-        if(panel == null){
+        if (panel == null) {
             panel = new FuelPhpCustomizerPanel();
             panel.setFuelNameTextField(fuelName);
             panel.setUseTestCaseMethod(useTestCaseMethod);
+            panel.setIgnoreMVCNode(ignoreMVCNode);
         }
         return panel;
     }
