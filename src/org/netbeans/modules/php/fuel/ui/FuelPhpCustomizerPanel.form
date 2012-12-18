@@ -25,6 +25,7 @@
                       <Component id="fuelNameTextField" min="-2" pref="200" max="-2" attributes="0"/>
                   </Group>
                   <Component id="useTestCaseMethodCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="ignoreMVCNodeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -40,7 +41,9 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="useTestCaseMethodCheckBox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="230" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="ignoreMVCNodeCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="200" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -67,6 +70,13 @@
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/netbeans/modules/php/fuel/ui/Bundle.properties" key="FuelPhpCustomizerPanel.useTestCaseMethodCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="ignoreMVCNodeCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/netbeans/modules/php/fuel/ui/Bundle.properties" key="FuelPhpCustomizerPanel.ignoreMVCNodeCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

@@ -79,6 +79,7 @@ public final class FuelUtils {
     private static final int DEFAULT_OFFSET = 0;
     private static final String EXT_PHP = "php"; // NOI18N
     private static final String FUEL_APP_CLASSES_CONTROLLER_DIR = "%s/app/classes/controller"; // NOI18N
+    private static final String FUEL_APP_CLASSES_MODEL_DIR = "%s/app/classes/model"; // NOI18N
     private static final String FUEL_APP_CLASSES_VIEW_DIR = "%s/app/classes/view";
     private static final String FUEL_APP_VIEWS_DIR = "%s/app/views"; // NOI18N
     private static final String FUEL_AUTOCOMPLETION_PHP = "org-netbeans-modules-php-fuel/fuel_autocompletion.php"; // NOI18N
@@ -338,11 +339,35 @@ public final class FuelUtils {
      */
     public static FileObject getControllerDirectory(FileObject fo) {
         PhpModule pm = PhpModule.forFileObject(fo);
-        if (pm == null) {
+        return getControllerDirectory(pm);
+    }
+
+    /**
+     * Get controller directory (fuel/app/classes/controller)
+     *
+     * @param phpModule FileObject
+     * @return controller directory FileObject
+     */
+    public static FileObject getControllerDirectory(PhpModule phpModule) {
+        if (phpModule == null) {
             return null;
         }
-        String controllerPath = String.format(FUEL_APP_CLASSES_CONTROLLER_DIR, FuelPhpPreferences.getFuelName(pm));
-        return pm.getSourceDirectory().getFileObject(controllerPath);
+        String controllerPath = String.format(FUEL_APP_CLASSES_CONTROLLER_DIR, FuelPhpPreferences.getFuelName(phpModule));
+        return phpModule.getSourceDirectory().getFileObject(controllerPath);
+    }
+
+    /**
+     * Get model directory (fuel/app/classes/model)
+     *
+     * @param phpModule FileObject
+     * @return model directory FileObject
+     */
+    public static FileObject getModelDirectory(PhpModule phpModule) {
+        if (phpModule == null) {
+            return null;
+        }
+        String modelPath = String.format(FUEL_APP_CLASSES_MODEL_DIR, FuelPhpPreferences.getFuelName(phpModule));
+        return phpModule.getSourceDirectory().getFileObject(modelPath);
     }
 
     /**

@@ -42,9 +42,11 @@
 package org.netbeans.modules.php.fuel;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
+import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleIgnoredFilesExtender;
 import org.openide.filesystems.FileUtil;
 
@@ -55,14 +57,34 @@ import org.openide.filesystems.FileUtil;
 public class FuelPhpIgnoredFilesExtender extends PhpModuleIgnoredFilesExtender {
 
     private File docs;
+    private File controller;
+    private File model;
+    private File views;
 
     public FuelPhpIgnoredFilesExtender(PhpModule pm) {
-	assert pm != null;
-	docs = new File(FileUtil.toFile(pm.getProjectDirectory()), "docs");
+        assert pm != null;
+        docs = new File(FileUtil.toFile(pm.getProjectDirectory()), "docs"); //NOI18N
+        // add settings whether MVC direcotries is ignored
+        if (FuelPhpPreferences.ignoreMVCNode(pm)) {
+            controller = FileUtil.toFile(FuelUtils.getControllerDirectory(pm));
+            model = FileUtil.toFile(FuelUtils.getModelDirectory(pm));
+            views = FileUtil.toFile(FuelUtils.getViewsDirectory(pm));
+        }
     }
 
     @Override
     public Set<File> getIgnoredFiles() {
-        return Collections.singleton(docs);
+        Set<File> ignoreFiles = new HashSet<File>();
+        ignoreFiles.add(docs);
+        if (controller != null) {
+            ignoreFiles.add(controller);
+        }
+        if (controller != null) {
+            ignoreFiles.add(model);
+        }
+        if (controller != null) {
+            ignoreFiles.add(views);
+        }
+        return ignoreFiles;
     }
 }
