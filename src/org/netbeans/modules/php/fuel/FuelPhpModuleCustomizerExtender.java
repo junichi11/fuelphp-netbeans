@@ -5,10 +5,17 @@ import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.phpmodule.PhpModule.Change;
+import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.ui.FuelPhpCustomizerPanel;
+import org.netbeans.modules.php.project.PhpProject;
+import org.netbeans.modules.php.project.ProjectPropertiesSupport;
+import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties;
+import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties.UploadFiles;
+import org.netbeans.modules.php.project.util.PhpProjectUtils;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleCustomizerExtender;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /*
@@ -96,6 +103,10 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
 
     @Override
     public boolean isValid() {
+        if (isUplaodFilesOnSave() && ignoreMVCNode == true) {
+            ignoreMVCNode = false;
+            FuelPhpPreferences.setIgnoreMVCNode(phpModule, ignoreMVCNode);
+        }
         return true;
     }
 
@@ -113,11 +124,13 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
         }
 
         boolean tmpIgnoreMVCNode = panel.ignoreMVCNode();
+        if (isUplaodFilesOnSave()) {
+            tmpIgnoreMVCNode = false;
+        }
         if (ignoreMVCNode != tmpIgnoreMVCNode) {
             FuelPhpPreferences.setIgnoreMVCNode(phpModule, tmpIgnoreMVCNode);
             enumSet = EnumSet.of(Change.IGNORED_FILES_CHANGE);
         }
-
         String newFuelName = panel.getFuelNameTextField().getText();
         if (!newFuelName.equals("") && !newFuelName.equals(fuelName)) {
             FuelPhpPreferences.setFuelName(phpModule, newFuelName);
@@ -135,5 +148,14 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             panel.setIgnoreMVCNode(ignoreMVCNode);
         }
         return panel;
+    }
+
+    private boolean isUplaodFilesOnSave() {
+        PhpProject phpProject = PhpProjectUtils.getPhpProject(phpModule.getProjectDirectory());
+        UploadFiles remoteUpload = ProjectPropertiesSupport.getRemoteUpload(phpProject);
+        if (remoteUpload == UploadFiles.ON_SAVE) {
+            return true;
+        }
+        return false;
     }
 }

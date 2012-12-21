@@ -69,6 +69,7 @@ public class FuelPhpIgnoredFilesExtender extends PhpModuleIgnoredFilesExtender {
             controller = FileUtil.toFile(FuelUtils.getControllerDirectory(pm));
             model = FileUtil.toFile(FuelUtils.getModelDirectory(pm));
             views = FileUtil.toFile(FuelUtils.getViewsDirectory(pm));
+            views = FileUtil.toFile(FuelUtils.getModulesDirectory(pm));
         }
     }
 

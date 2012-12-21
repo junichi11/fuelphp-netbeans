@@ -41,7 +41,6 @@
  */
 package org.netbeans.modules.php.fuel.ui;
 
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -96,6 +95,7 @@ public class FuelPhpCustomizerPanel extends JPanel {
         fuelNameTextField = new javax.swing.JTextField();
         useTestCaseMethodCheckBox = new javax.swing.JCheckBox();
         ignoreMVCNodeCheckBox = new javax.swing.JCheckBox();
+        ignoreMessageLabel = new javax.swing.JLabel();
 
         org.openide.awt.Mnemonics.setLocalizedText(fuelNameLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.fuelNameLabel.text")); // NOI18N
 
@@ -105,20 +105,28 @@ public class FuelPhpCustomizerPanel extends JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(useTestCaseMethodCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.useTestCaseMethodCheckBox.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(ignoreMVCNodeCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.ignoreMVCNodeCheckBox.text")); // NOI18N
+        ignoreMVCNodeCheckBox.setToolTipText(org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.ignoreMVCNodeCheckBox.toolTipText")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(ignoreMessageLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.ignoreMessageLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(fuelNameLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fuelNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(useTestCaseMethodCheckBox)
-                    .addComponent(ignoreMVCNodeCheckBox))
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(fuelNameLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(fuelNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(useTestCaseMethodCheckBox)
+                            .addComponent(ignoreMVCNodeCheckBox)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(ignoreMessageLabel)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -132,13 +140,16 @@ public class FuelPhpCustomizerPanel extends JPanel {
                 .addComponent(useTestCaseMethodCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ignoreMVCNodeCheckBox)
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ignoreMessageLabel)
+                .addContainerGap(194, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel fuelNameLabel;
     private javax.swing.JTextField fuelNameTextField;
     private javax.swing.JCheckBox ignoreMVCNodeCheckBox;
+    private javax.swing.JLabel ignoreMessageLabel;
     private javax.swing.JCheckBox useTestCaseMethodCheckBox;
     // End of variables declaration//GEN-END:variables
 }

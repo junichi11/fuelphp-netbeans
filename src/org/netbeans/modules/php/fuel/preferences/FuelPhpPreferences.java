@@ -76,7 +76,7 @@ public class FuelPhpPreferences {
     }
 
     public static boolean ignoreMVCNode(PhpModule phpModule) {
-        return getPreferences(phpModule).getBoolean(IGNORE_MVC_NODE, true);
+        return getPreferences(phpModule).getBoolean(IGNORE_MVC_NODE, false);
     }
 
     public static void setIgnoreMVCNode(PhpModule phpModule, boolean ignore) {
