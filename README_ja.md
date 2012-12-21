@@ -62,24 +62,27 @@ ViewModel::forge('[Ctrl+Space]');
 ```
 もし、ディレクトリ名でエンターキーを押した場合は、もう一度[Ctrl+Space]（補完）を実行してください。そうすると、ディレクトリの子要素が表示されます。
 
-## MVCノード
-プロジェクトペインにMVC(model, views, controller)ノードを作成します。
+## MVC,modulesノード
+プロジェクトペインにMVC(model, views, controller),modulesノードを作成します。
 
 ```
 myproject
-├─controller (fuel/app/classes/controller)
-├─model (fuel/app/classes/model)
-├─views (fuel/app/views)
 ├─source files
 ├─test files
 ├─important files
 ├─include path
+├─controller (fuel/app/classes/controller)
+├─model (fuel/app/classes/model)
+├─views (fuel/app/views)
+├─modules (fuel/app/modules)
 ```
 ソース・ファイルでMVCディレクトリを非表示にしたい場合は、
 `プロジェクトプロパティ > フレームワーク > FuelPHP`に移動して"ソース・ファイルの中でMVCを無視する"にチェックを入れてください。
 
 もし無視するにチェックを入れた場合は、MVCノードで新規ファイルを作成したときにソース・ファイルのノードに移動することはありません。
 チェックを入れてない場合は、ソース・ファイルに移動します。
+
+**注意：保存時にリモートアップロードを行う場合は、これらのノードを無視する設定はできません**
 
 ## 重要!
 プロジェクトの新規作成からSDカードポートへのクローンは行わないでください!(ハングアップします...)

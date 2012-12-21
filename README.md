@@ -61,17 +61,19 @@ ViewModel::forge('[Ctrl+Space]');
 ```
 If you push enter key at the directory name, please, run [Ctrl+Space] again. And directory childrenis displayed on popup list.
 
-## MVC Node
-Create MVC(model, views, controller) nodes on the project pane.
+## MVC and modules Nodes
+Create MVC(model, views, controller) and modules nodes on the project pane.
 ```
 myproject
-├─controller (fuel/app/classes/controller)
-├─model (fuel/app/classes/model)
-├─views (fuel/app/views)
 ├─source files
 ├─test files
 ├─important files
 ├─include path
+├─controller (fuel/app/classes/controller)
+├─model (fuel/app/classes/model)
+├─views (fuel/app/views)
+├─modules (fuel/app/modules)
+
 ```
 
 If you would like to hide the MVC directories in the source files,
@@ -80,6 +82,8 @@ please move to `Project properties > Framework > FuelPHP` and check "ignore..."
 If you check "ignore...",
 active position isn't moved to the source files node when you create a new file at the MVC nodes.
 Otherwise go to there.
+
+**Please notice that if you use remote upload on save, you can't ignore these.**
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)
