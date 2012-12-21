@@ -82,6 +82,7 @@ public final class FuelUtils {
     private static final String FUEL_APP_CLASSES_MODEL_DIR = "%s/app/classes/model"; // NOI18N
     private static final String FUEL_APP_CLASSES_VIEW_DIR = "%s/app/classes/view";
     private static final String FUEL_APP_VIEWS_DIR = "%s/app/views"; // NOI18N
+    private static final String FUEL_APP_MODULES_DIR = "%s/app/modules"; // NOI18N
     private static final String FUEL_AUTOCOMPLETION_PHP = "org-netbeans-modules-php-fuel/fuel_autocompletion.php"; // NOI18N
     private static final String FUEL_AUTOCOMPLETION_TESTCASE_TXT = "org-netbeans-modules-php-fuel/fuel_autocompletion_testcase.txt"; // NOI18N
     private static final String NBPROJECT_DIR_NAME = "nbproject"; // NOI18N
@@ -324,11 +325,7 @@ public final class FuelUtils {
      * @return views directory FileObject
      */
     public static FileObject getViewsDirectory(PhpModule phpModule) {
-        if (phpModule == null) {
-            return null;
-        }
-        String viewsPath = String.format(FUEL_APP_VIEWS_DIR, FuelPhpPreferences.getFuelName(phpModule));
-        return phpModule.getSourceDirectory().getFileObject(viewsPath);
+        return getDirectory(phpModule, FUEL_APP_VIEWS_DIR);
     }
 
     /**
@@ -349,11 +346,7 @@ public final class FuelUtils {
      * @return controller directory FileObject
      */
     public static FileObject getControllerDirectory(PhpModule phpModule) {
-        if (phpModule == null) {
-            return null;
-        }
-        String controllerPath = String.format(FUEL_APP_CLASSES_CONTROLLER_DIR, FuelPhpPreferences.getFuelName(phpModule));
-        return phpModule.getSourceDirectory().getFileObject(controllerPath);
+        return getDirectory(phpModule, FUEL_APP_CLASSES_CONTROLLER_DIR);
     }
 
     /**
@@ -363,15 +356,11 @@ public final class FuelUtils {
      * @return model directory FileObject
      */
     public static FileObject getModelDirectory(PhpModule phpModule) {
-        if (phpModule == null) {
-            return null;
-        }
-        String modelPath = String.format(FUEL_APP_CLASSES_MODEL_DIR, FuelPhpPreferences.getFuelName(phpModule));
-        return phpModule.getSourceDirectory().getFileObject(modelPath);
+        return getDirectory(phpModule, FUEL_APP_CLASSES_MODEL_DIR);
     }
 
     /**
-     * Get controller directory (fuel/app/classes/view)
+     * Get view model directory (fuel/app/classes/view)
      *
      * @param fo FileObject
      * @return view model directory FileObject
@@ -382,17 +371,38 @@ public final class FuelUtils {
     }
 
     /**
-     * Get controller directory (fuel/app/classes/view)
+     * Get view model directory (fuel/app/classes/view)
      *
      * @param phpMoudle PhpModule
      * @return view model directory FileObject
      */
     public static FileObject getViewModelDirectory(PhpModule phpModule) {
+        return getDirectory(phpModule, FUEL_APP_CLASSES_VIEW_DIR);
+    }
+
+    /**
+     * Get modules directory (fuel/app/modules)
+     *
+     * @param phpMoudle PhpModule
+     * @return modules directory FileObject
+     */
+    public static FileObject getModulesDirectory(PhpModule phpModule) {
+        return getDirectory(phpModule, FUEL_APP_MODULES_DIR);
+    }
+
+    /**
+     * Get directory
+     *
+     * @param phpModule
+     * @param directoryPath
+     * @return
+     */
+    public static FileObject getDirectory(PhpModule phpModule, String directoryPath) {
         if (phpModule == null) {
             return null;
         }
-        String viewPath = String.format(FUEL_APP_CLASSES_VIEW_DIR, FuelPhpPreferences.getFuelName(phpModule));
-        return phpModule.getSourceDirectory().getFileObject(viewPath);
+        String path = String.format(directoryPath, FuelPhpPreferences.getFuelName(phpModule));
+        return phpModule.getSourceDirectory().getFileObject(path);
     }
 
     /**
@@ -435,7 +445,7 @@ public final class FuelUtils {
      */
     private static String getViewPath(FileObject view) {
         String viewDirectoryPath = null;
-        String viewPath = view.getPath();;
+        String viewPath = view.getPath();
         if (isView(view)) {
             viewDirectoryPath = getViewsDirectory(view).getPath();
         } else if (isViewModel(view)) {

@@ -41,8 +41,6 @@
  */
 package org.netbeans.modules.php.fuel.ui.logicalview;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -81,7 +79,7 @@ public class MVCNodeFactory implements NodeFactory {
         return NodeFactorySupport.fixedNodeList();
     }
 
-    private static class MVCNodeList implements NodeList<FileObject>, PropertyChangeListener {
+    private static class MVCNodeList implements NodeList<FileObject> {
 
         private PhpModule phpModule;
         private PhpProject project;
@@ -99,6 +97,7 @@ public class MVCNodeFactory implements NodeFactory {
                 list.add(FuelUtils.getControllerDirectory(phpModule));
                 list.add(FuelUtils.getModelDirectory(phpModule));
                 list.add(FuelUtils.getViewsDirectory(phpModule));
+                list.add(FuelUtils.getModulesDirectory(phpModule));
                 return list;
             }
             return Collections.emptyList();
@@ -143,10 +142,6 @@ public class MVCNodeFactory implements NodeFactory {
 
         @Override
         public void removeNotify() {
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
         }
     }
 }
