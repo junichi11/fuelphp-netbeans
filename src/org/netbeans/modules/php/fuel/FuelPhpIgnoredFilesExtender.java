@@ -60,6 +60,7 @@ public class FuelPhpIgnoredFilesExtender extends PhpModuleIgnoredFilesExtender {
     private File controller;
     private File model;
     private File views;
+    private File modules;
 
     public FuelPhpIgnoredFilesExtender(PhpModule pm) {
         assert pm != null;
@@ -69,7 +70,7 @@ public class FuelPhpIgnoredFilesExtender extends PhpModuleIgnoredFilesExtender {
             controller = FileUtil.toFile(FuelUtils.getControllerDirectory(pm));
             model = FileUtil.toFile(FuelUtils.getModelDirectory(pm));
             views = FileUtil.toFile(FuelUtils.getViewsDirectory(pm));
-            views = FileUtil.toFile(FuelUtils.getModulesDirectory(pm));
+            modules = FileUtil.toFile(FuelUtils.getModulesDirectory(pm));
         }
     }
 
@@ -80,11 +81,14 @@ public class FuelPhpIgnoredFilesExtender extends PhpModuleIgnoredFilesExtender {
         if (controller != null) {
             ignoreFiles.add(controller);
         }
-        if (controller != null) {
+        if (model != null) {
             ignoreFiles.add(model);
         }
-        if (controller != null) {
+        if (views != null) {
             ignoreFiles.add(views);
+        }
+        if (modules != null) {
+            ignoreFiles.add(modules);
         }
         return ignoreFiles;
     }
