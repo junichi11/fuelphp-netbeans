@@ -105,7 +105,6 @@ public class FuelPhpCustomizerPanel extends JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(useTestCaseMethodCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.useTestCaseMethodCheckBox.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(ignoreMVCNodeCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.ignoreMVCNodeCheckBox.text")); // NOI18N
-        ignoreMVCNodeCheckBox.setToolTipText(org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.ignoreMVCNodeCheckBox.toolTipText")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(ignoreMessageLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.ignoreMessageLabel.text")); // NOI18N
 

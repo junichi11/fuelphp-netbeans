@@ -11,6 +11,7 @@ import org.netbeans.modules.php.fuel.ui.FuelPhpCustomizerPanel;
 import org.netbeans.modules.php.project.PhpProject;
 import org.netbeans.modules.php.project.ProjectPropertiesSupport;
 import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties;
+import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties.RunAsType;
 import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties.UploadFiles;
 import org.netbeans.modules.php.project.util.PhpProjectUtils;
 import org.netbeans.modules.php.spi.phpmodule.PhpModuleCustomizerExtender;
@@ -152,9 +153,12 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
 
     private boolean isUplaodFilesOnSave() {
         PhpProject phpProject = PhpProjectUtils.getPhpProject(phpModule.getProjectDirectory());
-        UploadFiles remoteUpload = ProjectPropertiesSupport.getRemoteUpload(phpProject);
-        if (remoteUpload == UploadFiles.ON_SAVE) {
-            return true;
+        RunAsType runAs = ProjectPropertiesSupport.getRunAs(phpProject);
+        if (runAs == RunAsType.REMOTE) {
+            UploadFiles remoteUpload = ProjectPropertiesSupport.getRemoteUpload(phpProject);
+            if (remoteUpload != null && remoteUpload == UploadFiles.ON_SAVE) {
+                return true;
+            }
         }
         return false;
     }
