@@ -11,12 +11,13 @@
 - カスタムfuelディレクトリ名
 - Viewパスの補完
 - MVCノード
+- PHPUnitを実行するためのサポート
 
 ## インストール
 
 次のどちらかで行なって下さい。
 - このプロジェクトをクローンして手動でビルド＆インストール
-- NBMファイル(https://github.com/junichi11/fuelphp-netbeans/downloads)をダウンロードして、インストール
+- NBMファイル(http://plugins.netbeans.org/plugin/44665/php-fuelphp-framework)をダウンロードして、インストール
 
 ## 自動コード補完
 
@@ -83,6 +84,14 @@ myproject
 チェックを入れてない場合は、ソース・ファイルに移動します。
 
 **注意：保存時にリモートアップロードを行う場合は、これらのノードを無視する設定はできません**
+
+## PHPUnit Test Init Action
+Project右クリック > FuelPHP > PHPUnit Test Init
+
+このアクションはNetBeansでPHPUnitを実行するのに必要なファイルを作成し、それらを設定します。
+
+## Create Test Action
+ファイルノードもしくはエディタ上のコンテキストメニューからテストケースファイルを作成することができます。
 
 ## 重要!
 プロジェクトの新規作成からSDカードポートへのクローンは行わないでください!(ハングアップします...)

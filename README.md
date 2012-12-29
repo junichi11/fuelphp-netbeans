@@ -2,7 +2,7 @@
 
 This NetBeans plugin provides support for FuelPHP Framework.
 
-##Feature
+##Features
 
 - Badge Icon (Done)
 - create a new FuelPHP Project from New Project Option(Done)
@@ -11,11 +11,12 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - Support for custom fuel directory name
 - Support for view path code completion
 - MVC Node
+- Support for running PHPUnit Test
 
 ## Install
 
 - manually build and install NBM file
-- download NBM(https://github.com/junichi11/fuelphp-netbeans/downloads) file and manually install
+- download NBM(http://plugins.netbeans.org/plugin/44665/php-fuelphp-framework) file and manually install
 
 ## Auto Code Completion
 
@@ -84,6 +85,15 @@ active position isn't moved to the source files node when you create a new file 
 Otherwise go to there.
 
 **Please notice that if you use remote upload on save, you can't ignore these.**
+
+## PHPUnit Test Init Action
+Project right-click > FuelPHP > PHPUnit Test Init
+
+This action will create the necessary files to run PHPUnit in NetBeans.
+And set them.
+
+## Create Test Action
+You can create Test Case files from context menu on file nodes or editor.
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)
