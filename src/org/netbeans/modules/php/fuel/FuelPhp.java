@@ -41,56 +41,12 @@
  */
 package org.netbeans.modules.php.fuel;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.Action;
-import org.netbeans.modules.php.fuel.ui.actions.CreateAutoCompletionFileAction;
-import org.netbeans.modules.php.fuel.ui.actions.FuelPhpGoToActionAction;
-import org.netbeans.modules.php.fuel.ui.actions.FuelPhpGoToViewAction;
-import org.netbeans.modules.php.fuel.ui.actions.PHPUnitTestInitAction;
-import org.netbeans.modules.php.fuel.util.FuelUtils;
-import org.netbeans.modules.php.spi.actions.GoToActionAction;
-import org.netbeans.modules.php.spi.actions.GoToViewAction;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleActionsExtender;
-import org.openide.filesystems.FileObject;
-import org.openide.util.NbBundle;
-
 /**
  *
  * @author junichi11
  */
-public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
+public class FuelPhp {
 
-    @Override
-    public List<? extends Action> getActions() {
-        ArrayList<Action> actions = new ArrayList<Action>();
-        actions.add(CreateAutoCompletionFileAction.getInstance());
-        actions.add(PHPUnitTestInitAction.getInstance());
-        return actions;
-    }
-
-    @Override
-    public String getMenuName() {
-        return NbBundle.getMessage(FuelPhpActionsExtender.class, "LBL_MenuName"); // NOI18N
-    }
-
-    @Override
-    public GoToViewAction getGoToViewAction(FileObject fo, int offset) {
-        return new FuelPhpGoToViewAction(fo, offset);
-    }
-
-    @Override
-    public GoToActionAction getGoToActionAction(FileObject fo, int offset) {
-        return new FuelPhpGoToActionAction(fo, offset);
-    }
-
-    @Override
-    public boolean isViewWithAction(FileObject fo) {
-        return (FuelUtils.isView(fo) || FuelUtils.isViewModel(fo));
-    }
-
-    @Override
-    public boolean isActionWithView(FileObject fo) {
-        return FuelUtils.isController(fo);
-    }
+    public static final String FUEL_ICON_8 = "org/netbeans/modules/php/fuel/resources/fuel_icon_8.png";
+    public static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png";
 }

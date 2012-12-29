@@ -479,8 +479,11 @@ public final class FuelUtils {
      * @param phpMoudle
      * @return true if in fuelphp module, otherwise false.
      */
-    public static boolean isFuelPHP(PhpModule phpMoudle) {
-        return FuelPhpFrameworkProvider.getInstance().isInPhpModule(phpMoudle);
+    public static boolean isFuelPHP(PhpModule phpModule) {
+        if(phpModule == null) {
+            return false;
+        }
+        return FuelPhpFrameworkProvider.getInstance().isInPhpModule(phpModule);
     }
 
     private static class FileObjectComparator implements Comparator<FileObject> {
