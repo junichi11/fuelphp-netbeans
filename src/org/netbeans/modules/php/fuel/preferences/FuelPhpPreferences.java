@@ -54,6 +54,8 @@ public class FuelPhpPreferences {
     private static final String USE_TEST_CASE = "use-test-case"; // NOI18N
     private static final String IGNORE_MVC_NODE = "ignore-mvc-node"; // NOI18N
     private static final String DEFAULT_FUEL_NAME = "fuel"; // NOI18N
+    private static final String TEST_CASE_PREFIX = "test-case-prefix"; // NOI18N
+    private static final String TEST_CASE_SUFFIX = "test-case-suffix"; // NOI18N
 
     public static String getFuelName(PhpModule phpModule) {
         String fuelName = getPreferences(phpModule).get(FUEL_NAME, ""); // NOI18N
@@ -81,6 +83,22 @@ public class FuelPhpPreferences {
 
     public static void setIgnoreMVCNode(PhpModule phpModule, boolean ignore) {
         getPreferences(phpModule).putBoolean(IGNORE_MVC_NODE, ignore);
+    }
+
+    public static String getTestCasePrefix(PhpModule phpModule) {
+        return getPreferences(phpModule).get(TEST_CASE_PREFIX, "Test_");
+    }
+
+    public static void setTestCasePrefix(PhpModule phpModule, String prefix) {
+        getPreferences(phpModule).put(TEST_CASE_PREFIX, prefix);
+    }
+
+    public static String getTestCaseSuffix(PhpModule phpModule) {
+        return getPreferences(phpModule).get(TEST_CASE_SUFFIX, "");
+    }
+
+    public static void setTestCaseSuffix(PhpModule phpModule, String suffix) {
+        getPreferences(phpModule).put(TEST_CASE_SUFFIX, suffix);
     }
 
     private static Preferences getPreferences(PhpModule phpModule) {

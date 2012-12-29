@@ -11,5 +11,8 @@
     <folder name="org-netbeans-modules-php-fuel">
         <file name="fuel_autocompletion.php" url="fuel_autocompletion.php"/>
         <file name="fuel_autocompletion_testcase.txt" url="fuel_autocompletion_testcase.txt"/>
+        <file name="NetBeansSuite.php" url="NetBeansSuite.php"/>
+        <file name="phpunit.sh" url="phpunit.sh"/>
+        <file name="phpunit.bat" url="phpunit.bat"/>
     </folder>
 </filesystem>

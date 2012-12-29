@@ -82,6 +82,22 @@ public class FuelPhpCustomizerPanel extends JPanel {
         this.ignoreMVCNodeCheckBox.setSelected(ignore);
     }
 
+    public String getTestCasePrefixTextField() {
+        return testCasePrefixTextField.getText();
+    }
+
+    public void setTestCasePrefixTextField(String text) {
+        testCasePrefixTextField.setText(text);
+    }
+
+    public String getTestCaseSuffixTextField() {
+        return testCaseSuffixTextField.getText();
+    }
+
+    public void setTestCaseSuffixTextField(String tesxt) {
+        testCaseSuffixTextField.setText(tesxt);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -96,6 +112,11 @@ public class FuelPhpCustomizerPanel extends JPanel {
         useTestCaseMethodCheckBox = new javax.swing.JCheckBox();
         ignoreMVCNodeCheckBox = new javax.swing.JCheckBox();
         ignoreMessageLabel = new javax.swing.JLabel();
+        testCasePrefixSuffixLabel = new javax.swing.JLabel();
+        testCasePrefixLabel = new javax.swing.JLabel();
+        testCasePrefixTextField = new javax.swing.JTextField();
+        testCaseSuffixLabel = new javax.swing.JLabel();
+        testCaseSuffixTextField = new javax.swing.JTextField();
 
         org.openide.awt.Mnemonics.setLocalizedText(fuelNameLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.fuelNameLabel.text")); // NOI18N
 
@@ -107,6 +128,16 @@ public class FuelPhpCustomizerPanel extends JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(ignoreMVCNodeCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.ignoreMVCNodeCheckBox.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(ignoreMessageLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.ignoreMessageLabel.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(testCasePrefixSuffixLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.testCasePrefixSuffixLabel.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(testCasePrefixLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.testCasePrefixLabel.text")); // NOI18N
+
+        testCasePrefixTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.testCasePrefixTextField.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(testCaseSuffixLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.testCaseSuffixLabel.text")); // NOI18N
+
+        testCaseSuffixTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.testCaseSuffixTextField.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -125,7 +156,19 @@ public class FuelPhpCustomizerPanel extends JPanel {
                             .addComponent(ignoreMVCNodeCheckBox)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(37, 37, 37)
-                        .addComponent(ignoreMessageLabel)))
+                        .addComponent(ignoreMessageLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(testCasePrefixSuffixLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(testCasePrefixLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(testCasePrefixTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(testCaseSuffixLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(testCaseSuffixTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -141,7 +184,15 @@ public class FuelPhpCustomizerPanel extends JPanel {
                 .addComponent(ignoreMVCNodeCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ignoreMessageLabel)
-                .addContainerGap(194, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(testCasePrefixSuffixLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(testCasePrefixLabel)
+                    .addComponent(testCasePrefixTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(testCaseSuffixLabel)
+                    .addComponent(testCaseSuffixTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(136, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -149,6 +200,11 @@ public class FuelPhpCustomizerPanel extends JPanel {
     private javax.swing.JTextField fuelNameTextField;
     private javax.swing.JCheckBox ignoreMVCNodeCheckBox;
     private javax.swing.JLabel ignoreMessageLabel;
+    private javax.swing.JLabel testCasePrefixLabel;
+    private javax.swing.JLabel testCasePrefixSuffixLabel;
+    private javax.swing.JTextField testCasePrefixTextField;
+    private javax.swing.JLabel testCaseSuffixLabel;
+    private javax.swing.JTextField testCaseSuffixTextField;
     private javax.swing.JCheckBox useTestCaseMethodCheckBox;
     // End of variables declaration//GEN-END:variables
 }

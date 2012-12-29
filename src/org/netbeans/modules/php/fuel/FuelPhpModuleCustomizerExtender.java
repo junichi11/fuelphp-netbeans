@@ -71,12 +71,16 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
     private String fuelName;
     private boolean useTestCaseMethod;
     private boolean ignoreMVCNode;
+    private String testCasePrefix;
+    private String testCaseSuffix;
 
     public FuelPhpModuleCustomizerExtender(PhpModule phpModule) {
         this.phpModule = phpModule;
         fuelName = FuelPhpPreferences.getFuelName(phpModule);
         useTestCaseMethod = FuelPhpPreferences.useTestCaseMethod(phpModule);
         ignoreMVCNode = FuelPhpPreferences.ignoreMVCNode(phpModule);
+        testCasePrefix = FuelPhpPreferences.getTestCasePrefix(phpModule);
+        testCaseSuffix = FuelPhpPreferences.getTestCaseSuffix(phpModule);
     }
 
     @Override
@@ -132,6 +136,17 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             FuelPhpPreferences.setIgnoreMVCNode(phpModule, tmpIgnoreMVCNode);
             enumSet = EnumSet.of(Change.IGNORED_FILES_CHANGE);
         }
+
+        String newPrefix = panel.getTestCasePrefixTextField();
+        if(!newPrefix.equals(testCasePrefix)) {
+            FuelPhpPreferences.setTestCasePrefix(phpModule, newPrefix);
+        }
+
+        String newSuffix = panel.getTestCaseSuffixTextField();
+        if(!newSuffix.equals(testCaseSuffix)) {
+            FuelPhpPreferences.setTestCaseSuffix(phpModule, newSuffix);
+        }
+
         String newFuelName = panel.getFuelNameTextField().getText();
         if (!newFuelName.equals("") && !newFuelName.equals(fuelName)) {
             FuelPhpPreferences.setFuelName(phpModule, newFuelName);
@@ -147,6 +162,8 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             panel.setFuelNameTextField(fuelName);
             panel.setUseTestCaseMethod(useTestCaseMethod);
             panel.setIgnoreMVCNode(ignoreMVCNode);
+            panel.setTestCasePrefixTextField(testCasePrefix);
+            panel.setTestCaseSuffixTextField(testCaseSuffix);
         }
         return panel;
     }
