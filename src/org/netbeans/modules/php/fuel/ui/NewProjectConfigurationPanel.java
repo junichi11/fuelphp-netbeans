@@ -42,16 +42,10 @@
 package org.netbeans.modules.php.fuel.ui;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.netbeans.modules.php.fuel.util.FuelUtils;
+import org.netbeans.modules.php.fuel.util.FuelDownloads;
 import org.openide.util.Exceptions;
 
 /**
@@ -60,9 +54,6 @@ import org.openide.util.Exceptions;
  */
 public class NewProjectConfigurationPanel extends javax.swing.JPanel {
 
-    private static final String GITHUB_API_REPOS_DOWNLOADS = "https://api.github.com/repos/fuel/fuel/downloads"; // NOI18N
-    private static final String GITHUB_API_REPOS_DOWNLOADS_HTML_URL = "html_url";
-    private static final String GITHUB_API_REPOS_DOWNLOADS_NAME = "name";
     private static final long serialVersionUID = 7874450246517944114L;
     private Map<String, String> downloadsMap = new HashMap<String, String>();
     private String errorMessage = null; // NOI18N
@@ -73,46 +64,10 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
     public NewProjectConfigurationPanel() {
         initComponents();
         this.unzipRadioButton.setSelected(true);
-        try {
-            // Get JSON
-            URL githubApi = new URL(GITHUB_API_REPOS_DOWNLOADS);
-            JSONArray jsonArray = FuelUtils.getJsonArray(githubApi);
-
-            String[] downloadsArray = new String[jsonArray.length()];
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jObject = (JSONObject) jsonArray.get(i);
-                downloadsArray[i] = jObject.getString(GITHUB_API_REPOS_DOWNLOADS_NAME); // NOI18N
-                downloadsMap.put(jObject.getString(GITHUB_API_REPOS_DOWNLOADS_NAME), jObject.getString(GITHUB_API_REPOS_DOWNLOADS_HTML_URL)); // NOI18N
-            }
-
-            Arrays.sort(downloadsArray, new Comparator<String>() {
-                public static final String COMPARE_SPLIT_PATTERN = "[., -]"; // NOI18N
-
-                @Override
-                public int compare(String a, String b) {
-                    String[] aArray = a.split(COMPARE_SPLIT_PATTERN);
-                    String[] bArray = b.split(COMPARE_SPLIT_PATTERN);
-                    for (int i = 0; i < aArray.length; i++) {
-                        try {
-                            Integer aInt = Integer.parseInt(aArray[i]);
-                            Integer bInt = Integer.parseInt(bArray[i]);
-                            if (aInt == bInt) {
-                                continue;
-                            } else {
-                                return bInt - aInt;
-                            }
-                        } catch (NumberFormatException ex) {
-                            return 1;
-                        }
-                    }
-                    return 1;
-                }
-            });
-            versionList.setListData(downloadsArray);
-            versionList.setSelectedIndex(0);
-        } catch (JSONException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        downloadsMap.putAll(FuelDownloads.getDownloadsMap());
+        versionList.setListData(FuelDownloads.getDownloadVersions());
+        versionList.setSelectedIndex(0);
+        if (!FuelDownloads.isInternetReachable()) {
             errorMessage = "Is not connected to the network.";
         }
         gettingFileInfoLabel.setText(errorMessage);
