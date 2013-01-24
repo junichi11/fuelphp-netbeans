@@ -78,7 +78,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
     private static final String INIT_COMMAND = "init";
     private static final String ORIGIN = "origin";
     private static final String PULL_COMMAND = "pull";
-    private static final String REFS_HEADS = "refs/heads/1.4/master";
+    private static final String REFS_HEADS = "refs/heads/1.5/master";
     private static final String REMOTE_COMMAND = "remote";
     private static final String WORK_TREE = "--work-tree=";
     private NewProjectConfigurationPanel panel = null;

@@ -185,6 +185,10 @@
             </test-dependencies>
             <public-packages/>
             <class-path-extension>
+                <runtime-relative-path>ext/jsoup-1.7.1-for-fuelphp-netbeans.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jsoup-1.7.1-for-fuelphp-netbeans.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/json-for-fuelphp-netbeans.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/json-for-fuelphp-netbeans.jar</binary-origin>
             </class-path-extension>

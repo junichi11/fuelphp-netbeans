@@ -64,8 +64,9 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
     public NewProjectConfigurationPanel() {
         initComponents();
         this.unzipRadioButton.setSelected(true);
-        downloadsMap.putAll(FuelDownloads.getDownloadsMap());
-        versionList.setListData(FuelDownloads.getDownloadVersions());
+        FuelDownloads fuelDownloads = new FuelDownloads();
+        downloadsMap.putAll(fuelDownloads.getDownloadsMap());
+        versionList.setListData(fuelDownloads.getDownloadVersions());
         versionList.setSelectedIndex(0);
         if (!FuelDownloads.isInternetReachable()) {
             errorMessage = "Is not connected to the network.";
