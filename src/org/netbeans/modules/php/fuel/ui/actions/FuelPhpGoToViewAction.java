@@ -61,7 +61,7 @@ import org.netbeans.modules.php.editor.parser.astnodes.*;
 import org.netbeans.modules.php.editor.parser.astnodes.visitors.DefaultVisitor;
 import org.netbeans.modules.php.fuel.ui.GoToViewPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
-import org.netbeans.modules.php.spi.actions.GoToViewAction;
+import org.netbeans.modules.php.spi.framework.actions.GoToViewAction;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.filesystems.FileObject;
@@ -219,8 +219,8 @@ public class FuelPhpGoToViewAction extends GoToViewAction {
             Expression classNameExpression = node.getClassName();
             String className = CodeUtils.extractQualifiedName(classNameExpression);
             if (!VIEW_CLASS.equals(className)
-                    && !VIEW_MODEL_CLASS.equals(className)
-                    || !methodName.equals(actionName)) {
+                && !VIEW_MODEL_CLASS.equals(className)
+                || !methodName.equals(actionName)) {
                 return;
             }
             FunctionInvocation fi = node.getMethod();

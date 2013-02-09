@@ -49,9 +49,9 @@ import org.netbeans.modules.php.fuel.ui.actions.FuelPhpGoToActionAction;
 import org.netbeans.modules.php.fuel.ui.actions.FuelPhpGoToViewAction;
 import org.netbeans.modules.php.fuel.ui.actions.PHPUnitTestInitAction;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
-import org.netbeans.modules.php.spi.actions.GoToActionAction;
-import org.netbeans.modules.php.spi.actions.GoToViewAction;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleActionsExtender;
+import org.netbeans.modules.php.spi.framework.PhpModuleActionsExtender;
+import org.netbeans.modules.php.spi.framework.actions.GoToActionAction;
+import org.netbeans.modules.php.spi.framework.actions.GoToViewAction;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
