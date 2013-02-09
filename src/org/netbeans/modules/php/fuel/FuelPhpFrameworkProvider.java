@@ -46,19 +46,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.netbeans.modules.php.api.phpmodule.BadgeIcon;
+import org.netbeans.modules.php.api.framework.BadgeIcon;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
-import org.netbeans.modules.php.spi.commands.FrameworkCommandSupport;
 import org.netbeans.modules.php.spi.editor.EditorExtender;
-import org.netbeans.modules.php.spi.phpmodule.PhpFrameworkProvider;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleActionsExtender;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleCustomizerExtender;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleExtender;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleIgnoredFilesExtender;
+import org.netbeans.modules.php.spi.framework.PhpFrameworkProvider;
+import org.netbeans.modules.php.spi.framework.PhpModuleActionsExtender;
+import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender;
+import org.netbeans.modules.php.spi.framework.PhpModuleExtender;
+import org.netbeans.modules.php.spi.framework.PhpModuleIgnoredFilesExtender;
+import org.netbeans.modules.php.spi.framework.commands.FrameworkCommandSupport;
 import org.openide.filesystems.FileChangeAdapter;
-import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
@@ -82,10 +81,12 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     }
 
     private FuelPhpFrameworkProvider() {
-        super(NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkName"), NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkDescription"));
+        super("fuelphp", // NOI18N
+            NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkName"),
+            NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkDescription"));
         badgeIcon = new BadgeIcon(
-                ImageUtilities.loadImage(ICON_PATH),
-                FuelPhpFrameworkProvider.class.getResource("/" + ICON_PATH)); // NOI18N
+            ImageUtilities.loadImage(ICON_PATH),
+            FuelPhpFrameworkProvider.class.getResource("/" + ICON_PATH)); // NOI18N
     }
 
     @Override
@@ -96,6 +97,9 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     @Override
     public boolean isInPhpModule(PhpModule pm) {
         FileObject sourceDirectory = pm.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return false;
+        }
         FileObject oil = sourceDirectory.getFileObject("oil"); // NOI18N
         if (oil == null) {
             return false;
@@ -109,7 +113,6 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
         fuel = sourceDirectory.getFileObject(fuelName);
         if (fuel != null) {
             fuel.addFileChangeListener(new FileChangeAdapter() {
-
                 @Override
                 public void fileRenamed(FileRenameEvent fe) {
                     FileObject file = fe.getFile();
@@ -164,8 +167,11 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     public PhpModuleProperties getPhpModuleProperties(PhpModule pm) {
         PhpModuleProperties properties = new PhpModuleProperties();
         FileObject sourceDirectory = pm.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return properties;
+        }
         // webroot directory
-        FileObject webroot = sourceDirectory.getFileObject("public");
+        FileObject webroot = sourceDirectory.getFileObject("public"); // NOI18N
         if (webroot != null) {
             properties = properties.setWebRoot(webroot);
         }

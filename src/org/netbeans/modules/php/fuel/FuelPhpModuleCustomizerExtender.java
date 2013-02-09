@@ -4,19 +4,16 @@ import java.util.EnumSet;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
-import org.netbeans.modules.php.api.phpmodule.PhpModule.Change;
-import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.ui.FuelPhpCustomizerPanel;
 import org.netbeans.modules.php.project.PhpProject;
 import org.netbeans.modules.php.project.ProjectPropertiesSupport;
-import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties;
 import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties.RunAsType;
 import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties.UploadFiles;
 import org.netbeans.modules.php.project.util.PhpProjectUtils;
-import org.netbeans.modules.php.spi.phpmodule.PhpModuleCustomizerExtender;
+import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender;
+import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender.Change;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /*
@@ -138,12 +135,12 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
         }
 
         String newPrefix = panel.getTestCasePrefixTextField();
-        if(!newPrefix.equals(testCasePrefix)) {
+        if (!newPrefix.equals(testCasePrefix)) {
             FuelPhpPreferences.setTestCasePrefix(phpModule, newPrefix);
         }
 
         String newSuffix = panel.getTestCaseSuffixTextField();
-        if(!newSuffix.equals(testCaseSuffix)) {
+        if (!newSuffix.equals(testCaseSuffix)) {
             FuelPhpPreferences.setTestCaseSuffix(phpModule, newSuffix);
         }
 

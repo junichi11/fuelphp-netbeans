@@ -41,6 +41,7 @@
  */
 package org.netbeans.modules.php.fuel.editor;
 
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
@@ -73,69 +74,76 @@ public class ViewCompletionProvider extends FuelPhpCompletionProvider {
         final PhpModule pm = phpModule;
 
         return new AsyncCompletionTask(new AsyncCompletionQuery() {
+            @SuppressWarnings("unchecked")
             @Override
             protected void query(CompletionResultSet completionResultSet, Document doc, int caretOffset) {
-                // check View::forge()
-                TokenHierarchy hierarchy = TokenHierarchy.get(doc);
-                TokenSequence<PHPTokenId> ts = hierarchy.tokenSequence(PHPTokenId.language());
-                ts.move(caretOffset);
-                ts.moveNext();
-                Token<PHPTokenId> token = ts.token();
-                if (token.id() != PHPTokenId.PHP_CONSTANT_ENCAPSED_STRING) {
-                    completionResultSet.finish();
-                    return;
-                }
-                String caretInput = ts.token().text().toString();
+                AbstractDocument ad = (AbstractDocument) doc;
+                ad.readLock();
+                try {
+                    // check View::forge()
+                    TokenHierarchy hierarchy = TokenHierarchy.get(doc);
+                    TokenSequence<PHPTokenId> ts = hierarchy.tokenSequence(PHPTokenId.language());
+                    ts.move(caretOffset);
+                    ts.moveNext();
+                    Token<PHPTokenId> token = ts.token();
+                    if (token.id() != PHPTokenId.PHP_CONSTANT_ENCAPSED_STRING) {
+                        completionResultSet.finish();
+                        return;
+                    }
+                    String caretInput = ts.token().text().toString();
 
-                int startOffset = ts.offset() + 1;
-                int removeLength = caretInput.length() - 2;
-                if (removeLength < 0) {
-                    removeLength = 0;
-                }
-                if (!isViewForge(ts)) {
-                    completionResultSet.finish();
-                    return;
-                }
+                    int startOffset = ts.offset() + 1;
+                    int removeLength = caretInput.length() - 2;
+                    if (removeLength < 0) {
+                        removeLength = 0;
+                    }
+                    if (!isViewForge(ts)) {
+                        completionResultSet.finish();
+                        return;
+                    }
 
-                String filter = caretInput.substring(1, caretOffset - startOffset + 1);
+                    String filter = caretInput.substring(1, caretOffset - startOffset + 1);
 
-                // get fuel/app/views or fuel/app/classes/view
-                // to a CompletionResultSet
-                FileObject viewDirectory = null;
-                if (isView) {
-                    viewDirectory = FuelUtils.getViewsDirectory(pm);
-                } else if (isViewModel) {
-                    viewDirectory = FuelUtils.getViewModelDirectory(pm);
-                }
-                if (viewDirectory == null) {
-                    completionResultSet.finish();
-                    return;
-                }
-                // exist subdirectory
-                int lastIndexOfSlash = filter.lastIndexOf(SLASH);
-                String directory = ""; // NOI18N
-                if (lastIndexOfSlash > 0) {
-                    directory = filter.substring(0, lastIndexOfSlash + 1);
-                    filter = filter.substring(lastIndexOfSlash + 1);
-                    viewDirectory = viewDirectory.getFileObject(directory);
+                    // get fuel/app/views or fuel/app/classes/view
+                    // to a CompletionResultSet
+                    FileObject viewDirectory = null;
+                    if (isView) {
+                        viewDirectory = FuelUtils.getViewsDirectory(pm);
+                    } else if (isViewModel) {
+                        viewDirectory = FuelUtils.getViewModelDirectory(pm);
+                    }
                     if (viewDirectory == null) {
                         completionResultSet.finish();
                         return;
                     }
-                }
-
-                FileObject[] views = viewDirectory.getChildren();
-                for (int i = 0; i < views.length; i++) {
-                    final FileObject view = views[i];
-                    String viewPath = view.getName();
-                    if (view.isFolder()) {
-                        viewPath = viewPath + SLASH;
+                    // exist subdirectory
+                    int lastIndexOfSlash = filter.lastIndexOf(SLASH);
+                    String directory = ""; // NOI18N
+                    if (lastIndexOfSlash > 0) {
+                        directory = filter.substring(0, lastIndexOfSlash + 1);
+                        filter = filter.substring(lastIndexOfSlash + 1);
+                        viewDirectory = viewDirectory.getFileObject(directory);
+                        if (viewDirectory == null) {
+                            completionResultSet.finish();
+                            return;
+                        }
                     }
-                    if (!viewPath.isEmpty()
+
+                    FileObject[] views = viewDirectory.getChildren();
+                    for (int i = 0; i < views.length; i++) {
+                        final FileObject view = views[i];
+                        String viewPath = view.getName();
+                        if (view.isFolder()) {
+                            viewPath = viewPath + SLASH;
+                        }
+                        if (!viewPath.isEmpty()
                             && viewPath.startsWith(filter)
                             && !viewPath.equals(".gitkeep")) { //NOI18N
-                        completionResultSet.addItem(new FuelPhpCompletionItem(directory + viewPath, startOffset, removeLength));
+                            completionResultSet.addItem(new FuelPhpCompletionItem(directory + viewPath, startOffset, removeLength));
+                        }
                     }
+                } finally {
+                    ad.readUnlock();
                 }
 
                 completionResultSet.finish();
