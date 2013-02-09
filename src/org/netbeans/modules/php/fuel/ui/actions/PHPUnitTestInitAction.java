@@ -77,7 +77,7 @@ public class PHPUnitTestInitAction extends BaseAction {
     private static final Logger LOGGER = Logger.getLogger(PHPUnitTestInitAction.class.getName());
     private static final String BOOTSTRAP_PHPUNIT = "bootstrap_phpunit.php"; // NOI18N
     private static final String BOOTSTRAP_MAKEGOOD = "bootstrap_makegood.php"; // NOI18N
-    private static final Set<String> FOR_MAKEGOOD = new HashSet<String>();
+    private Set<String> FOR_MAKEGOOD;
     private static final String NET_BEANS_SUITE = "NetBeansSuite"; // NOI18N
     private static final String NET_BEANS_SUITE_PHP = NET_BEANS_SUITE + ".php"; // NOI18N
     private static final String CONFIG_PATH = "org-netbeans-modules-php-fuel/"; // NOI18N
@@ -123,6 +123,7 @@ public class PHPUnitTestInitAction extends BaseAction {
             return;
         }
         String fuel = FuelPhpPreferences.getFuelName(phpModule);
+        FOR_MAKEGOOD = new HashSet<String>();
         FOR_MAKEGOOD.add("$_SERVER['doc_root'] = '../../';"); // NOI18N
         FOR_MAKEGOOD.add("$_SERVER['app_path'] = '" + fuel + "/app';"); // NOI18N
         FOR_MAKEGOOD.add("$_SERVER['core_path'] = '" + fuel + "/core';"); // NOI18N
