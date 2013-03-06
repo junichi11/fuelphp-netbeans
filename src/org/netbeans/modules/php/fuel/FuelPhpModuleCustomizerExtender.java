@@ -70,6 +70,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
     private boolean ignoreMVCNode;
     private String testCasePrefix;
     private String testCaseSuffix;
+    private final String testGroupAnnotation;
 
     public FuelPhpModuleCustomizerExtender(PhpModule phpModule) {
         this.phpModule = phpModule;
@@ -78,6 +79,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
         ignoreMVCNode = FuelPhpPreferences.ignoreMVCNode(phpModule);
         testCasePrefix = FuelPhpPreferences.getTestCasePrefix(phpModule);
         testCaseSuffix = FuelPhpPreferences.getTestCaseSuffix(phpModule);
+        testGroupAnnotation = FuelPhpPreferences.getTestGroupAnnotation(phpModule);
     }
 
     @Override
@@ -144,6 +146,11 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             FuelPhpPreferences.setTestCaseSuffix(phpModule, newSuffix);
         }
 
+        String newGroupAnnotation = panel.getTestGroupAnnotation();
+        if (!newGroupAnnotation.equals(testGroupAnnotation)) {
+            FuelPhpPreferences.setTestGroupAnnotation(phpModule, newGroupAnnotation);
+        }
+
         String newFuelName = panel.getFuelNameTextField().getText();
         if (!newFuelName.equals("") && !newFuelName.equals(fuelName)) {
             FuelPhpPreferences.setFuelName(phpModule, newFuelName);
@@ -161,6 +168,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             panel.setIgnoreMVCNode(ignoreMVCNode);
             panel.setTestCasePrefixTextField(testCasePrefix);
             panel.setTestCaseSuffixTextField(testCaseSuffix);
+            panel.setTestGroupAnnotation(testGroupAnnotation);
         }
         return panel;
     }
