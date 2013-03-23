@@ -5,12 +5,8 @@ import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
+import org.netbeans.modules.php.fuel.support.ProjectPropertiesSupport;
 import org.netbeans.modules.php.fuel.ui.FuelPhpCustomizerPanel;
-import org.netbeans.modules.php.project.PhpProject;
-import org.netbeans.modules.php.project.ProjectPropertiesSupport;
-import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties.RunAsType;
-import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties.UploadFiles;
-import org.netbeans.modules.php.project.util.PhpProjectUtils;
 import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender.Change;
 import org.openide.util.HelpCtx;
@@ -174,11 +170,10 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
     }
 
     private boolean isUplaodFilesOnSave() {
-        PhpProject phpProject = PhpProjectUtils.getPhpProject(phpModule.getProjectDirectory());
-        RunAsType runAs = ProjectPropertiesSupport.getRunAs(phpProject);
-        if (runAs == RunAsType.REMOTE) {
-            UploadFiles remoteUpload = ProjectPropertiesSupport.getRemoteUpload(phpProject);
-            if (remoteUpload != null && remoteUpload == UploadFiles.ON_SAVE) {
+        String runAs = ProjectPropertiesSupport.getRunAs(phpModule);
+        if (runAs != null && runAs.equals("REMOTE")) { // NOI18N
+            String remoteUpload = ProjectPropertiesSupport.getRemoteUpload(phpModule);
+            if (remoteUpload != null && remoteUpload.equals("ON_SAVE")) { // NOI18N
                 return true;
             }
         }
