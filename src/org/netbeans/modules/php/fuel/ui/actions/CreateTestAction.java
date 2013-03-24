@@ -41,8 +41,6 @@
  */
 package org.netbeans.modules.php.fuel.ui.actions;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -54,12 +52,10 @@ import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.editor.PhpClass.Method;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
-import org.netbeans.modules.php.fuel.FuelPhp;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
+import org.netbeans.modules.php.spi.framework.actions.BaseAction;
 import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -72,16 +68,11 @@ import org.openide.util.NbBundle.Messages;
         category = "UnitTests",
         id = "org.netbeans.modules.php.fuel.ui.actions.CreateTestAction")
 @ActionRegistration(
-        iconBase = FuelPhp.FUEL_ADD_TEST_ICON_16,
         displayName = "#CTL_CreateTestAction")
-@ActionReferences({
-    @ActionReference(path = "Editors/text/x-php5/Toolbars/Default", separatorBefore = 209000, position = 210000),
-    @ActionReference(path = "Menu/Tools", position = 1800),
-    @ActionReference(path = "Loaders/text/x-php5/Actions", position = 1550),
-    @ActionReference(path = "Editors/text/x-php5/Popup", position = 865)})
 @Messages("CTL_CreateTestAction=Create Test for FuelPHP")
-public final class CreateTestAction implements ActionListener {
+public final class CreateTestAction extends BaseAction {
 
+    private static final long serialVersionUID = 1432991188919830734L;
     private final DataObject context;
     private final FileObject targetFile;
     private FileObject targetTestDirectory;
@@ -94,9 +85,17 @@ public final class CreateTestAction implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent ev) {
-        // TODO use context
-        PhpModule phpModule = PhpModule.forFileObject(targetFile);
+    protected String getFullName() {
+        return getPureName();
+    }
+
+    @Override
+    protected String getPureName() {
+        return Bundle.CTL_CreateTestAction();
+    }
+
+    @Override
+    public void actionPerformed(PhpModule phpModule) {
         if (!FuelUtils.isFuelPHP(phpModule)) {
             return;
         }
