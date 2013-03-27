@@ -47,6 +47,7 @@ package org.netbeans.modules.php.fuel;
  */
 public class FuelPhp {
 
-    public static final String FUEL_ICON_8 = "org/netbeans/modules/php/fuel/resources/fuel_icon_8.png";
-    public static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png";
+    public static final String FUEL_ICON_8 = "org/netbeans/modules/php/fuel/resources/fuel_icon_8.png"; // NOI18N
+    public static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png"; // NOI18N
+    public static final String FUEL_ADD_TEST_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_add_test_icon_16.png"; // NOI18N
 }

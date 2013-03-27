@@ -41,10 +41,10 @@
  */
 package org.netbeans.modules.php.fuel.ui.actions;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Collection;
 import org.netbeans.modules.csl.api.UiUtils;
@@ -54,9 +54,8 @@ import org.netbeans.modules.php.api.editor.PhpClass.Method;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
+import org.netbeans.modules.php.spi.framework.actions.BaseAction;
 import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -66,19 +65,14 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
-    category = "UnitTests",
-id = "org.netbeans.modules.php.fuel.ui.actions.CreateTestAction")
+        category = "UnitTests",
+        id = "org.netbeans.modules.php.fuel.ui.actions.CreateTestAction")
 @ActionRegistration(
-    iconBase = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png",
-displayName = "#CTL_CreateTestAction")
-@ActionReferences({
-    @ActionReference(path = "Menu/Tools", position = 1800),
-    @ActionReference(path = "Loaders/text/x-php5/Actions", position = 1550),
-    @ActionReference(path = "Editors/text/x-php5/Popup", position = 865)
-})
+        displayName = "#CTL_CreateTestAction")
 @Messages("CTL_CreateTestAction=Create Test for FuelPHP")
-public final class CreateTestAction implements ActionListener {
+public final class CreateTestAction extends BaseAction {
 
+    private static final long serialVersionUID = 1432991188919830734L;
     private final DataObject context;
     private final FileObject targetFile;
     private FileObject targetTestDirectory;
@@ -91,9 +85,17 @@ public final class CreateTestAction implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent ev) {
-        // TODO use context
-        PhpModule phpModule = PhpModule.forFileObject(targetFile);
+    protected String getFullName() {
+        return getPureName();
+    }
+
+    @Override
+    protected String getPureName() {
+        return Bundle.CTL_CreateTestAction();
+    }
+
+    @Override
+    public void actionPerformed(PhpModule phpModule) {
         if (!FuelUtils.isFuelPHP(phpModule)) {
             return;
         }
@@ -129,26 +131,37 @@ public final class CreateTestAction implements ActionListener {
             return;
         }
 
-        PrintWriter pw = null;
+        // get encoding
+        String encoding = phpModule.getProperties().getEncoding();
+
+        // get prefix, suffix
         String prefix = FuelPhpPreferences.getTestCasePrefix(phpModule);
         String suffix = FuelPhpPreferences.getTestCaseSuffix(phpModule);
         try {
-            pw = new PrintWriter(targetTestDirectory.createAndOpen(testFileName));
-            pw.println("<?php"); //NOI18N
-            pw.println("/**"); //NOI18N
-            pw.println(" * @group App"); //NOI18N
-            pw.println(" */"); //NOI18N
-            pw.format("class %s%s%s extends TestCase", prefix, className, suffix); //NOI18N
-            pw.flush();
-            pw.println();
-            pw.println("{"); //NOI18N
-            for (Method method : methods) {
-                pw.format("\tpublic function test_%s()\n\t{\n\t}\n\n", method.getName()); //NOI18N
+            OutputStream outuptStream = targetTestDirectory.createAndOpen(testFileName);
+            try {
+                PrintWriter pw = new PrintWriter(new OutputStreamWriter(outuptStream, encoding));
+                try {
+                    pw.println("<?php"); //NOI18N
+                    pw.println("/**"); //NOI18N
+                    String group = " * @group " + FuelPhpPreferences.getTestGroupAnnotation(phpModule); //NOI18N
+                    pw.println(group);
+                    pw.println(" */"); //NOI18N
+                    pw.format("class %s%s%s extends TestCase", prefix, className, suffix); //NOI18N
+                    pw.flush();
+                    pw.println();
+                    pw.println("{"); //NOI18N
+                    for (Method method : methods) {
+                        pw.format("\tpublic function test_%s()\n\t{\n\t}\n\n", method.getName()); //NOI18N
+                    }
+                    pw.flush();
+                    pw.println("}"); //NOI18N
+                } finally {
+                    pw.close();
+                }
+            } finally {
+                outuptStream.close();
             }
-            pw.flush();
-            pw.println("}"); //NOI18N
-            pw.close();
-
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -201,7 +214,7 @@ public final class CreateTestAction implements ActionListener {
     private boolean isParentClasses() {
         if (!targetFile.isFolder()) {
             FileObject parent = targetFile.getParent();
-            if(parent.getNameExt().equals("classes")){ //NOI18N
+            if (parent.getNameExt().equals("classes")) { //NOI18N
                 return true;
             }
         }

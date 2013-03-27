@@ -51,21 +51,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.netbeans.api.project.Project;
-import org.netbeans.api.project.ui.OpenProjects;
+import java.util.prefs.Preferences;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.FuelPhp;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
+import org.netbeans.modules.php.fuel.support.ProjectPropertiesSupport;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
-import org.netbeans.modules.php.project.PhpProject;
-import org.netbeans.modules.php.project.ui.customizer.PhpProjectProperties;
-import org.netbeans.modules.php.project.ui.options.PhpOptions;
 import org.netbeans.modules.php.spi.framework.actions.BaseAction;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
 
 /**
@@ -214,7 +212,7 @@ public class PHPUnitTestInitAction extends BaseAction {
     private void createScript(PhpModule phpModule) {
         FileObject nbproject = getNbproject(phpModule);
         String scriptFileName = ""; // NOI18N
-        String phpUnit = PhpOptions.getInstance().getPhpUnit();
+        String phpUnit = getPHPUnitPath();
         if (phpUnit == null || phpUnit.isEmpty()) {
             messages.put(PHPUNIT, FAIL_MSG + "(isn't set phpunit option)");
             return;
@@ -248,6 +246,11 @@ public class PHPUnitTestInitAction extends BaseAction {
         }
     }
 
+    private String getPHPUnitPath() {
+        Preferences preference = NbPreferences.root().node("/org/netbeans/modules/php/project/general"); // NOI18N
+        return preference.get("phpUnit", null); // NOI18N
+    }
+
     /**
      * Get nbproject directory
      *
@@ -266,30 +269,14 @@ public class PHPUnitTestInitAction extends BaseAction {
      */
     private void setPhpProjectProperties(PhpModule phpModule) {
         // set bootstrap and script
-        PhpProject phpProject = null;
-        OpenProjects projects = OpenProjects.getDefault();
-
-        for (Project project : projects.getOpenProjects()) {
-            if (project.getProjectDirectory() == phpModule.getProjectDirectory()) {
-                phpProject = project.getLookup().lookup(PhpProject.class);
-            }
-            if (phpProject != null) {
-                break;
-            }
+        String bootstrapPath = coreDirectory.getPath() + "/bootstrap_makegood.php"; // NOI18N
+        String script = ""; // NOI18N
+        if (Utilities.isWindows()) {
+            script = PHPUNIT_BAT;
+        } else {
+            script = PHPUNIT_SH;
         }
-        if (phpProject != null) {
-            PhpProjectProperties phpProjectProperties = new PhpProjectProperties(phpProject);
-            String bootstrapPath = coreDirectory.getPath() + "/bootstrap_makegood.php"; // NOI18N
-            phpProjectProperties.setPhpUnitBootstrap(bootstrapPath);
-            phpProjectProperties.setPhpUnitBootstrapForCreateTests(true);
-            String script = ""; // NOI18N
-            if (Utilities.isWindows()) {
-                script = PHPUNIT_BAT;
-            } else {
-                script = PHPUNIT_SH;
-            }
-            phpProjectProperties.setPhpUnitScript(getNbproject(phpModule).getPath() + "/" + script); // NOI18N
-            phpProjectProperties.save();
-        }
+        String scriptPath = getNbproject(phpModule).getPath() + "/" + script;
+        ProjectPropertiesSupport.setPHPUnit(phpModule, bootstrapPath, scriptPath);
     }
 }
