@@ -55,6 +55,7 @@ import org.netbeans.modules.parsing.spi.ParseException;
 import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpBaseElement;
 import org.netbeans.modules.php.api.editor.PhpClass;
+import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.editor.CodeUtils;
 import org.netbeans.modules.php.editor.parser.api.Utils;
 import org.netbeans.modules.php.editor.parser.astnodes.*;
@@ -108,10 +109,22 @@ public class FuelPhpGoToViewAction extends GoToViewAction {
         if (viewMap.isEmpty()) {
             return false;
         }
+        // check modules
+        boolean isModules = FuelUtils.isInModules(controller);
 
         // get view or view model, infer view from view model
-        FileObject viewsDirectory = FuelUtils.getViewsDirectory(controller);
-        FileObject viewModelDirectory = FuelUtils.getViewModelDirectory(controller);
+        FileObject viewsDirectory;
+        FileObject viewModelDirectory;
+        if (isModules) {
+            PhpModule phpModule = PhpModule.forFileObject(controller);
+            String moduleName = FuelUtils.getModuleName(controller);
+            viewsDirectory = FuelUtils.getModuleDirectory(phpModule, moduleName + "/views"); // NOI18N
+            viewModelDirectory = FuelUtils.getModuleDirectory(phpModule, moduleName + "/classes/view"); // NOI18N
+        } else {
+            viewsDirectory = FuelUtils.getViewsDirectory(controller);
+            viewModelDirectory = FuelUtils.getViewModelDirectory(controller);
+        }
+
         FileObject views = null;
         FileObject viewModel = null;
         FileObject openFile = null;
@@ -219,8 +232,8 @@ public class FuelPhpGoToViewAction extends GoToViewAction {
             Expression classNameExpression = node.getClassName();
             String className = CodeUtils.extractQualifiedName(classNameExpression);
             if (!VIEW_CLASS.equals(className)
-                && !VIEW_MODEL_CLASS.equals(className)
-                || !methodName.equals(actionName)) {
+                    && !VIEW_MODEL_CLASS.equals(className)
+                    || !methodName.equals(actionName)) {
                 return;
             }
             FunctionInvocation fi = node.getMethod();
