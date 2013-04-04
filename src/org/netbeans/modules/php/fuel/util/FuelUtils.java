@@ -95,6 +95,10 @@ public final class FuelUtils {
     private static final String SUCCESS_MSG = "Complete success : " + NBPROJECT_DIR_NAME + "/" + FUEL_AUTOCOMPLETION_WITH_EXT;
     private static final String NOTIFY_TITLE = "Create auto completion file";
     private static final String FAIL_MSG = "Fail : Not Found fuel/core";
+    private static final String PUBLIC_ASSETS_DIR = "public/assets"; // NOI18N
+    private static final String PUBLIC_ASSETS_JS_DIR = PUBLIC_ASSETS_DIR + "/js"; // NOI18N
+    private static final String PUBLIC_ASSETS_CSS_DIR = PUBLIC_ASSETS_DIR + "/css"; // NOI18N
+    private static final String PUBLIC_ASSETS_IMG_DIR = PUBLIC_ASSETS_DIR + "/img"; // NOI18N
 
     public static JSONArray getJsonArray(URL url) throws IOException {
         try {
@@ -391,6 +395,46 @@ public final class FuelUtils {
     }
 
     /**
+     * Get assets directory (public/assets).
+     *
+     * @param phpModule
+     * @return
+     */
+    public static FileObject getAssetsDirectory(PhpModule phpModule) {
+        return getDirectory(phpModule, PUBLIC_ASSETS_DIR);
+    }
+
+    /**
+     * Get assets js directory (public/assets/js).
+     *
+     * @param phpModule
+     * @return
+     */
+    public static FileObject getAssetsJsDirectory(PhpModule phpModule) {
+        return getDirectory(phpModule, PUBLIC_ASSETS_JS_DIR);
+    }
+
+    /**
+     * Get assets css directory (public/assets/css).
+     *
+     * @param phpModule
+     * @return
+     */
+    public static FileObject getAssetsCssDirectory(PhpModule phpModule) {
+        return getDirectory(phpModule, PUBLIC_ASSETS_CSS_DIR);
+    }
+
+    /**
+     * Get assets img directory (public/assets/img).
+     *
+     * @param phpModule
+     * @return
+     */
+    public static FileObject getAssetsImgDirectory(PhpModule phpModule) {
+        return getDirectory(phpModule, PUBLIC_ASSETS_IMG_DIR);
+    }
+
+    /**
      * Get directory
      *
      * @param phpModule
@@ -480,7 +524,7 @@ public final class FuelUtils {
      * @return true if in fuelphp module, otherwise false.
      */
     public static boolean isFuelPHP(PhpModule phpModule) {
-        if(phpModule == null) {
+        if (phpModule == null) {
             return false;
         }
         return FuelPhpFrameworkProvider.getInstance().isInPhpModule(phpModule);
@@ -513,5 +557,53 @@ public final class FuelUtils {
             }
             return 0;
         }
+    }
+
+    /**
+     * Check whether file is in modules.
+     *
+     * @param fileObject target FileObject
+     * @return true if file exists modules directory, otherwise false.
+     */
+    public static boolean isInModules(FileObject fileObject) {
+        if (fileObject == null) {
+            return false;
+        }
+        PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        FileObject sourceDirectory = phpModule.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return false;
+        }
+        String sourcePath = sourceDirectory.getPath();
+        String path = fileObject.getPath();
+        path = path.replace(sourcePath, "");
+        return path.contains("/modules/"); // NOI18N
+    }
+
+    /**
+     * Get module directory name. e.g.
+     * fuel/app/modules/sample/app/classes/controller/welcome.php -> sample
+     *
+     * @param fileObject target FileObject
+     * @return module directory name.
+     */
+    public static String getModuleName(FileObject fileObject) {
+        if (!isInModules(fileObject)) {
+            return null;
+        }
+        String path = fileObject.getPath();
+        path = path.replaceAll(".+/modules/", ""); // NOI18N
+        return path.substring(0, path.indexOf("/")); // NOI18N
+    }
+
+    /**
+     * Get module directory.
+     *
+     * @param phpModule
+     * @param name directory name
+     * @return module directory
+     */
+    public static FileObject getModuleDirectory(PhpModule phpModule, String name) {
+        return getDirectory(phpModule, FUEL_APP_MODULES_DIR + "/" + name); // NOI18N
     }
 }
