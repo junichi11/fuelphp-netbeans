@@ -56,6 +56,7 @@ import org.netbeans.modules.php.api.util.FileUtils;
 import org.netbeans.modules.php.editor.lexer.PHPTokenId;
 import org.netbeans.modules.php.fuel.editor.ClassElementQuery;
 import org.netbeans.modules.php.fuel.editor.elements.ClassElement;
+import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.util.FuelDocUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -92,7 +93,7 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
         setHyperlinkSpan(start, end);
 
         // get class element
-        PhpModule phpModule = PhpModule.forFileObject(NbEditorUtilities.getFileObject(document));
+        PhpModule phpModule = getPhpModule(document);
         element = ClassElementQuery.get(document, offset);
         if (element == null || element.getBaseDirectory(phpModule) == null) {
             return false;
@@ -106,8 +107,9 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
     @Override
     public void performClickAction(Document document, int offset, HyperlinkType type) {
         // create file
-        // TODO add project properties option
-        createFile();
+        if (FuelPhpPreferences.useAutoCreateFile(getPhpModule(document))) {
+            createFile();
+        }
 
         // open file
         if (targetFile != null) {
@@ -116,10 +118,16 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
     }
 
     @Override
-    @NbBundle.Messages("LBL_CreateNewFileMessage=Not found file : create a new empty file when you click here")
+    @NbBundle.Messages({
+        "# {0} - message",
+        "LBL_NotFoundMessage=Not found : {0}",
+        "LBL_CreateNewFileMessage=create a new empty file when you click here"})
     public String getTooltipText(Document document, int offset, HyperlinkType type) {
         if (targetFile == null) {
-            return Bundle.LBL_CreateNewFileMessage();
+            if (FuelPhpPreferences.useAutoCreateFile(getPhpModule(document))) {
+                return Bundle.LBL_NotFoundMessage(Bundle.LBL_CreateNewFileMessage());
+            }
+            return Bundle.LBL_NotFoundMessage(targetText);
         }
 
         // get source directory
@@ -181,5 +189,15 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
         if (baseDirectory != null) {
             targetFile = baseDirectory.getFileObject(targetText + element.getExtension()); // NOI18N
         }
+    }
+
+    /**
+     * Get PhpModule.
+     *
+     * @param document
+     * @return
+     */
+    private PhpModule getPhpModule(Document document) {
+        return PhpModule.forFileObject(NbEditorUtilities.getFileObject(document));
     }
 }

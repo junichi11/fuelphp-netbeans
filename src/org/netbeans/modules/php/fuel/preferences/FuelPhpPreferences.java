@@ -57,6 +57,7 @@ public class FuelPhpPreferences {
     private static final String TEST_CASE_PREFIX = "test-case-prefix"; // NOI18N
     private static final String TEST_CASE_SUFFIX = "test-case-suffix"; // NOI18N
     private static final String TEST_GROUP_ANNOTATION = "test-group-annotation"; // NOI18N
+    private static final String AUTO_CREATE_FILE = "auto-create-file"; // NOI18N
 
     public static String getFuelName(PhpModule phpModule) {
         String fuelName = getPreferences(phpModule).get(FUEL_NAME, ""); // NOI18N
@@ -108,6 +109,14 @@ public class FuelPhpPreferences {
 
     public static void setTestGroupAnnotation(PhpModule phpModule, String name) {
         getPreferences(phpModule).put(TEST_GROUP_ANNOTATION, name);
+    }
+
+    public static boolean useAutoCreateFile(PhpModule phpModule) {
+        return getPreferences(phpModule).getBoolean(AUTO_CREATE_FILE, false);
+    }
+
+    public static void setAutoCreateFile(PhpModule phpModule, boolean useAutoCreateFile) {
+        getPreferences(phpModule).putBoolean(AUTO_CREATE_FILE, useAutoCreateFile);
     }
 
     private static Preferences getPreferences(PhpModule phpModule) {

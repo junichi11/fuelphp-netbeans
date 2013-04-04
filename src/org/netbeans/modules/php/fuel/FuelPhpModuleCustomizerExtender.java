@@ -67,6 +67,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
     private String testCasePrefix;
     private String testCaseSuffix;
     private final String testGroupAnnotation;
+    private boolean useAutoCreateFile;
 
     public FuelPhpModuleCustomizerExtender(PhpModule phpModule) {
         this.phpModule = phpModule;
@@ -76,6 +77,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
         testCasePrefix = FuelPhpPreferences.getTestCasePrefix(phpModule);
         testCaseSuffix = FuelPhpPreferences.getTestCaseSuffix(phpModule);
         testGroupAnnotation = FuelPhpPreferences.getTestGroupAnnotation(phpModule);
+        useAutoCreateFile = FuelPhpPreferences.useAutoCreateFile(phpModule);
     }
 
     @Override
@@ -123,6 +125,11 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             FuelPhpPreferences.setUseTestCaseMethod(phpModule, tempUseTestCaseMethod);
         }
 
+        boolean tempUseAutoCreateFile = panel.useAutoCreateFile();
+        if (useAutoCreateFile != tempUseAutoCreateFile) {
+            FuelPhpPreferences.setAutoCreateFile(phpModule, tempUseAutoCreateFile);
+        }
+
         boolean tmpIgnoreMVCNode = panel.ignoreMVCNode();
         if (isUplaodFilesOnSave()) {
             tmpIgnoreMVCNode = false;
@@ -165,6 +172,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             panel.setTestCasePrefixTextField(testCasePrefix);
             panel.setTestCaseSuffixTextField(testCaseSuffix);
             panel.setTestGroupAnnotation(testGroupAnnotation);
+            panel.setAutoCreateFile(useAutoCreateFile);
         }
         return panel;
     }
