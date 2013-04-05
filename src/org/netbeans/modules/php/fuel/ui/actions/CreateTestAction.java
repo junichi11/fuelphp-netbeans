@@ -65,11 +65,14 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
-        category = "UnitTests",
+        category = "PHP",
         id = "org.netbeans.modules.php.fuel.ui.actions.CreateTestAction")
 @ActionRegistration(
-        displayName = "#CTL_CreateTestAction")
-@Messages("CTL_CreateTestAction=Create Test for FuelPHP")
+        displayName = "#LBL_CrateTestActionDisplayName")
+@Messages({
+    "LBL_CreateTestAction=Create Test",
+    "LBL_CrateTestActionDisplayName=FuelPHP: Create Test"
+})
 public final class CreateTestAction extends BaseAction {
 
     private static final long serialVersionUID = 1432991188919830734L;
@@ -91,7 +94,7 @@ public final class CreateTestAction extends BaseAction {
 
     @Override
     protected String getPureName() {
-        return Bundle.CTL_CreateTestAction();
+        return Bundle.LBL_CreateTestAction();
     }
 
     @Override
