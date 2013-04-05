@@ -59,6 +59,7 @@ import org.json.JSONException;
 import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.api.util.FileUtils;
 import org.netbeans.modules.php.fuel.FuelPhpFrameworkProvider;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.openide.awt.NotificationDisplayer;
@@ -282,15 +283,7 @@ public final class FuelUtils {
      * @return if the view file is in views directory, return true.
      */
     public static boolean isView(FileObject view) {
-        if (view == null || !EXT_PHP.equals(view.getExt())) {
-            return false;
-        }
-        FileObject viewsDirectory = getViewsDirectory(view);
-
-        String viewsDirectoryPath = viewsDirectory.getPath();
-        String viewPath = view.getPath();
-
-        return viewPath.startsWith(viewsDirectoryPath);
+        return isViewsViewModel(view, true);
     }
 
     /**
@@ -300,15 +293,25 @@ public final class FuelUtils {
      * @return if the view model file is in view model directory, return true.
      */
     public static boolean isViewModel(FileObject viewModel) {
-        if (viewModel == null || !EXT_PHP.equals(viewModel.getExt())) {
+        return isViewsViewModel(viewModel, false);
+    }
+
+    private static boolean isViewsViewModel(FileObject fileObject, boolean isViews) {
+        if (fileObject == null || !FileUtils.isPhpFile(fileObject)) {
             return false;
         }
-        FileObject viewModelDirectory = getViewModelDirectory(viewModel);
-
-        String viewModelDirectoryPath = viewModelDirectory.getPath();
-        String viewModelPath = viewModel.getPath();
-
-        return viewModelPath.startsWith(viewModelDirectoryPath);
+        PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        FileObject sourceDirectory = phpModule.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return false;
+        }
+        String sourcePath = sourceDirectory.getPath();
+        String path = fileObject.getPath();
+        path = path.replace(sourcePath, ""); // NOI18N
+        if (isViews) {
+            return path.contains("/views/"); // NOI18N
+        }
+        return path.contains("/classes/view/"); // NOI18N
     }
 
     /**
@@ -466,7 +469,9 @@ public final class FuelUtils {
      * @return controller FileObject
      */
     public static FileObject getInferedController(FileObject view) {
-        if (!isView(view) && !isViewModel(view)) {
+        boolean isView = isView(view);
+        boolean isViewModel = isViewModel(view);
+        if (!isView && !isViewModel) {
             return null;
         }
         // view file path from views directory
@@ -474,7 +479,24 @@ public final class FuelUtils {
         String controllerPath = viewPath.replace("/" + view.getNameExt(), "") + ".php"; // NOI18N
 
         // get controller
-        FileObject controller = getControllerDirectory(view).getFileObject(controllerPath);
+        StringBuilder sb = new StringBuilder();
+        int start = 0;
+        while (start != -1) {
+            start++;
+            start = viewPath.indexOf("/", start); // NOI18N
+            if (start == -1) {
+                break;
+            }
+            sb.append("../"); // NOI18N
+        }
+        if (isView) {
+            sb.append("../../"); // NOI18N
+        } else {
+            sb.append("../../../"); // NOI18N
+        }
+        sb.append("classes/controller/"); // NOI18N
+        sb.append(controllerPath);
+        FileObject controller = view.getFileObject(sb.toString());
         if (!isController(controller)) {
             return null;
         }
@@ -488,20 +510,22 @@ public final class FuelUtils {
      * @return view file relative path. contain extension.
      */
     private static String getViewPath(FileObject view) {
-        String viewDirectoryPath = null;
+        PhpModule phpModule = PhpModule.forFileObject(view);
+        FileObject sourceDirectory = phpModule.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return null;
+        }
+        String sourcePath = sourceDirectory.getPath();
         String viewPath = view.getPath();
+        viewPath = viewPath.replace(sourcePath, ""); // NOI18N
         if (isView(view)) {
-            viewDirectoryPath = getViewsDirectory(view).getPath();
+            viewPath = viewPath.replaceAll(".+/views/", ""); // NOI18N
         } else if (isViewModel(view)) {
-            viewDirectoryPath = getViewModelDirectory(view).getPath();
+            viewPath = viewPath.replaceAll(".+/view/", ""); // NOI18N
         } else {
             return null;
         }
-        String replacePath = viewPath.replace(viewDirectoryPath, ""); // NOI18N
-        if (replacePath.startsWith("/")) { // NOI18N
-            replacePath = replacePath.replaceFirst("/", ""); // NOI18N
-        }
-        return replacePath;
+        return viewPath;
     }
 
     /**
