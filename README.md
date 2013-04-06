@@ -12,6 +12,7 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - Support for view path code completion
 - MVC Node
 - Support for running PHPUnit Test
+- Hyperlink navigation
 
 ## Install
 
@@ -94,6 +95,37 @@ And set them.
 
 ## Create Test Action
 You can create Test Case files from context menu on file nodes or editor.
+
+## Hyperlink Navigation
+This feature is similar to Go To action.
+
+1. Hold-down Ctrl key
+2. wait until text color is changed to blue
+3. click
+4. go to file
+
+e.g.
+```php
+// move cursor on 'bootstrap.css'
+// 1. ... 4.
+Asset::css('bootstrap.css');
+```
+
+This is valid for the following methods.
+
+### Asset Class
+- img
+- css
+- js
+
+### View, ViewModel Class
+- forge
+
+### Option for creating file automatically
+You can also use option for creating file automatically.
+Please check `project properties > Framework > FuelPHP > create a file ...`
+
+You can create a empty file when target files don't exisit if this option is valid.
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)

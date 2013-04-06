@@ -107,6 +107,14 @@ public class FuelPhpCustomizerPanel extends JPanel {
         testGroupAnnotationTextField.setText(name);
     }
 
+    public boolean useAutoCreateFile() {
+        return autoCreateFileCheckBox.isSelected();
+    }
+
+    public void setAutoCreateFile(boolean use) {
+        autoCreateFileCheckBox.setSelected(use);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -128,6 +136,7 @@ public class FuelPhpCustomizerPanel extends JPanel {
         testCaseSuffixTextField = new javax.swing.JTextField();
         testGroupAnnotationLabel = new javax.swing.JLabel();
         testGroupAnnotationTextField = new javax.swing.JTextField();
+        autoCreateFileCheckBox = new javax.swing.JCheckBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(fuelNameLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.fuelNameLabel.text")); // NOI18N
 
@@ -153,6 +162,8 @@ public class FuelPhpCustomizerPanel extends JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(testGroupAnnotationLabel, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.testGroupAnnotationLabel.text")); // NOI18N
 
         testGroupAnnotationTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.testGroupAnnotationTextField.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(autoCreateFileCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpCustomizerPanel.class, "FuelPhpCustomizerPanel.autoCreateFileCheckBox.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -189,7 +200,10 @@ public class FuelPhpCustomizerPanel extends JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(testCaseSuffixLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(testCaseSuffixTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(testCaseSuffixTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(autoCreateFileCheckBox)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -217,10 +231,13 @@ public class FuelPhpCustomizerPanel extends JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(testGroupAnnotationLabel)
                     .addComponent(testGroupAnnotationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(102, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(autoCreateFileCheckBox)
+                .addContainerGap(72, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox autoCreateFileCheckBox;
     private javax.swing.JLabel fuelNameLabel;
     private javax.swing.JTextField fuelNameTextField;
     private javax.swing.JCheckBox ignoreMVCNodeCheckBox;
