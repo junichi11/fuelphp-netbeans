@@ -13,6 +13,7 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - MVC Node
 - Support for running PHPUnit Test
 - Hyperlink navigation
+- Run Command Action
 
 ## Install
 
@@ -126,6 +127,11 @@ You can also use option for creating file automatically.
 Please check `project properties > Framework > FuelPHP > create a file ...`
 
 You can create a empty file when target files don't exisit if this option is valid.
+
+## Run Command Action
+You can run oil commands with IDE.
+
+Right-click project > FuelPHP > Run Command or Shortcut key `Alt + Shift + X`
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)
