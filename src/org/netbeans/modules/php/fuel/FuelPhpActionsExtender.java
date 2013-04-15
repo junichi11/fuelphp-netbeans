@@ -47,6 +47,7 @@ import javax.swing.Action;
 import org.netbeans.modules.php.fuel.ui.actions.CreateAutoCompletionFileAction;
 import org.netbeans.modules.php.fuel.ui.actions.FuelPhpGoToActionAction;
 import org.netbeans.modules.php.fuel.ui.actions.FuelPhpGoToViewAction;
+import org.netbeans.modules.php.fuel.ui.actions.FuelPhpOilGenerateAction;
 import org.netbeans.modules.php.fuel.ui.actions.FuelPhpRunCommandAction;
 import org.netbeans.modules.php.fuel.ui.actions.PHPUnitTestInitAction;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
@@ -68,6 +69,7 @@ public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
         ArrayList<Action> actions = new ArrayList<Action>();
         actions.add(CreateAutoCompletionFileAction.getInstance());
         actions.add(PHPUnitTestInitAction.getInstance());
+        actions.add(FuelPhpOilGenerateAction.getInstance());
         return actions;
     }
 

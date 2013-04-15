@@ -630,4 +630,31 @@ public final class FuelUtils {
     public static FileObject getModuleDirectory(PhpModule phpModule, String name) {
         return getDirectory(phpModule, FUEL_APP_MODULES_DIR + "/" + name); // NOI18N
     }
+
+    /**
+     * Sort files.
+     *
+     * @param files
+     * @param desc true if order by desc, false if asc.
+     */
+    public static void sortFileObject(FileObject[] files, final boolean desc) {
+        Arrays.sort(files, new Comparator<FileObject>() {
+            @Override
+            public int compare(FileObject o1, FileObject o2) {
+                if (desc) {
+                    return o2.getName().compareToIgnoreCase(o1.getName());
+                }
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+    }
+
+    /**
+     * Sort files order by asc.
+     *
+     * @param files
+     */
+    public static void sortFileObject(FileObject[] files) {
+        sortFileObject(files, false);
+    }
 }
