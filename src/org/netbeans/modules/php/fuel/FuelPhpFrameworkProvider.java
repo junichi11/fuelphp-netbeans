@@ -49,6 +49,7 @@ import java.util.Map;
 import org.netbeans.modules.php.api.framework.BadgeIcon;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
+import org.netbeans.modules.php.fuel.commands.FuelPhpFrameworkCommandSupport;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.spi.editor.EditorExtender;
 import org.netbeans.modules.php.spi.framework.PhpFrameworkProvider;
@@ -82,11 +83,11 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
     private FuelPhpFrameworkProvider() {
         super("fuelphp", // NOI18N
-            NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkName"),
-            NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkDescription"));
+                NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkName"),
+                NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkDescription"));
         badgeIcon = new BadgeIcon(
-            ImageUtilities.loadImage(ICON_PATH),
-            FuelPhpFrameworkProvider.class.getResource("/" + ICON_PATH)); // NOI18N
+                ImageUtilities.loadImage(ICON_PATH),
+                FuelPhpFrameworkProvider.class.getResource("/" + ICON_PATH)); // NOI18N
     }
 
     @Override
@@ -196,7 +197,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
     @Override
     public FrameworkCommandSupport getFrameworkCommandSupport(PhpModule pm) {
-        return null;
+        return new FuelPhpFrameworkCommandSupport(pm);
     }
 
     @Override
