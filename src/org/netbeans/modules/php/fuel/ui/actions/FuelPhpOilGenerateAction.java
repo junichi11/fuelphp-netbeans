@@ -113,6 +113,7 @@ public class FuelPhpOilGenerateAction extends BaseAction {
             panel = new FuelPhpGeneratePanel(phpModule);
         }
         panel.setViewsControllerNameCombobox();
+        panel.setControllerExtendsComboBox();
         return panel;
     }
 }

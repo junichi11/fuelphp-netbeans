@@ -44,6 +44,9 @@ package org.netbeans.modules.php.fuel.commands.ui;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
@@ -52,6 +55,8 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import org.netbeans.modules.php.api.editor.EditorSupport;
+import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.executable.InvalidPhpExecutableException;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.util.FileUtils;
@@ -60,6 +65,7 @@ import org.netbeans.modules.php.fuel.commands.Oil;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -121,6 +127,7 @@ public class FuelPhpGeneratePanel extends JPanel {
         modelTable.getColumn("Type").setCellEditor(cellEditor); // NOI18N
         migrationTable.getColumn("Type").setCellEditor(cellEditor); // NOI18N
         setViewsControllerNameCombobox();
+        setControllerExtendsComboBox();
     }
 
     /**
@@ -203,7 +210,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      */
     private void addRow(JTable table) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.addRow(new String[]{null, null});
+        model.addRow(new String[]{});
     }
 
     /**
@@ -228,6 +235,47 @@ public class FuelPhpGeneratePanel extends JPanel {
             String path = controllerDirectory.getPath();
             addElement(model, controllerDirectory, path);
         }
+    }
+
+    public final void setControllerExtendsComboBox() {
+        Object currentItem = controllerExtendsComboBox.getSelectedItem();
+        controllerExtendsComboBox.removeAllItems();
+        controllerExtendsComboBox.addItem(""); // NOI18N
+        controllerExtendsComboBox.setEditable(true);
+        EditorSupport editorSupport = Lookup.getDefault().lookup(EditorSupport.class);
+        FileObject controllerDirectory = FuelUtils.getControllerDirectory(phpModule);
+        FileObject coreDirectory = FuelUtils.getCoreDirectory(phpModule);
+        FileObject coreControllerDirectory = null;
+        if (coreDirectory != null) {
+            coreControllerDirectory = coreDirectory.getFileObject("classes/controller"); // NOI18N
+        }
+
+        List<FileObject> controllers = new LinkedList<FileObject>();
+
+        // core
+        if (coreControllerDirectory != null) {
+            Enumeration<? extends FileObject> children = coreControllerDirectory.getChildren(true);
+            controllers.addAll(Collections.list(children));
+        }
+
+        // app
+        if (coreControllerDirectory != null) {
+            Enumeration<? extends FileObject> children = controllerDirectory.getChildren(true);
+            controllers.addAll(Collections.list(children));
+        }
+
+        // add items
+        controllerExtendsComboBox.addItem("Controller"); // NOI18N
+        FuelUtils.sortFileObject(controllers);
+        for (FileObject controller : controllers) {
+            for (PhpClass phpClass : editorSupport.getClasses(controller)) {
+                String className = phpClass.getName();
+                if (className.startsWith(FuelUtils.CONTROLLER_PREFIX)) {
+                    controllerExtendsComboBox.addItem(className);
+                }
+            }
+        }
+        controllerExtendsComboBox.setSelectedItem(currentItem);
     }
 
     /**
@@ -308,7 +356,6 @@ public class FuelPhpGeneratePanel extends JPanel {
         controllerNameLabel = new javax.swing.JLabel();
         controllerNameTextField = new javax.swing.JTextField();
         controllerExtendsLabel = new javax.swing.JLabel();
-        controllerExtendsTextField = new javax.swing.JTextField();
         controllerWithViewmodelCheckBox = new javax.swing.JCheckBox();
         controllerCrudCheckBox = new javax.swing.JCheckBox();
         controllerOthersLabel = new javax.swing.JLabel();
@@ -318,6 +365,7 @@ public class FuelPhpGeneratePanel extends JPanel {
         controllerTable = new javax.swing.JTable();
         controllerAddRowButton = new javax.swing.JButton();
         controllerDeleteRowsButton = new javax.swing.JButton();
+        controllerExtendsComboBox = new javax.swing.JComboBox();
         viewsPanel = new javax.swing.JPanel();
         viewsControllerNameLabel = new javax.swing.JLabel();
         viewsScrollPane = new javax.swing.JScrollPane();
@@ -526,8 +574,6 @@ public class FuelPhpGeneratePanel extends JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(controllerExtendsLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.controllerExtendsLabel.text")); // NOI18N
 
-        controllerExtendsTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.controllerExtendsTextField.text")); // NOI18N
-
         org.openide.awt.Mnemonics.setLocalizedText(controllerWithViewmodelCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.controllerWithViewmodelCheckBox.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(controllerCrudCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.controllerCrudCheckBox.text")); // NOI18N
@@ -586,22 +632,27 @@ public class FuelPhpGeneratePanel extends JPanel {
             controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(controllerPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(controllerWithViewmodelCheckBox)
+                .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(controllerPanelLayout.createSequentialGroup()
                         .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(controllerExtendsLabel)
-                            .addComponent(controllerNameLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(controllerNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(controllerExtendsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(controllerCrudCheckBox)
-                    .addGroup(controllerPanelLayout.createSequentialGroup()
-                        .addComponent(controllerOthersLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(controllerOthersTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(controllerWithViewmodelCheckBox)
+                            .addComponent(controllerCrudCheckBox))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 211, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controllerPanelLayout.createSequentialGroup()
+                        .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(controllerPanelLayout.createSequentialGroup()
+                                .addComponent(controllerOthersLabel)
+                                .addGap(39, 39, 39)
+                                .addComponent(controllerOthersTextField))
+                            .addGroup(controllerPanelLayout.createSequentialGroup()
+                                .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(controllerExtendsLabel)
+                                    .addComponent(controllerNameLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(controllerExtendsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(controllerNameTextField))))
+                        .addGap(6, 6, 6)))
                 .addComponent(controllerScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -625,7 +676,7 @@ public class FuelPhpGeneratePanel extends JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(controllerExtendsLabel)
-                                    .addComponent(controllerExtendsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(controllerExtendsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(controllerWithViewmodelCheckBox)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1416,8 +1467,8 @@ public class FuelPhpGeneratePanel extends JPanel {
     private javax.swing.JButton controllerAddRowButton;
     private javax.swing.JCheckBox controllerCrudCheckBox;
     private javax.swing.JButton controllerDeleteRowsButton;
+    private javax.swing.JComboBox controllerExtendsComboBox;
     private javax.swing.JLabel controllerExtendsLabel;
-    private javax.swing.JTextField controllerExtendsTextField;
     private javax.swing.JLabel controllerNameLabel;
     private javax.swing.JTextField controllerNameTextField;
     private javax.swing.JLabel controllerOthersLabel;
@@ -1525,9 +1576,9 @@ public class FuelPhpGeneratePanel extends JPanel {
                 params.add(viewName);
             }
         }
-
         // --extends
-        String extendsName = controllerExtendsTextField.getText().trim();
+        String extendsName = (String) controllerExtendsComboBox.getSelectedItem();
+        extendsName = extendsName.trim();
         if (!StringUtils.isEmpty(extendsName)) {
             params.add(controllerExtendsLabel.getText() + extendsName);
         }
