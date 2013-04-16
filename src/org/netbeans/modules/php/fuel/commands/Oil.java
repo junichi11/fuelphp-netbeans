@@ -43,8 +43,10 @@ package org.netbeans.modules.php.fuel.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
@@ -56,17 +58,21 @@ import org.netbeans.api.extexecution.ExecutionDescriptor;
 import org.netbeans.api.extexecution.input.InputProcessor;
 import org.netbeans.api.extexecution.input.InputProcessors;
 import org.netbeans.api.extexecution.input.LineProcessor;
+import org.netbeans.modules.php.api.editor.EditorSupport;
+import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.executable.InvalidPhpExecutableException;
 import org.netbeans.modules.php.api.executable.PhpExecutable;
 import org.netbeans.modules.php.api.executable.PhpExecutableValidator;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.api.util.UiUtils;
+import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.spi.framework.commands.FrameworkCommand;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.InputOutput;
 
@@ -86,14 +92,21 @@ public class Oil {
     private static final String GENERATE_COMMAND = "generate"; // NOI18N
     private static final String CONSOLE_COMMAND = "console"; // NOI18N
     private static final String TEST_COMMAND = "test"; // NOI18N
+    private static final String REFINE_COMMAND = "refine"; // NOI18N
     // default params
     private static final List<String> DEFAULT_PARAMS = Collections.emptyList();
     private static final Set<String> IGNORE_HELP_COMMANDS = new HashSet<String>();
+    private static final Set<String> IGNORE_TASK_METHOD_NAMES = new HashSet<String>();
     private final String oilPath;
 
     static {
+        // help commands
         IGNORE_HELP_COMMANDS.add(CONSOLE_COMMAND);
         IGNORE_HELP_COMMANDS.add(TEST_COMMAND);
+        // task method names
+        IGNORE_TASK_METHOD_NAMES.add("run"); // NOI18N
+        IGNORE_TASK_METHOD_NAMES.add("__construct"); // NOI18N
+        IGNORE_TASK_METHOD_NAMES.add("__call"); // NOI18N
     }
 
     private Oil(String oilPath) {
@@ -220,10 +233,46 @@ public class Oil {
         for (String command : commands) {
             commandList.add(new FuelPhpFrameworkCommand(phpModule, command, command, command));
             // add sub commands
+            String fullCommand;
             if (command.equals(GENERATE_COMMAND)) {
                 for (String subCommand : getGenerateSubCommands(phpModule)) {
-                    String fullCommand = command + " " + subCommand; // NOI18N
+                    fullCommand = command + " " + subCommand; // NOI18N
                     commandList.add(new FuelPhpFrameworkCommand(phpModule, new String[]{command, subCommand}, fullCommand, fullCommand));
+                }
+            } else if (command.equals(REFINE_COMMAND)) {
+                List<FileObject> tasks = new LinkedList<FileObject>();
+                getTasks(phpModule, tasks);
+                EditorSupport editorSupport = Lookup.getDefault().lookup(EditorSupport.class);
+                for (FileObject task : tasks) {
+                    String taskName = task.getName();
+                    fullCommand = command + " " + taskName; // NOI18N
+                    for (PhpClass phpClass : editorSupport.getClasses(task)) {
+                        Collection<PhpClass.Method> methods = phpClass.getMethods();
+                        boolean existsHelp = false;
+                        for (PhpClass.Method method : methods) {
+                            if (method.getName().equals("help")) { // NOI18N
+                                existsHelp = true;
+                                break;
+                            }
+                        }
+                        commandList.add(new FuelPhpFrameworkCommand(phpModule, new String[]{command, taskName}, fullCommand, fullCommand, existsHelp));
+                        for (PhpClass.Method method : methods) {
+                            String methodName = method.getName();
+                            // migrate task
+                            if (taskName.equals("migrate")) { // NOI18N
+                                methodName = methodName.replaceFirst("_", ""); // NOI18N
+                                if (methodName.startsWith("_")) { // NOI18N
+                                    continue;
+                                }
+                            }
+                            if (IGNORE_TASK_METHOD_NAMES.contains(methodName)) {
+                                continue;
+                            }
+                            String subCommand = taskName + ":" + methodName;  // NOI18N
+                            fullCommand = command + " " + subCommand;
+                            commandList.add(new FuelPhpFrameworkCommand(phpModule, new String[]{command, subCommand}, fullCommand, fullCommand, existsHelp));
+                        }
+                    }
                 }
             }
         }
@@ -238,6 +287,31 @@ public class Oil {
      */
     private String[] getGenerateSubCommands(PhpModule phpModule) {
         return getCommands(phpModule, new String[]{GENERATE_COMMAND}, GENERATE_SUB_COMMAND_REGEX);
+    }
+
+    private void getTasks(PhpModule phpModule, List<FileObject> tasks) {
+        FileObject fuelDirectory = FuelUtils.getFuelDirectory(phpModule);
+        if (fuelDirectory == null) {
+            return;
+        }
+        FileObject tasksDirectory = fuelDirectory.getFileObject("app/tasks"); // NOI18N
+        FileObject coreTasksDirectory = fuelDirectory.getFileObject("core/tasks"); // NOI18N
+        FileObject packagesTasksDirectory = fuelDirectory.getFileObject("packages/oil/tasks"); // NOI18N
+        addTasks(tasksDirectory, tasks);
+        addTasks(coreTasksDirectory, tasks);
+        addTasks(packagesTasksDirectory, tasks);
+    }
+
+    /**
+     * Add tasks.
+     *
+     * @param folder
+     * @param tasks
+     */
+    private void addTasks(FileObject folder, List<FileObject> tasks) {
+        if (folder != null && folder.isFolder()) {
+            tasks.addAll(Arrays.asList(folder.getChildren()));
+        }
     }
 
     /**
@@ -276,7 +350,7 @@ public class Oil {
         assert phpModule != null;
 
         // no help commands
-        if (params.length > 1) {
+        if (params.length > 1 && !params[0].equals(REFINE_COMMAND)) {
             return ""; // NOI18N
         }
         for (String param : params) {
@@ -286,8 +360,14 @@ public class Oil {
         }
 
         List<String> allParams = new ArrayList<String>();
-        allParams.addAll(Arrays.asList(params));
-        allParams.add(HELP_COMMAND);
+        if (params.length > 1 && params[0].equals(REFINE_COMMAND)) {
+            List<String> explode = StringUtils.explode(params[1], ":"); // NOI18N
+            allParams.add(REFINE_COMMAND);
+            allParams.add(explode.get(0) + ":help"); // NOI18N
+        } else {
+            allParams.addAll(Arrays.asList(params));
+            allParams.add(HELP_COMMAND);
+        }
 
         HelpLineProcessor lineProcessor = new HelpLineProcessor();
         Future<Integer> result = createPhpExecutable(phpModule)

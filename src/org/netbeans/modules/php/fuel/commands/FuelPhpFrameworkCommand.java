@@ -54,17 +54,27 @@ import org.netbeans.modules.php.spi.framework.commands.FrameworkCommand;
 public class FuelPhpFrameworkCommand extends FrameworkCommand {
 
     private final WeakReference<PhpModule> phpModule;
+    private final boolean existsHelp;
 
     public FuelPhpFrameworkCommand(PhpModule phpModule, String command, String description, String displayName) {
         super(command, description, displayName);
         assert phpModule != null;
         this.phpModule = new WeakReference<PhpModule>(phpModule);
+        existsHelp = true;
     }
 
     public FuelPhpFrameworkCommand(PhpModule phpModule, String[] commands, String description, String displayName) {
         super(commands, description, displayName);
         assert phpModule != null;
         this.phpModule = new WeakReference<PhpModule>(phpModule);
+        existsHelp = true;
+    }
+
+    public FuelPhpFrameworkCommand(PhpModule phpModule, String[] commands, String description, String displayName, boolean help) {
+        super(commands, description, displayName);
+        assert phpModule != null;
+        this.phpModule = new WeakReference<PhpModule>(phpModule);
+        existsHelp = help;
     }
 
     @Override
@@ -74,7 +84,9 @@ public class FuelPhpFrameworkCommand extends FrameworkCommand {
             return ""; // NOI18N
         }
         try {
-            return Oil.forPhpModule(module, false).getHelp(module, getCommands());
+            if (existsHelp) {
+                return Oil.forPhpModule(module, false).getHelp(module, getCommands());
+            }
         } catch (InvalidPhpExecutableException ex) {
             UiUtils.invalidScriptProvided(ex.getLocalizedMessage(), Oil.OPTIONS_SUB_PATH);
         }
