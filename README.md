@@ -4,16 +4,17 @@ This NetBeans plugin provides support for FuelPHP Framework.
 
 ##Features
 
-- Badge Icon (Done)
-- create a new FuelPHP Project from New Project Option(Done)
-- create a file for auto completion(Done)
-- Action : go to view , go to action (Done)
+- Badge Icon
+- create a new FuelPHP Project from New Project Option
+- create a file for auto completion
+- Action : go to view , go to action
 - Support for custom fuel directory name
 - Support for view path code completion
 - MVC Node
 - Support for running PHPUnit Test
 - Hyperlink navigation
 - Run Command Action
+- Generate Action
 
 ## Install
 
@@ -132,6 +133,11 @@ You can create a empty file when target files don't exisit if this option is val
 You can run oil commands with IDE.
 
 Right-click project > FuelPHP > Run Command or Shortcut key `Alt + Shift + X`
+
+## Generate Action
+You can run `oil generate` command with GUI.
+
+Right-click project > FuelPHP > Generate
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)
