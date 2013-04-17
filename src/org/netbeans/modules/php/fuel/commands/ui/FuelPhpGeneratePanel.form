@@ -122,7 +122,7 @@
                                   </Group>
                                   <Component id="configOverwriteCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="201" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="224" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -300,7 +300,7 @@
                                   <Component id="controllerWithViewmodelCheckBox" min="-2" max="-2" attributes="0"/>
                                   <Component id="controllerCrudCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="211" max="32767" attributes="0"/>
+                              <EmptySpace pref="234" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -523,7 +523,7 @@
                           <Group type="102" attributes="0">
                               <Component id="viewsControllerNameLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="viewsControllerNameComboBox" pref="228" max="32767" attributes="0"/>
+                              <Component id="viewsControllerNameComboBox" pref="251" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -701,7 +701,7 @@
                                       <Component id="modelOthersTextField" min="-2" pref="224" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="23" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -1066,7 +1066,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="taskNameLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="taskNameTextField" pref="299" max="32767" attributes="0"/>
+                      <Component id="taskNameTextField" pref="322" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="taskScrollPane" min="-2" pref="302" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -1199,18 +1199,19 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="migrationCreateTableRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="migrationRenameTableRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="migrationDropTableRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="migrationAddFieldRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="migrationRenameFieldRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="migrationDeleteFieldRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="migrationRenameTableRadioButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="migrationDropTableRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="migrationScrollPane" pref="610" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="migrationResetTableButton" min="-2" pref="121" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -1220,18 +1221,19 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="migrationAddRowButton" min="-2" pref="98" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="migrationScrollPane" pref="587" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="migrationTableNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="migrationNameLabel" min="-2" max="-2" attributes="0"/>
+                                  <Component id="migrationFromLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="migrationTableNameLabel" min="-2" max="-2" attributes="0"/>
                                   <Component id="migrationToLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="migrationFieldNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="migrationFieldNameTextField" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="migrationTableNameTextField" max="32767" attributes="0"/>
-                                  <Component id="migrationToTextField" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="migrationFromTextField" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="migrationToTextField" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="migrationNameTextField" max="32767" attributes="0"/>
+                                  <Component id="migrationTableNameTextField" alignment="1" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -1245,41 +1247,45 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="migrationCreateTableRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="migrationTableNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="migrationTableNameTextField" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                          <Component id="migrationNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="migrationNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="migrationRenameTableRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="migrationFieldNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="migrationFieldNameTextField" min="-2" pref="28" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="migrationRenameTableRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="migrationTableNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="migrationTableNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="migrationDropTableRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="migrationFromLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="migrationFromTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="migrationAddFieldRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="migrationToLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="migrationToTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="migrationAddFieldRadioButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               <Component id="migrationRenameFieldRadioButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                               <Component id="migrationDeleteFieldRadioButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="137" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="183" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="migrationScrollPane" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="migrationResetTableButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="migrationResetAllButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="migrationAddRowButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="migrationDeleteRowsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="migrationScrollPane" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="migrationResetTableButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="migrationResetAllButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="migrationAddRowButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="migrationDeleteRowsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -1296,6 +1302,9 @@
                   <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationCreateTableRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="migrationCreateTableRadioButtonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="migrationRenameTableRadioButton">
               <Properties>
@@ -1306,6 +1315,9 @@
                   <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationRenameTableRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="migrationRenameTableRadioButtonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="migrationDropTableRadioButton">
               <Properties>
@@ -1316,6 +1328,9 @@
                   <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationDropTableRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="migrationDropTableRadioButtonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="migrationAddFieldRadioButton">
               <Properties>
@@ -1326,6 +1341,9 @@
                   <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationAddFieldRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="migrationAddFieldRadioButtonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="migrationRenameFieldRadioButton">
               <Properties>
@@ -1336,6 +1354,9 @@
                   <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationRenameFieldRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="migrationRenameFieldRadioButtonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="migrationDeleteFieldRadioButton">
               <Properties>
@@ -1346,6 +1367,9 @@
                   <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationDeleteFieldRadioButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="migrationDeleteFieldRadioButtonActionPerformed"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="migrationScrollPane">
 
@@ -1355,7 +1379,7 @@
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="6" rowCount="5">
-                        <Column editable="true" title="Name" type="java.lang.String"/>
+                        <Column editable="true" title="Field Name" type="java.lang.String"/>
                         <Column editable="true" title="Type" type="java.lang.Object"/>
                         <Column editable="true" title="Size" type="java.lang.String"/>
                         <Column editable="true" title="Default" type="java.lang.String"/>
@@ -1463,10 +1487,10 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="migrationFieldNameLabel">
+            <Component class="javax.swing.JLabel" name="migrationFromLabel">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationFieldNameLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                  <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationFromLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
               </Properties>
             </Component>
@@ -1482,12 +1506,18 @@
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationTableNameTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
+                <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="migrationFromTextField"/>
+                </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="migrationFieldNameTextField">
+            <Component class="javax.swing.JTextField" name="migrationFromTextField">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationFieldNameTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                  <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationFromTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
+                <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="migrationToTextField"/>
                 </Property>
               </Properties>
             </Component>
@@ -1495,6 +1525,23 @@
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationToTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="migrationNameLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationNameLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="migrationNameTextField">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/netbeans/modules/php/fuel/commands/ui/Bundle.properties" key="FuelPhpGeneratePanel.migrationNameTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
+                <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="migrationTableNameTextField"/>
                 </Property>
               </Properties>
             </Component>

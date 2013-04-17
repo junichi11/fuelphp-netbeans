@@ -305,7 +305,7 @@ public class FuelPhpGeneratePanel extends JPanel {
         }
     }
 
-    public void setAdminAndScaffoldCombobox() {
+    public void setAdminAndScaffoldComboBox() {
         FileObject fuelDirectory = FuelUtils.getFuelDirectory(phpModule);
         FileObject targetDirectory = null;
         adminAndScaffoldComboBox.removeAllItems();
@@ -325,6 +325,14 @@ public class FuelPhpGeneratePanel extends JPanel {
                 adminAndScaffoldComboBox.addItem(child.getName());
             }
         }
+    }
+
+    private void setEnabledMigrationTable(boolean isEnabled) {
+        migrationScrollPane.setEnabled(isEnabled);
+        migrationTable.clearSelection();
+        migrationTable.setEnabled(isEnabled);
+        migrationAddRowButton.setEnabled(isEnabled);
+        migrationDeleteRowsButton.setEnabled(isEnabled);
     }
 
     /**
@@ -423,11 +431,13 @@ public class FuelPhpGeneratePanel extends JPanel {
         migrationResetAllButton = new javax.swing.JButton();
         migrationResetTableButton = new javax.swing.JButton();
         migrationTableNameLabel = new javax.swing.JLabel();
-        migrationFieldNameLabel = new javax.swing.JLabel();
+        migrationFromLabel = new javax.swing.JLabel();
         migrationToLabel = new javax.swing.JLabel();
         migrationTableNameTextField = new javax.swing.JTextField();
-        migrationFieldNameTextField = new javax.swing.JTextField();
+        migrationFromTextField = new javax.swing.JTextField();
         migrationToTextField = new javax.swing.JTextField();
+        migrationNameLabel = new javax.swing.JLabel();
+        migrationNameTextField = new javax.swing.JTextField();
         runtimeForceCheckBox = new javax.swing.JCheckBox();
         runtimeSkipCheckBox = new javax.swing.JCheckBox();
         runtimeQuietCheckBox = new javax.swing.JCheckBox();
@@ -538,7 +548,7 @@ public class FuelPhpGeneratePanel extends JPanel {
                                     .addComponent(configDeleteRowsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(configResetTableButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(configOverwriteCheckBox))
-                        .addGap(0, 201, Short.MAX_VALUE)))
+                        .addGap(0, 224, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         configPanelLayout.setVerticalGroup(
@@ -637,7 +647,7 @@ public class FuelPhpGeneratePanel extends JPanel {
                         .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(controllerWithViewmodelCheckBox)
                             .addComponent(controllerCrudCheckBox))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 211, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controllerPanelLayout.createSequentialGroup()
                         .addGroup(controllerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(controllerPanelLayout.createSequentialGroup()
@@ -756,7 +766,7 @@ public class FuelPhpGeneratePanel extends JPanel {
                     .addGroup(viewsPanelLayout.createSequentialGroup()
                         .addComponent(viewsControllerNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(viewsControllerNameComboBox, 0, 228, Short.MAX_VALUE)))
+                        .addComponent(viewsControllerNameComboBox, 0, 251, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(viewsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -945,7 +955,7 @@ public class FuelPhpGeneratePanel extends JPanel {
                                 .addComponent(modelOthersLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(modelOthersTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 23, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1071,7 +1081,7 @@ public class FuelPhpGeneratePanel extends JPanel {
                 .addContainerGap()
                 .addComponent(taskNameLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(taskNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                .addComponent(taskNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(taskScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1107,21 +1117,51 @@ public class FuelPhpGeneratePanel extends JPanel {
 
         migrationButtonGroup.add(migrationCreateTableRadioButton);
         org.openide.awt.Mnemonics.setLocalizedText(migrationCreateTableRadioButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationCreateTableRadioButton.text")); // NOI18N
+        migrationCreateTableRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                migrationCreateTableRadioButtonActionPerformed(evt);
+            }
+        });
 
         migrationButtonGroup.add(migrationRenameTableRadioButton);
         org.openide.awt.Mnemonics.setLocalizedText(migrationRenameTableRadioButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationRenameTableRadioButton.text")); // NOI18N
+        migrationRenameTableRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                migrationRenameTableRadioButtonActionPerformed(evt);
+            }
+        });
 
         migrationButtonGroup.add(migrationDropTableRadioButton);
         org.openide.awt.Mnemonics.setLocalizedText(migrationDropTableRadioButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationDropTableRadioButton.text")); // NOI18N
+        migrationDropTableRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                migrationDropTableRadioButtonActionPerformed(evt);
+            }
+        });
 
         migrationButtonGroup.add(migrationAddFieldRadioButton);
         org.openide.awt.Mnemonics.setLocalizedText(migrationAddFieldRadioButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationAddFieldRadioButton.text")); // NOI18N
+        migrationAddFieldRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                migrationAddFieldRadioButtonActionPerformed(evt);
+            }
+        });
 
         migrationButtonGroup.add(migrationRenameFieldRadioButton);
         org.openide.awt.Mnemonics.setLocalizedText(migrationRenameFieldRadioButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationRenameFieldRadioButton.text")); // NOI18N
+        migrationRenameFieldRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                migrationRenameFieldRadioButtonActionPerformed(evt);
+            }
+        });
 
         migrationButtonGroup.add(migrationDeleteFieldRadioButton);
         org.openide.awt.Mnemonics.setLocalizedText(migrationDeleteFieldRadioButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationDeleteFieldRadioButton.text")); // NOI18N
+        migrationDeleteFieldRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                migrationDeleteFieldRadioButtonActionPerformed(evt);
+            }
+        });
 
         migrationTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1132,7 +1172,7 @@ public class FuelPhpGeneratePanel extends JPanel {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Type", "Size", "Default", "Others", "NULL"
+                "Field Name", "Type", "Size", "Default", "Others", "NULL"
             }
         ) {
             Class[] types = new Class [] {
@@ -1184,15 +1224,22 @@ public class FuelPhpGeneratePanel extends JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(migrationTableNameLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationTableNameLabel.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(migrationFieldNameLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationFieldNameLabel.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(migrationFromLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationFromLabel.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(migrationToLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationToLabel.text")); // NOI18N
 
         migrationTableNameTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationTableNameTextField.text")); // NOI18N
+        migrationTableNameTextField.setNextFocusableComponent(migrationFromTextField);
 
-        migrationFieldNameTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationFieldNameTextField.text")); // NOI18N
+        migrationFromTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationFromTextField.text")); // NOI18N
+        migrationFromTextField.setNextFocusableComponent(migrationToTextField);
 
         migrationToTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationToTextField.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(migrationNameLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationNameLabel.text")); // NOI18N
+
+        migrationNameTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationNameTextField.text")); // NOI18N
+        migrationNameTextField.setNextFocusableComponent(migrationTableNameTextField);
 
         javax.swing.GroupLayout migrationPanelLayout = new javax.swing.GroupLayout(migrationPanel);
         migrationPanel.setLayout(migrationPanelLayout);
@@ -1202,13 +1249,14 @@ public class FuelPhpGeneratePanel extends JPanel {
                 .addContainerGap()
                 .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(migrationCreateTableRadioButton)
-                    .addComponent(migrationRenameTableRadioButton)
-                    .addComponent(migrationDropTableRadioButton)
                     .addComponent(migrationAddFieldRadioButton)
                     .addComponent(migrationRenameFieldRadioButton)
-                    .addComponent(migrationDeleteFieldRadioButton))
+                    .addComponent(migrationDeleteFieldRadioButton)
+                    .addComponent(migrationRenameTableRadioButton)
+                    .addComponent(migrationDropTableRadioButton))
                 .addGap(62, 62, 62)
                 .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(migrationScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
                     .addGroup(migrationPanelLayout.createSequentialGroup()
                         .addComponent(migrationResetTableButton, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1217,17 +1265,18 @@ public class FuelPhpGeneratePanel extends JPanel {
                         .addComponent(migrationDeleteRowsButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(migrationAddRowButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(migrationScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
-                    .addGroup(migrationPanelLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, migrationPanelLayout.createSequentialGroup()
                         .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(migrationNameLabel)
+                            .addComponent(migrationFromLabel)
                             .addComponent(migrationTableNameLabel)
-                            .addComponent(migrationToLabel)
-                            .addComponent(migrationFieldNameLabel))
+                            .addComponent(migrationToLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(migrationFieldNameTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(migrationTableNameTextField)
-                            .addComponent(migrationToTextField, javax.swing.GroupLayout.Alignment.LEADING))))
+                            .addComponent(migrationFromTextField)
+                            .addComponent(migrationToTextField)
+                            .addComponent(migrationNameTextField)
+                            .addComponent(migrationTableNameTextField))))
                 .addContainerGap())
         );
         migrationPanelLayout.setVerticalGroup(
@@ -1236,35 +1285,38 @@ public class FuelPhpGeneratePanel extends JPanel {
                 .addContainerGap()
                 .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(migrationCreateTableRadioButton)
+                    .addComponent(migrationNameLabel)
+                    .addComponent(migrationNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(migrationRenameTableRadioButton)
                     .addComponent(migrationTableNameLabel)
-                    .addComponent(migrationTableNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(migrationRenameTableRadioButton)
-                        .addComponent(migrationFieldNameLabel))
-                    .addComponent(migrationFieldNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(migrationTableNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(migrationDropTableRadioButton)
+                    .addComponent(migrationFromLabel)
+                    .addComponent(migrationFromTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(migrationAddFieldRadioButton)
                     .addComponent(migrationToLabel)
                     .addComponent(migrationToTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(migrationPanelLayout.createSequentialGroup()
-                        .addComponent(migrationAddFieldRadioButton)
-                        .addGap(12, 12, 12)
                         .addComponent(migrationRenameFieldRadioButton)
-                        .addGap(12, 12, 12)
+                        .addGap(6, 6, 6)
                         .addComponent(migrationDeleteFieldRadioButton)
-                        .addGap(0, 137, Short.MAX_VALUE))
-                    .addComponent(migrationScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(migrationResetTableButton)
-                    .addComponent(migrationResetAllButton)
-                    .addComponent(migrationAddRowButton)
-                    .addComponent(migrationDeleteRowsButton))
+                        .addGap(0, 183, Short.MAX_VALUE))
+                    .addGroup(migrationPanelLayout.createSequentialGroup()
+                        .addComponent(migrationScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(migrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(migrationResetTableButton)
+                            .addComponent(migrationResetAllButton)
+                            .addComponent(migrationAddRowButton)
+                            .addComponent(migrationDeleteRowsButton))))
                 .addContainerGap())
         );
 
@@ -1418,15 +1470,15 @@ public class FuelPhpGeneratePanel extends JPanel {
     }//GEN-LAST:event_taskResetTableButtonActionPerformed
 
     private void adminRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminRadioButtonActionPerformed
-        setAdminAndScaffoldCombobox();
+        setAdminAndScaffoldComboBox();
     }//GEN-LAST:event_adminRadioButtonActionPerformed
 
     private void scaffoldRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scaffoldRadioButtonActionPerformed
-        setAdminAndScaffoldCombobox();
+        setAdminAndScaffoldComboBox();
     }//GEN-LAST:event_scaffoldRadioButtonActionPerformed
 
     private void modelRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modelRadioButtonActionPerformed
-        setAdminAndScaffoldCombobox();
+        setAdminAndScaffoldComboBox();
     }//GEN-LAST:event_modelRadioButtonActionPerformed
 
     private void migrationDeleteRowsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationDeleteRowsButtonActionPerformed
@@ -1438,8 +1490,9 @@ public class FuelPhpGeneratePanel extends JPanel {
     }//GEN-LAST:event_migrationAddRowButtonActionPerformed
 
     private void migrationResetAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationResetAllButtonActionPerformed
+        migrationNameTextField.setText(""); // NOI18N
         migrationTableNameTextField.setText(""); // NOI18N
-        migrationFieldNameTextField.setText(""); // NOI18N
+        migrationFromTextField.setText(""); // NOI18N
         migrationToTextField.setText(""); // NOI18N
         migrationResetTableButtonActionPerformed(evt);
     }//GEN-LAST:event_migrationResetAllButtonActionPerformed
@@ -1447,6 +1500,54 @@ public class FuelPhpGeneratePanel extends JPanel {
     private void migrationResetTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationResetTableButtonActionPerformed
         resetTable(migrationTable);
     }//GEN-LAST:event_migrationResetTableButtonActionPerformed
+
+    private void migrationCreateTableRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationCreateTableRadioButtonActionPerformed
+        migrationNameTextField.setEnabled(false);
+        migrationTableNameTextField.setEnabled(true);
+        migrationFromTextField.setEnabled(false);
+        migrationToTextField.setEnabled(false);
+        setEnabledMigrationTable(true);
+    }//GEN-LAST:event_migrationCreateTableRadioButtonActionPerformed
+
+    private void migrationRenameTableRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationRenameTableRadioButtonActionPerformed
+        migrationNameTextField.setEnabled(false);
+        migrationTableNameTextField.setEnabled(false);
+        migrationFromTextField.setEnabled(true);
+        migrationToTextField.setEnabled(true);
+        setEnabledMigrationTable(false);
+    }//GEN-LAST:event_migrationRenameTableRadioButtonActionPerformed
+
+    private void migrationDropTableRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationDropTableRadioButtonActionPerformed
+        migrationNameTextField.setEnabled(false);
+        migrationTableNameTextField.setEnabled(true);
+        migrationFromTextField.setEnabled(false);
+        migrationToTextField.setEnabled(false);
+        setEnabledMigrationTable(false);
+    }//GEN-LAST:event_migrationDropTableRadioButtonActionPerformed
+
+    private void migrationAddFieldRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationAddFieldRadioButtonActionPerformed
+        migrationNameTextField.setEnabled(true);
+        migrationTableNameTextField.setEnabled(true);
+        migrationFromTextField.setEnabled(false);
+        migrationToTextField.setEnabled(false);
+        setEnabledMigrationTable(true);
+    }//GEN-LAST:event_migrationAddFieldRadioButtonActionPerformed
+
+    private void migrationRenameFieldRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationRenameFieldRadioButtonActionPerformed
+        migrationNameTextField.setEnabled(false);
+        migrationTableNameTextField.setEnabled(true);
+        migrationFromTextField.setEnabled(true);
+        migrationToTextField.setEnabled(true);
+        setEnabledMigrationTable(false);
+    }//GEN-LAST:event_migrationRenameFieldRadioButtonActionPerformed
+
+    private void migrationDeleteFieldRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_migrationDeleteFieldRadioButtonActionPerformed
+        migrationNameTextField.setEnabled(true);
+        migrationTableNameTextField.setEnabled(true);
+        migrationFromTextField.setEnabled(false);
+        migrationToTextField.setEnabled(false);
+        setEnabledMigrationTable(true);
+    }//GEN-LAST:event_migrationDeleteFieldRadioButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox adminAndScaffoldComboBox;
     private javax.swing.JLabel adminAndScaffoldLabel;
@@ -1486,8 +1587,10 @@ public class FuelPhpGeneratePanel extends JPanel {
     private javax.swing.JRadioButton migrationDeleteFieldRadioButton;
     private javax.swing.JButton migrationDeleteRowsButton;
     private javax.swing.JRadioButton migrationDropTableRadioButton;
-    private javax.swing.JLabel migrationFieldNameLabel;
-    private javax.swing.JTextField migrationFieldNameTextField;
+    private javax.swing.JLabel migrationFromLabel;
+    private javax.swing.JTextField migrationFromTextField;
+    private javax.swing.JLabel migrationNameLabel;
+    private javax.swing.JTextField migrationNameTextField;
     private javax.swing.JPanel migrationPanel;
     private javax.swing.JRadioButton migrationRenameFieldRadioButton;
     private javax.swing.JRadioButton migrationRenameTableRadioButton;
@@ -1785,32 +1888,33 @@ public class FuelPhpGeneratePanel extends JPanel {
     private List<String> getMigrationParameters() {
         List<String> params = new ArrayList<String>();
         String subCommand = ""; // NOI18N
+        String migrationName = migrationNameTextField.getText().trim();
         String tableName = migrationTableNameTextField.getText().trim();
-        String fieldName = migrationFieldNameTextField.getText().trim();
+        String fromName = migrationFromTextField.getText().trim();
         String toName = migrationToTextField.getText().trim();
         if (migrationCreateTableRadioButton.isSelected()) {
             if (!StringUtils.isEmpty(tableName)) {
                 subCommand = String.format(MIGRATION_CREATE_TABLE_FORMAT, tableName);
             }
         } else if (migrationRenameTableRadioButton.isSelected()) {
-            if (!StringUtils.isEmpty(tableName) && !StringUtils.isEmpty(toName)) {
-                subCommand = String.format(MIGRATION_RENAME_TABLE_FORMAT, tableName, toName);
+            if (!StringUtils.isEmpty(fromName) && !StringUtils.isEmpty(toName)) {
+                subCommand = String.format(MIGRATION_RENAME_TABLE_FORMAT, fromName, toName);
             }
         } else if (migrationDropTableRadioButton.isSelected()) {
             if (!StringUtils.isEmpty(tableName)) {
                 subCommand = String.format(MIGRATION_DROP_TABLE_FORMAT, tableName);
             }
         } else if (migrationAddFieldRadioButton.isSelected()) {
-            if (!StringUtils.isEmpty(fieldName) && !StringUtils.isEmpty(tableName)) {
-                subCommand = String.format(MIGRATION_ADD_FIELD_FORMAT, fieldName, tableName);
+            if (!StringUtils.isEmpty(migrationName) && !StringUtils.isEmpty(tableName)) {
+                subCommand = String.format(MIGRATION_ADD_FIELD_FORMAT, migrationName, tableName);
             }
         } else if (migrationRenameFieldRadioButton.isSelected()) {
-            if (!StringUtils.isEmpty(fieldName) && !StringUtils.isEmpty(toName) && !StringUtils.isEmpty(tableName)) {
-                subCommand = String.format(MIGRATION_RENAME_FIELD_FORMAT, fieldName, toName, tableName);
+            if (!StringUtils.isEmpty(fromName) && !StringUtils.isEmpty(toName) && !StringUtils.isEmpty(tableName)) {
+                subCommand = String.format(MIGRATION_RENAME_FIELD_FORMAT, fromName, toName, tableName);
             }
         } else if (migrationDeleteFieldRadioButton.isSelected()) {
-            if (!StringUtils.isEmpty(fieldName) && !StringUtils.isEmpty(tableName)) {
-                subCommand = String.format(MIGRATION_DELETE_FIELD_FORMAT, fieldName, tableName);
+            if (!StringUtils.isEmpty(migrationName) && !StringUtils.isEmpty(tableName)) {
+                subCommand = String.format(MIGRATION_DELETE_FIELD_FORMAT, migrationName, tableName);
             }
         } else {
             return params;
