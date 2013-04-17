@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -37,69 +37,42 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2012 Sun Microsystems, Inc.
+ * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel;
+package org.netbeans.modules.php.fuel.ui.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.Action;
-import org.netbeans.modules.php.fuel.ui.actions.CreateAutoCompletionFileAction;
-import org.netbeans.modules.php.fuel.ui.actions.FuelPhpGoToActionAction;
-import org.netbeans.modules.php.fuel.ui.actions.FuelPhpGoToViewAction;
-import org.netbeans.modules.php.fuel.ui.actions.FuelPhpOilGenerateAction;
-import org.netbeans.modules.php.fuel.ui.actions.FuelPhpRunCommandAction;
-import org.netbeans.modules.php.fuel.ui.actions.PHPUnitTestInitAction;
+import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.fuel.FuelPhpFrameworkProvider;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
-import org.netbeans.modules.php.spi.framework.PhpModuleActionsExtender;
-import org.netbeans.modules.php.spi.framework.actions.GoToActionAction;
-import org.netbeans.modules.php.spi.framework.actions.GoToViewAction;
 import org.netbeans.modules.php.spi.framework.actions.RunCommandAction;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author junichi11
  */
-public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
+public class FuelPhpRunCommandAction extends RunCommandAction {
 
-    @Override
-    public List<? extends Action> getActions() {
-        ArrayList<Action> actions = new ArrayList<Action>();
-        actions.add(CreateAutoCompletionFileAction.getInstance());
-        actions.add(PHPUnitTestInitAction.getInstance());
-        actions.add(FuelPhpOilGenerateAction.getInstance());
-        return actions;
+    private static final long serialVersionUID = -7209252834739434664L;
+    private static final FuelPhpRunCommandAction INSTANCE = new FuelPhpRunCommandAction();
+
+    private FuelPhpRunCommandAction() {
+    }
+
+    public static FuelPhpRunCommandAction getInstance() {
+        return INSTANCE;
     }
 
     @Override
-    public RunCommandAction getRunCommandAction() {
-        return FuelPhpRunCommandAction.getInstance();
+    public void actionPerformed(PhpModule phpModule) {
+        if (!FuelUtils.isFuelPHP(phpModule)) {
+            return;
+        }
+        FuelPhpFrameworkProvider.getInstance().getFrameworkCommandSupport(phpModule).openPanel();
     }
 
     @Override
-    public String getMenuName() {
-        return NbBundle.getMessage(FuelPhpActionsExtender.class, "LBL_MenuName"); // NOI18N
-    }
-
-    @Override
-    public GoToViewAction getGoToViewAction(FileObject fo, int offset) {
-        return new FuelPhpGoToViewAction(fo, offset);
-    }
-
-    @Override
-    public GoToActionAction getGoToActionAction(FileObject fo, int offset) {
-        return new FuelPhpGoToActionAction(fo, offset);
-    }
-
-    @Override
-    public boolean isViewWithAction(FileObject fo) {
-        return (FuelUtils.isView(fo) || FuelUtils.isViewModel(fo));
-    }
-
-    @Override
-    public boolean isActionWithView(FileObject fo) {
-        return FuelUtils.isController(fo);
+    protected String getFullName() {
+        return NbBundle.getMessage(FuelPhpRunCommandAction.class, "LBL_FuelPhpAction", getPureName());
     }
 }

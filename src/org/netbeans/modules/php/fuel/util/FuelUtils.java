@@ -75,8 +75,8 @@ import org.openide.util.Lookup;
  */
 public final class FuelUtils {
 
-    private static final String ACTION_PREFIX = "action_"; // NOI18N
-    private static final String CONTROLLER_PREFIX = "Controller_"; // NOI18N
+    public static final String ACTION_PREFIX = "action_"; // NOI18N
+    public static final String CONTROLLER_PREFIX = "Controller_"; // NOI18N
     private static final int DEFAULT_OFFSET = 0;
     private static final String EXT_PHP = "php"; // NOI18N
     private static final String FUEL_APP_CLASSES_CONTROLLER_DIR = "%s/app/classes/controller"; // NOI18N
@@ -629,5 +629,60 @@ public final class FuelUtils {
      */
     public static FileObject getModuleDirectory(PhpModule phpModule, String name) {
         return getDirectory(phpModule, FUEL_APP_MODULES_DIR + "/" + name); // NOI18N
+    }
+
+    /**
+     * Sort files.
+     *
+     * @param files
+     * @param desc true if order by desc, false if asc.
+     */
+    public static void sortFileObject(FileObject[] files, final boolean desc) {
+        Arrays.sort(files, new ComparatorImpl(desc));
+    }
+
+    /**
+     * Sort files order by asc.
+     *
+     * @param files
+     */
+    public static void sortFileObject(FileObject[] files) {
+        sortFileObject(files, false);
+    }
+
+    /**
+     * Sort files.
+     *
+     * @param files
+     * @param desc
+     */
+    public static void sortFileObject(List<FileObject> files, final boolean desc) {
+        Collections.sort(files, new ComparatorImpl(desc));
+    }
+
+    /**
+     * Sort files order by asc.
+     *
+     * @param files
+     */
+    public static void sortFileObject(List<FileObject> files) {
+        sortFileObject(files, false);
+    }
+
+    private static class ComparatorImpl implements Comparator<FileObject> {
+
+        private final boolean desc;
+
+        public ComparatorImpl(boolean desc) {
+            this.desc = desc;
+        }
+
+        @Override
+        public int compare(FileObject o1, FileObject o2) {
+            if (desc) {
+                return o2.getName().compareToIgnoreCase(o1.getName());
+            }
+            return o1.getName().compareToIgnoreCase(o2.getName());
+        }
     }
 }
