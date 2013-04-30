@@ -53,6 +53,9 @@ If you use "myfuel" name instead of "fuel" directory name, please set as the fol
 1. Project properties > Framework > FuelPHP
 2. fuel name : your fuel directoy name (e.g. myfuel)
 
+### Notice
+You can change only the fuel directory name. Many features don't work if other directory names are changed.
+
 ## View path code completion
 Plugin provides support for view path code completion.
 e.g.
