@@ -45,6 +45,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
+import org.netbeans.modules.php.api.util.StringUtils;
+import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.util.FuelDownloads;
 import org.openide.util.Exceptions;
 
@@ -179,15 +181,18 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void gitCloneRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gitCloneRadioButtonActionPerformed
+        String branchName = FuelPhpOptions.getInstance().getGitBranchName();
+        if (StringUtils.isEmpty(branchName)) {
+            setEnabledColenRadioButton(false);
+            return;
+        }
         try {
             Process process = Runtime.getRuntime().exec("git"); // NOI18N
             process.waitFor();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
-            gitCloneRadioButton.setSelected(false);
-            unzipRadioButton.setSelected(true);
-            gitCloneRadioButton.setEnabled(false);
+            setEnabledColenRadioButton(false);
         }
     }//GEN-LAST:event_gitCloneRadioButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -200,4 +205,10 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton unzipRadioButton;
     private javax.swing.JList versionList;
     // End of variables declaration//GEN-END:variables
+
+    private void setEnabledColenRadioButton(boolean isEnabled) {
+        gitCloneRadioButton.setSelected(isEnabled);
+        unzipRadioButton.setSelected(!isEnabled);
+        gitCloneRadioButton.setEnabled(isEnabled);
+    }
 }
