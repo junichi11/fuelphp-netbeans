@@ -51,6 +51,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.fuel.util.FuelZipEntryFilter;
@@ -79,7 +80,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
     private static final String INIT_COMMAND = "init";
     private static final String ORIGIN = "origin";
     private static final String PULL_COMMAND = "pull";
-    private static final String REFS_HEADS = "refs/heads/1.5/master";
+    private static final String REFS_HEADS = "refs/heads/";
     private static final String REMOTE_COMMAND = "remote";
     private static final String WORK_TREE = "--work-tree=";
     private NewProjectConfigurationPanel panel = null;
@@ -138,10 +139,11 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 String repoPath = localPath.getPath();
                 String gitDir = GIT_DIR + repoPath + GIT_REPO;
                 String workTree = WORK_TREE + repoPath;
+                String branchName = FuelPhpOptions.getInstance().getGitBranchName();
 
                 String[] initCommand = {GIT, INIT_COMMAND, repoPath};
                 String[] remoteAddCommand = {GIT, gitDir, workTree, REMOTE_COMMAND, ADD_COMMAND, ORIGIN, GIT_GITHUB_COM_FUEL_FUEL_GIT};
-                String[] configMergeCommand = {GIT, gitDir, workTree, CONFIG_COMMAND, BRANCH_MASTER_MERGE, REFS_HEADS};
+                String[] configMergeCommand = {GIT, gitDir, workTree, CONFIG_COMMAND, BRANCH_MASTER_MERGE, REFS_HEADS + branchName};
                 String[] configRemoteCommand = {GIT, gitDir, workTree, CONFIG_COMMAND, BRANCH_MASTER_REMOTE, ORIGIN};
                 String[] pullCommand = {GIT, gitDir, workTree, PULL_COMMAND};
                 String[] submodulesCommand = {"/bin/bash", "-c", "cd " + repoPath + ";git submodule update --init --recursive"}; // NOI18N

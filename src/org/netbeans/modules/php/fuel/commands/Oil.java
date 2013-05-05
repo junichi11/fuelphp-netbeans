@@ -52,6 +52,8 @@ import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.netbeans.api.extexecution.ExecutionDescriptor;
@@ -98,6 +100,7 @@ public class Oil {
     private static final Set<String> IGNORE_HELP_COMMANDS = new HashSet<String>();
     private static final Set<String> IGNORE_TASK_METHOD_NAMES = new HashSet<String>();
     private final String oilPath;
+    private static final Logger LOGGER = Logger.getLogger(Oil.class.getName());
 
     static {
         // help commands
@@ -333,6 +336,7 @@ public class Oil {
             cmd = matcher.group(1);
         }
         if (StringUtils.isEmpty(cmd)) {
+            LOGGER.log(Level.WARNING, "Not found commands: {0}", help);
             return new String[]{};
         }
         // split command

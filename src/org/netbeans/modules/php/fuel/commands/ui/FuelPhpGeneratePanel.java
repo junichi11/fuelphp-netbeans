@@ -259,7 +259,7 @@ public class FuelPhpGeneratePanel extends JPanel {
         }
 
         // app
-        if (coreControllerDirectory != null) {
+        if (controllerDirectory != null) {
             Enumeration<? extends FileObject> children = controllerDirectory.getChildren(true);
             controllers.addAll(Collections.list(children));
         }
