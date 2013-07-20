@@ -50,4 +50,11 @@ public class FuelPhp {
     public static final String FUEL_ICON_8 = "org/netbeans/modules/php/fuel/resources/fuel_icon_8.png"; // NOI18N
     public static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png"; // NOI18N
     public static final String FUEL_ADD_TEST_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_add_test_icon_16.png"; // NOI18N
+    public static final String GO_TO_CONTROLLER_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_controller_icon.png"; // NOI18N
+    public static final String GO_TO_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_model_icon.png"; // NOI18N
+    public static final String GO_TO_VIEW_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_icon.png"; // NOI18N
+    public static final String GO_TO_VIEW_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_model_icon.png"; // NOI18N
+    public static final String GO_TO_CONFIG_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_config_icon.png"; // NOI18N
+    public static final String GO_TO_TASK_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_task_icon.png"; // NOI18N
+    public static final String GO_TO_TEST_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_test_icon.png"; // NOI18N
 }
