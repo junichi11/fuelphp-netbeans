@@ -41,6 +41,7 @@
  */
 package org.netbeans.modules.php.fuel.modules;
 
+import java.io.IOException;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.openide.filesystems.FileObject;
 
@@ -86,6 +87,10 @@ public class FuelPhpModule {
 
     public FileObject getDirectory(DIR_TYPE dirType, FILE_TYPE fileType, String dirName) {
         return impl.getDirectory(dirType, fileType, dirName);
+    }
+
+    public FileObject getDirectory(FileObject currentFile, FILE_TYPE fileType) {
+        return impl.getDirectory(currentFile, fileType);
     }
 
     public boolean isInApp(FileObject currentFile) {
@@ -141,6 +146,10 @@ public class FuelPhpModule {
      */
     public String getPath(FileObject fileObject) {
         return impl.getPath(fileObject);
+    }
+
+    public boolean createNewFile(FileObject baseDirectory, String path) throws IOException {
+        return impl.createNewFile(baseDirectory, path);
     }
 
     /**

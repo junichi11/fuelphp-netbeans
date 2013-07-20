@@ -68,6 +68,11 @@ public class FuelPhpDummyModuleImpl extends FuelPhpModuleImpl {
     }
 
     @Override
+    public FileObject getDirectory(FileObject currentFile, FILE_TYPE fileType) {
+        return null;
+    }
+
+    @Override
     public boolean isInApp(FileObject currentFile) {
         return false;
     }

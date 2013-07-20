@@ -45,6 +45,8 @@ import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.util.FileUtils;
 import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule.DIR_TYPE;
+import static org.netbeans.modules.php.fuel.modules.FuelPhpModule.DIR_TYPE.MODULES;
+import static org.netbeans.modules.php.fuel.modules.FuelPhpModule.DIR_TYPE.PACKAGES;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule.FILE_TYPE;
 import org.openide.filesystems.FileObject;
 
@@ -149,6 +151,25 @@ public class FuelPhp1ModuleImpl extends FuelPhpModuleImpl {
         }
 
         return baseDirectory.getFileObject(sb.toString());
+    }
+
+    @Override
+    public FileObject getDirectory(FileObject currentFile, FILE_TYPE fileType) {
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+        DIR_TYPE dirType = fuelModule.getDirType(currentFile);
+        String dirName = ""; // NOI18N
+        switch (dirType) {
+            case MODULES:
+                dirName = fuelModule.getModuleName(currentFile);
+                break;
+            case PACKAGES:
+                dirName = fuelModule.getPackageName(currentFile);
+                break;
+            default:
+                // do nothing
+                break;
+        }
+        return fuelModule.getDirectory(dirType, fileType, dirName);
     }
 
     @Override
