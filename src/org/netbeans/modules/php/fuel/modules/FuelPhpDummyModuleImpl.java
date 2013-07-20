@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -37,24 +37,73 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2012 Sun Microsystems, Inc.
+ * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel;
+package org.netbeans.modules.php.fuel.modules;
+
+import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule.DIR_TYPE;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule.FILE_TYPE;
+import org.openide.filesystems.FileObject;
 
 /**
+ * This is dummy. If PhpModule is null, this is created.
  *
  * @author junichi11
  */
-public class FuelPhp {
+public class FuelPhpDummyModuleImpl extends FuelPhpModuleImpl {
 
-    public static final String FUEL_ICON_8 = "org/netbeans/modules/php/fuel/resources/fuel_icon_8.png"; // NOI18N
-    public static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png"; // NOI18N
-    public static final String FUEL_ADD_TEST_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_add_test_icon_16.png"; // NOI18N
-    public static final String GO_TO_CONTROLLER_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_controller_icon.png"; // NOI18N
-    public static final String GO_TO_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_model_icon.png"; // NOI18N
-    public static final String GO_TO_VIEW_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_icon.png"; // NOI18N
-    public static final String GO_TO_VIEW_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_model_icon.png"; // NOI18N
-    public static final String GO_TO_CONFIG_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_config_icon.png"; // NOI18N
-    public static final String GO_TO_TASK_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_task_icon.png"; // NOI18N
-    public static final String GO_TO_TEST_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_test_icon.png"; // NOI18N
+    public FuelPhpDummyModuleImpl(PhpModule phpModule) {
+        super(phpModule);
+    }
+
+    @Override
+    public FileObject getDirectory(DIR_TYPE dirType) {
+        return null;
+    }
+
+    @Override
+    public FileObject getDirectory(DIR_TYPE dirType, FILE_TYPE fileType, String dirName) {
+        return null;
+    }
+
+    @Override
+    public FileObject getDirectory(FileObject currentFile, FILE_TYPE fileType) {
+        return null;
+    }
+
+    @Override
+    public boolean isInApp(FileObject currentFile) {
+        return false;
+    }
+
+    @Override
+    public boolean isInPublic(FileObject currentFile) {
+        return false;
+    }
+
+    @Override
+    public boolean isInModules(FileObject currentFile) {
+        return false;
+    }
+
+    @Override
+    public boolean isInPackages(FileObject currentFile) {
+        return false;
+    }
+
+    @Override
+    public boolean isInCore(FileObject currentFile) {
+        return false;
+    }
+
+    @Override
+    public DIR_TYPE getDirType(FileObject currentFile) {
+        return DIR_TYPE.NONE;
+    }
+
+    @Override
+    public FILE_TYPE getFileType(FileObject currentFile) {
+        return FILE_TYPE.NONE;
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -37,24 +37,53 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2012 Sun Microsystems, Inc.
+ * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel;
+package org.netbeans.modules.php.fuel.ui.actions.gotos;
 
-/**
- *
- * @author junichi11
- */
-public class FuelPhp {
+import java.util.List;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.items.GoToItem;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.statuses.FuelPhpGoToStatus;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.NbBundle;
 
-    public static final String FUEL_ICON_8 = "org/netbeans/modules/php/fuel/resources/fuel_icon_8.png"; // NOI18N
-    public static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png"; // NOI18N
-    public static final String FUEL_ADD_TEST_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_add_test_icon_16.png"; // NOI18N
-    public static final String GO_TO_CONTROLLER_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_controller_icon.png"; // NOI18N
-    public static final String GO_TO_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_model_icon.png"; // NOI18N
-    public static final String GO_TO_VIEW_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_icon.png"; // NOI18N
-    public static final String GO_TO_VIEW_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_model_icon.png"; // NOI18N
-    public static final String GO_TO_CONFIG_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_config_icon.png"; // NOI18N
-    public static final String GO_TO_TASK_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_task_icon.png"; // NOI18N
-    public static final String GO_TO_TEST_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_test_icon.png"; // NOI18N
+@ActionID(
+        category = "PHP",
+        id = "org.netbeans.modules.php.fuel.ui.actions.gotos.FuelPhpGoToAllModelsAction")
+@ActionRegistration(
+        displayName = "#FuelPhpGoToAllModelsAction_Name")
+@ActionReferences({
+    @ActionReference(path = "Shortcuts", name = "DS-G D-M"),
+    @ActionReference(path = "Shortcuts", name = "D-J D-M")
+})
+@NbBundle.Messages("FuelPhpGoToAllModelsAction_Name=FuelPHP Go To Models")
+public class FuelPhpGoToAllModelsAction extends FuelPhpGoToAction {
+
+    private static final FuelPhpGoToAllModelsAction INSTANCE = new FuelPhpGoToAllModelsAction();
+    private static final long serialVersionUID = -9019413843702680555L;
+
+    private FuelPhpGoToAllModelsAction() {
+    }
+
+    public static FuelPhpGoToAllModelsAction getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    protected List<GoToItem> getGoToItems(FuelPhpGoToStatus status) {
+        return status.getAllModels();
+    }
+
+    @Override
+    protected String getFullName() {
+        return getPureName();
+    }
+
+    @Override
+    protected String getPureName() {
+        return Bundle.FuelPhpGoToAllModelsAction_Name();
+    }
 }

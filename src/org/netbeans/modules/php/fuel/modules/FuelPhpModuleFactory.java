@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -37,24 +37,50 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2012 Sun Microsystems, Inc.
+ * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel;
+package org.netbeans.modules.php.fuel.modules;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.netbeans.modules.php.api.phpmodule.PhpModule;
 
 /**
  *
  * @author junichi11
  */
-public class FuelPhp {
+class FuelPhpModuleFactory {
 
-    public static final String FUEL_ICON_8 = "org/netbeans/modules/php/fuel/resources/fuel_icon_8.png"; // NOI18N
-    public static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png"; // NOI18N
-    public static final String FUEL_ADD_TEST_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_add_test_icon_16.png"; // NOI18N
-    public static final String GO_TO_CONTROLLER_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_controller_icon.png"; // NOI18N
-    public static final String GO_TO_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_model_icon.png"; // NOI18N
-    public static final String GO_TO_VIEW_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_icon.png"; // NOI18N
-    public static final String GO_TO_VIEW_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_model_icon.png"; // NOI18N
-    public static final String GO_TO_CONFIG_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_config_icon.png"; // NOI18N
-    public static final String GO_TO_TASK_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_task_icon.png"; // NOI18N
-    public static final String GO_TO_TEST_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_test_icon.png"; // NOI18N
+    private static final FuelPhpModuleFactory INSTANCE = new FuelPhpModuleFactory();
+    private final Map<PhpModule, FuelPhpModule> modules = new HashMap<PhpModule, FuelPhpModule>();
+
+    private FuelPhpModuleFactory() {
+    }
+
+    public static FuelPhpModuleFactory getInstance() {
+        return INSTANCE;
+    }
+
+    public FuelPhpModule create(PhpModule phpModule) {
+        FuelPhpModule module = modules.get(phpModule);
+        if (module != null) {
+            return module;
+        }
+
+        // create moduel
+        FuelPhpModuleImpl impl;
+        if (phpModule == null) {
+            // for null check
+            impl = new FuelPhpDummyModuleImpl(phpModule);
+        } else {
+            impl = new FuelPhp1ModuleImpl(phpModule);
+        }
+        module = new FuelPhpModule(phpModule, impl);
+
+        // put module
+        if (impl instanceof FuelPhp1ModuleImpl) {
+            modules.put(phpModule, module);
+        }
+        return module;
+    }
 }
