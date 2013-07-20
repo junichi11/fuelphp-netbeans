@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -37,23 +37,27 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2012 Sun Microsystems, Inc.
+ * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel.ui.actions;
+package org.netbeans.modules.php.fuel.ui.actions.gotos;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import org.netbeans.api.editor.EditorRegistry;
+import org.netbeans.modules.editor.NbEditorUtilities;
+import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.ui.GoToPopup;
 import org.netbeans.modules.php.fuel.ui.PopupUtil;
 import org.netbeans.modules.php.fuel.ui.actions.gotos.items.GoToItem;
 import org.netbeans.modules.php.fuel.ui.actions.gotos.statuses.FuelPhpGoToStatus;
 import org.netbeans.modules.php.fuel.ui.actions.gotos.statuses.FuelPhpGoToStatusFactory;
-import org.netbeans.modules.php.spi.framework.actions.GoToActionAction;
+import org.netbeans.modules.php.fuel.util.FuelUtils;
+import org.netbeans.modules.php.spi.framework.actions.BaseAction;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 
@@ -61,32 +65,42 @@ import org.openide.util.Exceptions;
  *
  * @author junichi11
  */
-public class FuelPhpGoToActionAction extends GoToActionAction {
+public abstract class FuelPhpGoToAction extends BaseAction {
 
-    private static final long serialVersionUID = 7088563533898976812L;
-    private FileObject view;
-    private int offset;
-
-    public FuelPhpGoToActionAction(FileObject view, int offset) {
-        this.view = view;
-        this.offset = offset;
-    }
+    private static final long serialVersionUID = -5795663176789971724L;
 
     @Override
-    public boolean goToAction() {
+    protected void actionPerformed(PhpModule phpModule) {
+        // called via shortcut
+        if (!FuelUtils.isFuelPHP(phpModule)) {
+            return;
+        }
+
+        JTextComponent editor = EditorRegistry.lastFocusedComponent();
+        if (editor == null) {
+            return;
+        }
+
+        Document document = editor.getDocument();
+        if (document == null) {
+            return;
+        }
+
+        FileObject fileObject = NbEditorUtilities.getFileObject(document);
+        if (fileObject == null) {
+            return;
+        }
+
+        // get go to files
         FuelPhpGoToStatusFactory factory = FuelPhpGoToStatusFactory.getInstance();
-        FuelPhpGoToStatus status = factory.create(view, offset);
+        FuelPhpGoToStatus status = factory.create(fileObject, editor.getCaretPosition());
         status.scan();
-        final List<GoToItem> items = status.getControllers();
-        if (items.isEmpty()) {
-            return false;
+        final List<GoToItem> items = getGoToItems(status);
+        if (items == null || items.isEmpty()) {
+            return;
         }
 
         // show popup
-        JTextComponent editor = EditorRegistry.lastFocusedComponent();
-        if (editor == null) {
-            return false;
-        }
         try {
             Rectangle rectangle = editor.modelToView(editor.getCaretPosition());
             final Point point = new Point(rectangle.x, rectangle.y + rectangle.height);
@@ -94,13 +108,21 @@ public class FuelPhpGoToActionAction extends GoToActionAction {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    String title = "Go To Action"; // NOI18N
+                    String title = getPopupTitle();
+                    if (title == null) {
+                        title = ""; // NOI18N
+                    }
                     PopupUtil.showPopup(new GoToPopup(title, items), title, point.x, point.y, true, 0);
                 }
             });
         } catch (BadLocationException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return true;
     }
+
+    protected String getPopupTitle() {
+        return getPureName();
+    }
+
+    protected abstract List<GoToItem> getGoToItems(FuelPhpGoToStatus status);
 }

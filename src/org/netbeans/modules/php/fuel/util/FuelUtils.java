@@ -77,8 +77,6 @@ public final class FuelUtils {
 
     public static final String ACTION_PREFIX = "action_"; // NOI18N
     public static final String CONTROLLER_PREFIX = "Controller_"; // NOI18N
-    private static final int DEFAULT_OFFSET = 0;
-    private static final String EXT_PHP = "php"; // NOI18N
     private static final String FUEL_APP_CLASSES_CONTROLLER_DIR = "%s/app/classes/controller"; // NOI18N
     private static final String FUEL_APP_CLASSES_MODEL_DIR = "%s/app/classes/model"; // NOI18N
     private static final String FUEL_APP_CLASSES_VIEW_DIR = "%s/app/classes/view";
@@ -234,7 +232,11 @@ public final class FuelUtils {
      */
     public static FileObject getFuelDirectory(PhpModule phpModule) {
         String fuelName = FuelPhpPreferences.getFuelName(phpModule);
-        return phpModule.getSourceDirectory().getFileObject(fuelName);
+        FileObject sourceDirectory = phpModule.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return null;
+        }
+        return sourceDirectory.getFileObject(fuelName);
     }
 
     /**
@@ -245,7 +247,11 @@ public final class FuelUtils {
      */
     public static FileObject getCoreDirectory(PhpModule phpModule) {
         String fuelName = FuelPhpPreferences.getFuelName(phpModule);
-        return phpModule.getSourceDirectory().getFileObject(fuelName + "/core"); // NOI18N
+        FileObject sourceDirectory = phpModule.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return null;
+        }
+        return sourceDirectory.getFileObject(fuelName + "/core"); // NOI18N
     }
 
     /**
@@ -449,7 +455,11 @@ public final class FuelUtils {
             return null;
         }
         String path = String.format(directoryPath, FuelPhpPreferences.getFuelName(phpModule));
-        return phpModule.getSourceDirectory().getFileObject(path);
+        FileObject sourceDirectory = phpModule.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return null;
+        }
+        return sourceDirectory.getFileObject(path);
     }
 
     /**
@@ -629,6 +639,19 @@ public final class FuelUtils {
      */
     public static FileObject getModuleDirectory(PhpModule phpModule, String name) {
         return getDirectory(phpModule, FUEL_APP_MODULES_DIR + "/" + name); // NOI18N
+    }
+
+    /**
+     * Separate path with ::.
+     *
+     * @param path
+     * @return
+     */
+    public static String[] moduleSplit(String path) {
+        if (path == null) {
+            return null;
+        }
+        return path.split("::"); // NOI18N
     }
 
     /**

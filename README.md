@@ -8,6 +8,7 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - create a new FuelPHP Project from New Project Option
 - create a file for auto completion
 - Action : go to view , go to action
+- Smart Go To and some go to actions
 - Support for custom fuel directory name
 - Support for view path code completion
 - MVC Node
@@ -45,6 +46,41 @@ If create a project from new project, add it automatically.
 - Right-click in the view or view model file.
 - Navigate
 - Go to action
+
+## Smart Go To / Go To Actions
+
+### Smart Go To
+
+We can go to specific files relevant to a current file.
+
+**[Ctrl + Shift + G] [S]** or **[Ctrl + J] [S]**
+
+(from : to)
+
+- controller : view, view model, test
+- model : test
+- view: controller
+- view model : controller, test
+- test : tested class
+
+### Go To Actions
+
+It is available the following actions:
+
+- [Ctrl + Shift + G] [C] Controller 
+- [Ctrl + Shift + G] [V] View
+- [Ctrl + Shift + G] [W] View Model
+- [Ctrl + Shift + G] [T] Test
+- [Ctrl + Shift + G] [Ctrl + C] All Controllers
+- [Ctrl + Shift + G] [Ctrl + M] All Models
+- [Ctrl + Shift + G] [Ctrl + W] All View Models
+- [Ctrl + Shift + G] [Ctrl + T] All Tests
+- [Ctrl + Shift + G] [Ctrl + K] All Tasks
+- [Ctrl + Shift + G] [Ctrl + I] All Configurations
+
+### Keymap
+
+If you have already used these shortcuts, please try to set shortcuts to keymap (Tools > Options).
 
 ## Custom fuel directory name
 
