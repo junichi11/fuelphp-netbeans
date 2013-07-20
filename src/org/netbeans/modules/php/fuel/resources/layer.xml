@@ -6,6 +6,36 @@
             <file name="org-netbeans-modules-php-fuel-ui-actions-CreateAutoCompletionFileAction.instance">
                 <attr name="instanceCreate" methodvalue="org.netbeans.modules.php.fuel.ui.actions.CreateAutoCompletionFileAction.getInstance"/>
             </file>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToAllConfigurationsAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToAllControllersAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToAllModelsAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToAllTasksAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToAllTestsAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToAllViewModelsAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToConfigurationsAction.instance_hidden"/>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToControllersAction.instance_hidden"/>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToModelsAction.instance_hidden"/>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToTasksAction.instance_hidden"/>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToTestsAction.instance_hidden"/>
+            <file name="org-netbeans-modules-php-fuel-ui-actions-gotos-FuelPhpGoToViewModelsAction.instance_hidden"/>
         </folder>
     </folder>
     <folder name="org-netbeans-modules-php-fuel">

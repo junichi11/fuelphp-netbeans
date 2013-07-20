@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -37,63 +37,53 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2012 Sun Microsystems, Inc.
+ * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel.util;
+package org.netbeans.modules.php.fuel.ui.actions.gotos;
 
-import org.junit.Test;
-import org.netbeans.junit.NbTestCase;
+import java.util.List;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.items.GoToItem;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.statuses.FuelPhpGoToStatus;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.NbBundle;
 
-/**
- *
- * @author junichi11
- */
-public class FuelUtilsTest extends NbTestCase {
+@ActionID(
+        category = "PHP",
+        id = "org.netbeans.modules.php.fuel.ui.actions.gotos.FuelPhpGoToAllControllersAction")
+@ActionRegistration(
+        displayName = "#FuelPhpGoToAllControllersAction_Name")
+@ActionReferences({
+    @ActionReference(path = "Shortcuts", name = "DS-G D-C"),
+    @ActionReference(path = "Shortcuts", name = "D-J D-C")
+})
+@NbBundle.Messages("FuelPhpGoToAllControllersAction_Name=FuelPHP Go To Controllers")
+public class FuelPhpGoToAllControllersAction extends FuelPhpGoToAction {
 
-    public FuelUtilsTest(String name) {
-        super(name);
+    private static final FuelPhpGoToAllControllersAction INSTANCE = new FuelPhpGoToAllControllersAction();
+    private static final long serialVersionUID = 6978059131981691675L;
+
+    private FuelPhpGoToAllControllersAction() {
     }
 
-    /**
-     * Test of isActionName method, of class FuelUtils.
-     */
-    @Test
-    public void testIsActionName() {
-        boolean expResult = true;
-        assertEquals(expResult, FuelUtils.isActionName("action_index"));
-
-        expResult = false;
-        assertEquals(expResult, FuelUtils.isActionName("Action_index"));
-        assertEquals(expResult, FuelUtils.isActionName("actionindex"));
-        assertEquals(expResult, FuelUtils.isActionName("index"));
-        assertEquals(expResult, FuelUtils.isActionName("action_"));
+    public static FuelPhpGoToAllControllersAction getInstance() {
+        return INSTANCE;
     }
 
-    /**
-     * Test of moduleSplit method, of class FuelUtils.
-     */
-    @Test
-    public void testModuleSplit() {
-        String[] split = FuelUtils.moduleSplit("index");
-        assertEquals(1, split.length);
-        assertEquals("index", split[0]);
+    @Override
+    protected List<GoToItem> getGoToItems(FuelPhpGoToStatus status) {
+        return status.getAllControllers();
+    }
 
-        split = FuelUtils.moduleSplit("abc::index");
-        assertEquals(2, split.length);
-        assertEquals("abc", split[0]);
-        assertEquals("index", split[1]);
+    @Override
+    protected String getFullName() {
+        return getPureName();
+    }
 
-        split = FuelUtils.moduleSplit("def::sub/index");
-        assertEquals(2, split.length);
-        assertEquals("def", split[0]);
-        assertEquals("sub/index", split[1]);
-
-        split = FuelUtils.moduleSplit("");
-        assertEquals(1, split.length);
-        assertEquals("", split[0]);
-
-        split = FuelUtils.moduleSplit(null);
-        assertEquals(null, split);
-
+    @Override
+    protected String getPureName() {
+        return Bundle.FuelPhpGoToAllControllersAction_Name();
     }
 }
