@@ -43,7 +43,6 @@ package org.netbeans.modules.php.fuel.ui.actions;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.netbeans.modules.csl.api.UiUtils;
 import org.netbeans.modules.csl.spi.ParserResult;
@@ -56,10 +55,7 @@ import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpBaseElement;
 import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
-import org.netbeans.modules.php.editor.CodeUtils;
 import org.netbeans.modules.php.editor.parser.api.Utils;
-import org.netbeans.modules.php.editor.parser.astnodes.*;
-import org.netbeans.modules.php.editor.parser.astnodes.visitors.DefaultVisitor;
 import org.netbeans.modules.php.fuel.ui.GoToViewPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.spi.framework.actions.GoToViewAction;
@@ -199,70 +195,5 @@ public class FuelPhpGoToViewAction extends GoToViewAction {
         }
 
         return viewPath;
-    }
-
-    private static final class FuelPhpControllerVisitor extends DefaultVisitor {
-
-        private static final String FORGE_METHOD = "forge"; // NOI18N
-        private final Map<String, String> viewPath = new HashMap<String, String>();
-        private String actionName;
-        private String methodName = null;
-
-        public FuelPhpControllerVisitor(String actionName) {
-            this.actionName = actionName;
-        }
-
-        public Map<String, String> getViewPath() {
-            Map<String, String> path = new HashMap<String, String>(); // NOI18N
-            synchronized (viewPath) {
-                path = viewPath;
-            }
-            return path;
-        }
-
-        @Override
-        public void visit(MethodDeclaration node) {
-            methodName = CodeUtils.extractMethodName(node);
-            super.visit(node);
-        }
-
-        @Override
-        public void visit(StaticMethodInvocation node) {
-            super.visit(node);
-            Expression classNameExpression = node.getClassName();
-            String className = CodeUtils.extractQualifiedName(classNameExpression);
-            if (!VIEW_CLASS.equals(className)
-                    && !VIEW_MODEL_CLASS.equals(className)
-                    || !methodName.equals(actionName)) {
-                return;
-            }
-            FunctionInvocation fi = node.getMethod();
-            String invokedMethodName = CodeUtils.extractFunctionName(fi);
-            if (!FORGE_METHOD.equals(invokedMethodName)) {
-                return;
-            }
-
-            // get method parameters
-            List<Expression> parameters = fi.getParameters();
-            Expression e = null;
-
-            if (!parameters.isEmpty()) {
-                e = parameters.get(0);
-            }
-
-            String path = ""; // NOI18N
-            if (e instanceof Scalar) {
-                Scalar s = (Scalar) e;
-                if (s.getScalarType() == Scalar.Type.STRING) {
-                    path = s.getStringValue().replace("'", ""); // NOI18N
-                }
-            }
-
-            if (!path.isEmpty() && actionName.equals(methodName)) {
-                synchronized (viewPath) {
-                    viewPath.put(className, path + ".php"); // NOI18N
-                }
-            }
-        }
     }
 }
