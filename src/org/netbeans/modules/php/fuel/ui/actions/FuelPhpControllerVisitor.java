@@ -41,9 +41,13 @@
  */
 package org.netbeans.modules.php.fuel.ui.actions;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import org.netbeans.modules.php.api.editor.EditorSupport;
+import org.netbeans.modules.php.api.editor.PhpBaseElement;
+import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.editor.CodeUtils;
 import org.netbeans.modules.php.editor.parser.astnodes.Expression;
 import org.netbeans.modules.php.editor.parser.astnodes.FunctionInvocation;
@@ -51,6 +55,8 @@ import org.netbeans.modules.php.editor.parser.astnodes.MethodDeclaration;
 import org.netbeans.modules.php.editor.parser.astnodes.Scalar;
 import org.netbeans.modules.php.editor.parser.astnodes.StaticMethodInvocation;
 import org.netbeans.modules.php.editor.parser.astnodes.visitors.DefaultVisitor;
+import org.openide.filesystems.FileObject;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -61,20 +67,55 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
     private static final String FORGE_METHOD = "forge"; // NOI18N
     private static final String VIEW_CLASS = "View"; // NOI18N
     private static final String VIEW_MODEL_CLASS = "ViewModel"; // NOI18N
-    private final Map<String, String> viewPath = new HashMap<String, String>();
-    private String actionName;
+    private final Set<String> viewPath = new HashSet<String>();
+    private final Set<String> allViewPath = new HashSet<String>();
+    private final Set<String> viewModelPath = new HashSet<String>();
+    private final Set<String> allViewModelPath = new HashSet<String>();
+    private String actionName = ""; // NOI18N
     private String methodName = null;
 
     public FuelPhpControllerVisitor(String actionName) {
         this.actionName = actionName;
     }
 
-    public Map<String, String> getViewPath() {
-        Map<String, String> path;
-        synchronized (viewPath) {
-            path = viewPath;
+    public FuelPhpControllerVisitor(FileObject targetFile, int currentCaretPosition) {
+        // get PhpBaseElement(Method) for current positon
+        EditorSupport editorSupport = Lookup.getDefault().lookup(EditorSupport.class);
+        // XXX
+        int startClassOffset = 0;
+        Collection<PhpClass> classes = editorSupport.getClasses(targetFile);
+        for (PhpClass phpClass : classes) {
+            startClassOffset = phpClass.getOffset();
+            break;
         }
-        return path;
+        // FIXME exception might be occurred
+        // if user run action at outside php class.
+        // e.g. document area.
+        //
+        if (currentCaretPosition > startClassOffset) {
+            PhpBaseElement phpElement = editorSupport.getElement(targetFile, currentCaretPosition);
+            if (phpElement != null && phpElement instanceof PhpClass.Method) {
+                PhpClass.Method method = (PhpClass.Method) phpElement;
+                actionName = method.getName();
+            }
+        }
+
+    }
+
+    public Set<String> getViewPath() {
+        return viewPath;
+    }
+
+    public Set<String> getAllViewPath() {
+        return allViewPath;
+    }
+
+    public Set<String> getViewModelPath() {
+        return viewModelPath;
+    }
+
+    public Set<String> getAllViewModelPath() {
+        return allViewModelPath;
     }
 
     @Override
@@ -88,7 +129,7 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
         super.visit(node);
         Expression classNameExpression = node.getClassName();
         String className = CodeUtils.extractQualifiedName(classNameExpression);
-        if (!VIEW_CLASS.equals(className) && !VIEW_MODEL_CLASS.equals(className) || !methodName.equals(actionName)) {
+        if (!VIEW_CLASS.equals(className) && !VIEW_MODEL_CLASS.equals(className)) {
             return;
         }
         FunctionInvocation fi = node.getMethod();
@@ -106,12 +147,24 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
         if (e instanceof Scalar) {
             Scalar s = (Scalar) e;
             if (s.getScalarType() == Scalar.Type.STRING) {
-                path = s.getStringValue().replace("'", ""); // NOI18N
+                String value = s.getStringValue();
+                path = value.substring(1, value.length() - 1);
             }
         }
-        if (!path.isEmpty() && actionName.equals(methodName)) {
-            synchronized (viewPath) {
-                viewPath.put(className, path + ".php"); // NOI18N
+        if (!path.isEmpty() && actionName != null) {
+            if (methodName.equals(actionName)) {
+                if (VIEW_CLASS.equals(className)) {
+                    viewPath.add(path);
+                } else if (VIEW_MODEL_CLASS.equals(className)) {
+                    viewModelPath.add(path);
+                }
+            }
+
+            // all
+            if (VIEW_CLASS.equals(className)) {
+                allViewPath.add(path);
+            } else if (VIEW_MODEL_CLASS.equals(className)) {
+                allViewModelPath.add(path);
             }
         }
     }
