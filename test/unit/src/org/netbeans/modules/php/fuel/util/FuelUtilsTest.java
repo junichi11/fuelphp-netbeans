@@ -83,6 +83,10 @@ public class FuelUtilsTest extends NbTestCase {
         assertEquals("abc", split[0]);
         assertEquals("index", split[1]);
 
+        split = FuelUtils.moduleSplit("abc::");
+        assertEquals(1, split.length);
+        assertEquals("abc", split[0]);
+
         split = FuelUtils.moduleSplit("def::sub/index");
         assertEquals(2, split.length);
         assertEquals("def", split[0]);
