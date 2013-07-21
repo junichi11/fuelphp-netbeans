@@ -42,7 +42,8 @@
 package org.netbeans.modules.php.fuel.editor.elements;
 
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
-import org.netbeans.modules.php.fuel.util.FuelUtils;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule.FILE_TYPE;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -62,17 +63,8 @@ public class ViewModelClassElement extends ClassElement {
 
     @Override
     public FileObject getBaseDirectory(PhpModule phpModule) {
-        // is current file in modules
-        if (FuelUtils.isInModules(current)) {
-            FileObject viewDirectory = null;
-            String moduleName = FuelUtils.getModuleName(current);
-            FileObject moduleDirectory = FuelUtils.getModuleDirectory(phpModule, moduleName);
-            if (moduleDirectory != null) {
-                viewDirectory = moduleDirectory.getFileObject("classes/view"); // NOI18N
-            }
-            return viewDirectory;
-        }
-        return FuelUtils.getViewModelDirectory(phpModule);
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+        return fuelModule.getDirectory(current, FILE_TYPE.VIEW_MODEL);
     }
 
     @Override
