@@ -41,7 +41,6 @@
  */
 package org.netbeans.modules.php.fuel.editor.navi;
 
-import java.io.File;
 import java.io.IOException;
 import javax.swing.text.Document;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
@@ -56,8 +55,11 @@ import org.netbeans.modules.php.api.util.FileUtils;
 import org.netbeans.modules.php.editor.lexer.PHPTokenId;
 import org.netbeans.modules.php.fuel.editor.ClassElementQuery;
 import org.netbeans.modules.php.fuel.editor.elements.ClassElement;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule.DIR_TYPE;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.util.FuelDocUtils;
+import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -73,9 +75,13 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
     private FileObject targetFile;
     private String targetText;
     private ClassElement element;
+    private String moduleName;
+    private PhpModule phpModule;
 
     @Override
     public boolean verifyState(Document document, final int offset, HyperlinkType type) {
+        // get PhpModule
+        phpModule = getPhpModule(document);
         TokenSequence<PHPTokenId> ts = FuelDocUtils.getTokenSequence(document);
         ts.move(offset);
         ts.moveNext();
@@ -93,21 +99,23 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
         setHyperlinkSpan(start, end);
 
         // get class element
-        PhpModule phpModule = getPhpModule(document);
         element = ClassElementQuery.get(document, offset);
         if (element == null || element.getBaseDirectory(phpModule) == null) {
             return false;
         }
 
+        // set module name
+        setModuleName();
+
         // set target file
-        setTargetFile(phpModule);
+        setTargetFile();
         return true;
     }
 
     @Override
     public void performClickAction(Document document, int offset, HyperlinkType type) {
         // create file
-        if (FuelPhpPreferences.useAutoCreateFile(getPhpModule(document))) {
+        if (FuelPhpPreferences.useAutoCreateFile(phpModule)) {
             createFile();
         }
 
@@ -124,21 +132,20 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
         "LBL_CreateNewFileMessage=create a new empty file when you click here"})
     public String getTooltipText(Document document, int offset, HyperlinkType type) {
         if (targetFile == null) {
-            if (FuelPhpPreferences.useAutoCreateFile(getPhpModule(document))) {
+            if (FuelPhpPreferences.useAutoCreateFile(phpModule)) {
                 return Bundle.LBL_NotFoundMessage(Bundle.LBL_CreateNewFileMessage());
             }
             return Bundle.LBL_NotFoundMessage(targetText);
         }
 
         // get source directory
-        PhpModule phpModule = PhpModule.inferPhpModule();
         FileObject sourceDirectory = null;
         if (phpModule != null) {
             sourceDirectory = phpModule.getSourceDirectory();
         }
 
         // get path
-        String relativePath = ""; // NOI18N
+        String relativePath;
         if (sourceDirectory != null) {
             relativePath = FileUtil.getRelativePath(sourceDirectory, targetFile);
         } else {
@@ -151,43 +158,65 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
      * Create file if target file doesn't exist.
      */
     private void createFile() {
-        if (targetFile == null) {
-            // create new empty file
-            PhpModule phpModule = PhpModule.inferPhpModule();
-            FileObject baseDirectory = element.getBaseDirectory(phpModule);
-            File base = FileUtil.toFile(baseDirectory);
-            File newFile = new File(base, targetText + element.getExtension());
-            File parentFile = newFile.getParentFile();
-
-            // create sub directories
-            if (!parentFile.getName().equals(baseDirectory.getNameExt())) {
-                parentFile.mkdirs();
-            }
-
-            // create file
-            try {
-                if (newFile.createNewFile()) {
-                    setTargetFile(phpModule);
-                }
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+        if (targetFile != null) {
+            return;
         }
 
+        // get base directory
+        FileObject baseDirectory = getBaseDirectory();
+
+        // create new empty file
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+        try {
+            String relativePath = targetText + element.getExtension();
+            boolean isCreated = fuelModule.createNewFile(baseDirectory, relativePath);
+            if (isCreated) {
+                targetFile = baseDirectory.getFileObject(relativePath);
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     /**
      * Set target file.
      *
-     * @param phpModule
      */
-    private void setTargetFile(PhpModule phpModule) {
+    private void setTargetFile() {
         // get base directory
-        FileObject baseDirectory = element.getBaseDirectory(phpModule);
+        FileObject baseDirectory = getBaseDirectory();
 
         // get target file
         if (baseDirectory != null) {
             targetFile = baseDirectory.getFileObject(targetText + element.getExtension()); // NOI18N
+        }
+    }
+
+    /**
+     * Set module name.
+     */
+    private void setModuleName() {
+        // get module name
+        String[] moduleSplit = FuelUtils.moduleSplit(targetText);
+        if (moduleSplit != null && moduleSplit.length == 2) {
+            moduleName = moduleSplit[0];
+            targetText = moduleSplit[1];
+        } else {
+            moduleName = ""; // NOI18N
+        }
+    }
+
+    /**
+     * Get base directory for path.
+     *
+     * @return
+     */
+    private FileObject getBaseDirectory() {
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+        if (!moduleName.isEmpty()) {
+            return fuelModule.getDirectory(DIR_TYPE.MODULES, element.getFileType(), moduleName);
+        } else {
+            return element.getBaseDirectory(phpModule);
         }
     }
 
