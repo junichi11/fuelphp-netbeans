@@ -42,6 +42,7 @@
 package org.netbeans.modules.php.fuel.editor.elements;
 
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule.FILE_TYPE;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -68,5 +69,9 @@ public abstract class ClassElement {
 
     public String getExtension() {
         return ""; // NOI18N
+    }
+
+    public FILE_TYPE getFileType() {
+        return FILE_TYPE.NONE;
     }
 }

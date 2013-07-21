@@ -71,4 +71,9 @@ public class ViewModelClassElement extends ClassElement {
     public String getExtension() {
         return ".php"; // NOI18N
     }
+
+    @Override
+    public FILE_TYPE getFileType() {
+        return FILE_TYPE.VIEW_MODEL;
+    }
 }
