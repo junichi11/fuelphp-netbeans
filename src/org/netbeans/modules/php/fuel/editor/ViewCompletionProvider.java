@@ -156,9 +156,21 @@ public class ViewCompletionProvider extends FuelPhpCompletionProvider {
     private void setModuleName() {
         // module name support
         String[] moduleSplit = FuelUtils.moduleSplit(filter);
-        if (moduleSplit != null && moduleSplit.length == 2) {
+        if (moduleSplit == null) {
+            moduleName = ""; // NOI18N
+            return;
+        }
+
+        if (moduleSplit.length == 2) {
             moduleName = moduleSplit[0];
             filter = moduleSplit[1];
+        } else if (moduleSplit.length == 1) {
+            if (filter.endsWith("::")) { // NOI18N
+                moduleName = moduleSplit[0];
+                filter = ""; // NOI18N
+            } else {
+                moduleName = ""; // NOI18N
+            }
         } else {
             moduleName = ""; // NOI18N
         }
