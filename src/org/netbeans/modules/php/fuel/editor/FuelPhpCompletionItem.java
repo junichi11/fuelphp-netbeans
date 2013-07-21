@@ -67,11 +67,18 @@ public class FuelPhpCompletionItem implements CompletionItem {
     private static Color fieldColor = Color.decode("0x8304D7"); // NOI18N
     private int startOffset;
     private int removeLength;
+    private boolean isAltDown = false;
+    private boolean isExist = true;
 
     FuelPhpCompletionItem(String text, int startOffset, int removeLength) {
         this.text = text;
         this.startOffset = startOffset;
         this.removeLength = removeLength;
+    }
+
+    FuelPhpCompletionItem(String text, int startOffset, int removeLength, boolean isExist) {
+        this(text, startOffset, removeLength);
+        this.isExist = isExist;
     }
 
     @Override
@@ -88,16 +95,33 @@ public class FuelPhpCompletionItem implements CompletionItem {
 
     @Override
     public void processKeyEvent(KeyEvent ke) {
+        if (ke.isAltDown()) {
+            isAltDown = true;
+        } else {
+            isAltDown = false;
+        }
     }
 
     @Override
     public int getPreferredWidth(Graphics grphcs, Font font) {
-        return CompletionUtilities.getPreferredWidth(text, null, grphcs, font);
+        return CompletionUtilities.getPreferredWidth(getLeftText(), getRightText(), grphcs, font);
     }
 
     @Override
     public void render(Graphics grphcs, Font font, Color color, Color color1, int width, int height, boolean selected) {
-        CompletionUtilities.renderHtml(fieldIcon, text, null, grphcs, font, (selected ? Color.white : fieldColor), width, height, selected);
+        CompletionUtilities.renderHtml(fieldIcon, getLeftText(), getRightText(), grphcs, font, (selected ? Color.white : fieldColor), width, height, selected);
+    }
+
+    private String getLeftText() {
+        return "<b>" + text + "</b>";
+    }
+
+    private String getRightText() {
+        String rightText = null;
+        if (!isExist) {
+            rightText = ":new file[Alt+Enter]";
+        }
+        return rightText;
     }
 
     @Override
@@ -128,5 +152,21 @@ public class FuelPhpCompletionItem implements CompletionItem {
     @Override
     public CharSequence getInsertPrefix() {
         return text;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public int getStartOffset() {
+        return startOffset;
+    }
+
+    public int getRemoveLength() {
+        return removeLength;
+    }
+
+    public boolean isIsAltDown() {
+        return isAltDown;
     }
 }

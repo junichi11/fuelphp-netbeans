@@ -41,15 +41,19 @@
  */
 package org.netbeans.modules.php.fuel.editor;
 
-import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import org.netbeans.api.editor.mimelookup.MimeRegistration;
 import org.netbeans.api.lexer.Token;
-import org.netbeans.api.lexer.TokenHierarchy;
 import org.netbeans.api.lexer.TokenSequence;
+import org.netbeans.modules.editor.NbEditorUtilities;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.editor.lexer.PHPTokenId;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule.DIR_TYPE;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule.FILE_TYPE;
+import org.netbeans.modules.php.fuel.util.FuelDocUtils;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.spi.editor.completion.CompletionProvider;
 import org.netbeans.spi.editor.completion.CompletionResultSet;
@@ -65,9 +69,14 @@ import org.openide.filesystems.FileObject;
 @MimeRegistration(mimeType = "text/x-php5", service = CompletionProvider.class)
 public class ViewCompletionProvider extends FuelPhpCompletionProvider {
 
-    private boolean isView;
-    private boolean isViewModel;
     private static final String SLASH = "/"; //NOI18N
+    private String filter;
+    private String directoryPath;
+    private String moduleName;
+    private int startOffset;
+    private int removeLength;
+    private boolean isExistSameAsFilter;
+    private FILE_TYPE fileType = FILE_TYPE.NONE;
 
     @Override
     public CompletionTask createTask(int queryType, JTextComponent component, PhpModule phpModule) {
@@ -77,79 +86,143 @@ public class ViewCompletionProvider extends FuelPhpCompletionProvider {
             @SuppressWarnings("unchecked")
             @Override
             protected void query(CompletionResultSet completionResultSet, Document doc, int caretOffset) {
-                AbstractDocument ad = (AbstractDocument) doc;
-                ad.readLock();
+                // check View::forge()
+                TokenSequence<PHPTokenId> ts = FuelDocUtils.getTokenSequence(doc);
+                ts.move(caretOffset);
+                ts.moveNext();
+                Token<PHPTokenId> token = ts.token();
                 try {
-                    // check View::forge()
-                    TokenHierarchy hierarchy = TokenHierarchy.get(doc);
-                    TokenSequence<PHPTokenId> ts = hierarchy.tokenSequence(PHPTokenId.language());
-                    ts.move(caretOffset);
-                    ts.moveNext();
-                    Token<PHPTokenId> token = ts.token();
                     if (token.id() != PHPTokenId.PHP_CONSTANT_ENCAPSED_STRING) {
-                        completionResultSet.finish();
                         return;
                     }
-                    String caretInput = ts.token().text().toString();
+                    String inputValue = ts.token().text().toString();
 
-                    int startOffset = ts.offset() + 1;
-                    int removeLength = caretInput.length() - 2;
-                    if (removeLength < 0) {
-                        removeLength = 0;
-                    }
+                    // init
+                    setStartOffset(ts);
+                    setRemoveLength(inputValue);
                     if (!isViewForge(ts)) {
-                        completionResultSet.finish();
+                        return;
+                    }
+                    initFilter(inputValue, caretOffset);
+
+                    // get current file
+                    FileObject fileObject = NbEditorUtilities.getFileObject(doc);
+                    if (fileObject == null) {
                         return;
                     }
 
-                    String filter = caretInput.substring(1, caretOffset - startOffset + 1);
+                    // set module name
+                    setModuleName();
 
-                    // get fuel/app/views or fuel/app/classes/view
-                    // to a CompletionResultSet
-                    FileObject viewDirectory = null;
-                    if (isView) {
-                        viewDirectory = FuelUtils.getViewsDirectory(pm);
-                    } else if (isViewModel) {
-                        viewDirectory = FuelUtils.getViewModelDirectory(pm);
-                    }
+                    // get base view directory
+                    FileObject viewDirectory = getViewDirectory(pm, fileObject);
                     if (viewDirectory == null) {
-                        completionResultSet.finish();
+                        completionResultSet.addItem(new FuelPhpViewCompletionItem(getInsertPath(filter), startOffset, removeLength, false, getFileType()));
                         return;
                     }
-                    // exist subdirectory
-                    int lastIndexOfSlash = filter.lastIndexOf(SLASH);
-                    String directory = ""; // NOI18N
-                    if (lastIndexOfSlash > 0) {
-                        directory = filter.substring(0, lastIndexOfSlash + 1);
-                        filter = filter.substring(lastIndexOfSlash + 1);
-                        viewDirectory = viewDirectory.getFileObject(directory);
-                        if (viewDirectory == null) {
-                            completionResultSet.finish();
-                            return;
-                        }
-                    }
 
+                    // add items
                     FileObject[] views = viewDirectory.getChildren();
-                    for (int i = 0; i < views.length; i++) {
-                        final FileObject view = views[i];
-                        String viewPath = view.getName();
-                        if (view.isFolder()) {
-                            viewPath = viewPath + SLASH;
-                        }
-                        if (!viewPath.isEmpty()
-                            && viewPath.startsWith(filter)
-                            && !viewPath.equals(".gitkeep")) { //NOI18N
-                            completionResultSet.addItem(new FuelPhpCompletionItem(directory + viewPath, startOffset, removeLength));
-                        }
+                    addItems(views, completionResultSet);
+                    if (!isExistSameAsFilter && !filter.isEmpty()) {
+                        completionResultSet.addItem(new FuelPhpViewCompletionItem(getInsertPath(filter), startOffset, removeLength, false, getFileType()));
                     }
                 } finally {
-                    ad.readUnlock();
+                    completionResultSet.finish();
                 }
-
-                completionResultSet.finish();
             }
         }, component);
+    }
 
+    private void setStartOffset(TokenSequence<PHPTokenId> ts) {
+        this.startOffset = ts.offset() + 1;
+    }
+
+    private void setRemoveLength(String inputValue) {
+        this.removeLength = inputValue.length() - 2;
+        if (this.removeLength < 0) {
+            this.removeLength = 0;
+        }
+    }
+
+    private void initFilter(String inputValue, int caretOffset) {
+        if (inputValue.length() > 2 && caretOffset >= startOffset) {
+            filter = inputValue.substring(1, caretOffset - startOffset + 1);
+        } else {
+            filter = ""; // NOI18N
+        }
+    }
+
+    private void setModuleName() {
+        // module name support
+        String[] moduleSplit = FuelUtils.moduleSplit(filter);
+        if (moduleSplit != null && moduleSplit.length == 2) {
+            moduleName = moduleSplit[0];
+            filter = moduleSplit[1];
+        } else {
+            moduleName = ""; // NOI18N
+        }
+    }
+
+    private FileObject getViewDirectory(PhpModule phpModule, FileObject fileObject) {
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+        FileObject viewDirectory;
+        if (!moduleName.isEmpty()) {
+            viewDirectory = fuelModule.getDirectory(DIR_TYPE.MODULES, getFileType(), moduleName);
+        } else {
+            viewDirectory = fuelModule.getDirectory(fileObject, getFileType());
+        }
+
+        if (viewDirectory == null) {
+            return null;
+        }
+
+        // exist subdirectory
+        int lastIndexOfSlash = filter.lastIndexOf(SLASH);
+        directoryPath = ""; // NOI18N
+        if (lastIndexOfSlash > 0) {
+            directoryPath = filter.substring(0, lastIndexOfSlash + 1);
+            filter = filter.substring(lastIndexOfSlash + 1);
+            viewDirectory = viewDirectory.getFileObject(directoryPath);
+        }
+
+        return viewDirectory;
+    }
+
+    private void addItems(FileObject[] views, CompletionResultSet completionResultSet) {
+        isExistSameAsFilter = false;
+        if (views == null) {
+            return;
+        }
+        for (FileObject view : views) {
+            String viewPath = view.getName();
+            if (view.isFolder()) {
+                viewPath = viewPath + SLASH;
+            }
+            if (viewPath.equals(filter)) {
+                isExistSameAsFilter = true;
+            }
+            if (!viewPath.isEmpty()
+                    && viewPath.startsWith(filter)
+                    && !viewPath.equals(".gitkeep")) { //NOI18N
+                completionResultSet.addItem(new FuelPhpViewCompletionItem(getInsertPath(viewPath), startOffset, removeLength));
+            }
+        }
+    }
+
+    private String getInsertPath(String viewPath) {
+        StringBuilder sb = new StringBuilder();
+        if (!StringUtils.isEmpty(moduleName)) {
+            sb.append(moduleName);
+            sb.append("::"); // NOI18N
+        }
+        if (!StringUtils.isEmpty(directoryPath)) {
+            sb.append(directoryPath);
+        }
+        if (!StringUtils.isEmpty(viewPath)) {
+            sb.append(viewPath);
+        }
+        return sb.toString();
     }
 
     /**
@@ -174,15 +247,18 @@ public class ViewCompletionProvider extends FuelPhpCompletionProvider {
         if (ts.token().id() != PHPTokenId.PHP_STRING) {
             return false;
         }
-        isView = false;
-        isViewModel = false;
         if (viewClass.equals("View")) { //NOI18N
-            isView = true;
+            fileType = FILE_TYPE.VIEW;
         } else if (viewClass.equals("ViewModel")) { //NOI18N
-            isViewModel = true;
+            fileType = FILE_TYPE.VIEW_MODEL;
         } else {
+            fileType = FILE_TYPE.NONE;
             return false;
         }
         return true;
+    }
+
+    private FILE_TYPE getFileType() {
+        return fileType;
     }
 }
