@@ -245,7 +245,7 @@ public abstract class FuelPhpModuleImpl {
             return false;
         }
         File parentFile = targetFile.getParentFile();
-        if (parentFile.exists() && parentFile.isDirectory()) {
+        if (!parentFile.exists()) {
             // mkdirs
             parentFile.mkdirs();
         }
