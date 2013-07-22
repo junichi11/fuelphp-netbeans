@@ -95,11 +95,7 @@ public class FuelPhpCompletionItem implements CompletionItem {
 
     @Override
     public void processKeyEvent(KeyEvent ke) {
-        if (ke.isAltDown()) {
-            isAltDown = true;
-        } else {
-            isAltDown = false;
-        }
+        isAltDown = ke.isAltDown();
     }
 
     @Override
