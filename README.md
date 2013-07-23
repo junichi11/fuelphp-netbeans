@@ -16,6 +16,8 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - Hyperlink navigation
 - Run Command Action
 - Generate Action
+- Default config option
+- Save config as default action
 
 ## Install
 
@@ -177,6 +179,17 @@ Right-click project > FuelPHP > Run Command or Shortcut key `Alt + Shift + X`
 You can run `oil generate` command with GUI.
 
 Right-click project > FuelPHP > Generate
+
+## Default Config Option
+
+Tools > Options > PHP > FuelPHP  
+We can set default config(app/conifg/config.php) to the Options.  
+This is used when new project is created.
+
+## Save Config As Default Action
+
+This is able to set current project config to the Options.  
+Right-click project > Fuel > save config as default
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)

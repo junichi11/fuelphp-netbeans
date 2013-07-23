@@ -8,6 +8,7 @@
 - プロジェクトの新規作成からFuelPHPプロジェクトを作成
 - 自動補完用のファイル作成
 - アクション : ビューとアクションへの移動
+- Smart Go To, Go To Actions
 - カスタムfuelディレクトリ名
 - Viewパスの補完
 - MVCノード
@@ -46,6 +47,41 @@ c.f.
 - ViewファイルもしくはViewModelファイルのなかで右クリック
 - ナビゲート
 - アクションへ移動
+
+## Smart Go To / Go To Actions
+
+### Smart Go To
+
+現在編集中のファイルに関連するファイルにジャンプすることができます。
+
+**[Ctrl + Shift + G] [S]** or **[Ctrl + J] [S]**
+
+(from : to)
+
+- controller : view, view model, test
+- model : test
+- view: controller
+- view model : controller, test
+- test : tested class
+
+### Go To Actions
+
+次のアクションが利用可能です:
+
+- [Ctrl + Shift + G] [C] Controller 
+- [Ctrl + Shift + G] [V] View
+- [Ctrl + Shift + G] [W] View Model
+- [Ctrl + Shift + G] [T] Test
+- [Ctrl + Shift + G] [Ctrl + C] All Controllers
+- [Ctrl + Shift + G] [Ctrl + M] All Models
+- [Ctrl + Shift + G] [Ctrl + W] All View Models
+- [Ctrl + Shift + G] [Ctrl + T] All Tests
+- [Ctrl + Shift + G] [Ctrl + K] All Tasks
+- [Ctrl + Shift + G] [Ctrl + I] All Configurations
+
+### Keymap
+
+もしこれらのショートカットがすでに使用されている場合は、キーマップにショートカットを手動で設定して下さい。 (ツール > オプション > キーマップ)
 
 ## カスタムfuelディレクトリ名
 
@@ -138,6 +174,18 @@ IDEでoilコマンドを実行することができます。
 GUIで`oil generate`コマンドを実行することができます。
 
 プロジェクトを右クリック > FuelPHP > Generate
+
+## Default Config Option
+
+ツール > オプション > PHP > FuelPHP  
+オプションにデフォルトのconfigを設定することができます。  
+これは、新規プロジェクトの作成時に使用されます。  
+
+## Save Config As Default Action
+
+現在のプロジェクトのconfigをオプションに設定します。  
+プロジェクトを右クリック > Fuel > save config as default
+
 
 ## 重要!
 プロジェクトの新規作成からSDカードポートへのクローンは行わないでください!(ハングアップします...)
