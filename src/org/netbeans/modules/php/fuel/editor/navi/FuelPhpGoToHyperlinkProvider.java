@@ -82,6 +82,9 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
     public boolean verifyState(Document document, final int offset, HyperlinkType type) {
         // get PhpModule
         phpModule = getPhpModule(document);
+        if (phpModule == null) {
+            return false;
+        }
         TokenSequence<PHPTokenId> ts = FuelDocUtils.getTokenSequence(document);
         ts.move(offset);
         ts.moveNext();
@@ -227,6 +230,12 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
      * @return
      */
     private PhpModule getPhpModule(Document document) {
-        return PhpModule.forFileObject(NbEditorUtilities.getFileObject(document));
+        // In case of using EditorPane in Option, FileObject doesn't exist.
+        // So, we must check null
+        FileObject fileObject = NbEditorUtilities.getFileObject(document);
+        if (fileObject == null) {
+            return null;
+        }
+        return PhpModule.forFileObject(fileObject);
     }
 }

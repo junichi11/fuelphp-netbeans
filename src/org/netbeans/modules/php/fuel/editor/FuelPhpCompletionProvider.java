@@ -43,7 +43,7 @@ package org.netbeans.modules.php.fuel.editor;
 
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
-import org.netbeans.modules.parsing.api.Source;
+import org.netbeans.modules.editor.NbEditorUtilities;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.spi.editor.completion.CompletionProvider;
@@ -59,8 +59,10 @@ public abstract class FuelPhpCompletionProvider implements CompletionProvider {
     @Override
     public CompletionTask createTask(int queryType, JTextComponent component) {
         Document doc = component.getDocument();
-        Source source = Source.create(doc);
-        FileObject fo = source.getFileObject();
+        FileObject fo = NbEditorUtilities.getFileObject(doc);
+        if (fo == null) {
+            return null;
+        }
         PhpModule phpModule = PhpModule.forFileObject(fo);
         if (!FuelUtils.isFuelPHP(phpModule)) {
             return null;
