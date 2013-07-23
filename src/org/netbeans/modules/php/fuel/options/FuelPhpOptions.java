@@ -53,6 +53,8 @@ public class FuelPhpOptions {
     private static final FuelPhpOptions INSTANCE = new FuelPhpOptions();
     private static final String PREFERENCES_PATH = "fuelphp"; // NOI18N
     private static final String GIT_BRANCH_NAME = "git.branch.name"; // NOI18N
+    private static final String DEFAULT_CONFIG = "default.config"; // NOI18N
+    private static final String USE_DEFAULT_CONFIG = "use.default.config"; // NOI18N
 
     private FuelPhpOptions() {
     }
@@ -67,6 +69,22 @@ public class FuelPhpOptions {
 
     public void setGitBranchName(String name) {
         getPreferences().put(GIT_BRANCH_NAME, name);
+    }
+
+    public boolean isDefaultConfig() {
+        return getPreferences().getBoolean(USE_DEFAULT_CONFIG, false);
+    }
+
+    public void setDefaultConfig(boolean isDefault) {
+        getPreferences().putBoolean(USE_DEFAULT_CONFIG, isDefault);
+    }
+
+    public String getDefaultConfig() {
+        return getPreferences().get(DEFAULT_CONFIG, ""); // NOI18N
+    }
+
+    public void setDefaultConfig(String config) {
+        getPreferences().put(DEFAULT_CONFIG, config);
     }
 
     private Preferences getPreferences() {
