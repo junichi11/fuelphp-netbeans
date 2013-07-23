@@ -43,6 +43,7 @@ package org.netbeans.modules.php.fuel;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -121,12 +122,15 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
 
     @Override
     public Set<FileObject> extend(PhpModule pm) throws ExtendingException {
-        FileObject localPath = pm.getSourceDirectory();
+        FileObject sourceDirectory = pm.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return Collections.emptySet();
+        }
         if (getPanel().getUnzipRadioButton().isSelected()) {
 
             Map<String, String> downloadsMap = getPanel().getDownloadsMap();
             String url = downloadsMap.get(getPanel().getVersionList().getSelectedValue().toString());
-            UrlZipper zipper = new UrlZipper(url, localPath, new FuelZipEntryFilter());
+            UrlZipper zipper = new UrlZipper(url, sourceDirectory, new FuelZipEntryFilter());
             try {
                 zipper.unzip();
             } catch (MalformedURLException ex) {
@@ -136,7 +140,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
             }
         } else {
             try {
-                String repoPath = localPath.getPath();
+                String repoPath = sourceDirectory.getPath();
                 String gitDir = GIT_DIR + repoPath + GIT_REPO;
                 String workTree = WORK_TREE + repoPath;
                 String branchName = FuelPhpOptions.getInstance().getGitBranchName();
@@ -178,8 +182,8 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
 
         // set open file
         Set<FileObject> files = new HashSet<FileObject>();
-        FileObject config;
-        config = pm.getSourceDirectory().getFileObject(CONFIG_PHP);
+        FileObject config = sourceDirectory.getFileObject(CONFIG_PHP);
+
         if (config != null) {
             files.add(config);
         }
