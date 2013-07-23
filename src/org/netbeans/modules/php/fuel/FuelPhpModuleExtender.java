@@ -42,6 +42,9 @@
 package org.netbeans.modules.php.fuel;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -59,6 +62,7 @@ import org.netbeans.modules.php.fuel.util.FuelZipEntryFilter;
 import org.netbeans.modules.php.fuel.util.UrlZipper;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender.ExtendingException;
+import org.openide.filesystems.FileAlreadyLockedException;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
@@ -184,6 +188,9 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
         Set<FileObject> files = new HashSet<FileObject>();
         FileObject config = sourceDirectory.getFileObject(CONFIG_PHP);
 
+        // use default config
+        setDefaultConfig(config);
+
         if (config != null) {
             files.add(config);
         }
@@ -202,5 +209,31 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
             panel = new NewProjectConfigurationPanel();
         }
         return panel;
+    }
+
+    /**
+     * Set default config to config.php.
+     *
+     * @param config config.php
+     */
+    private void setDefaultConfig(FileObject config) {
+        FuelPhpOptions options = FuelPhpOptions.getInstance();
+
+        if (options.isDefaultConfig()) {
+            try {
+                // write
+                OutputStream outputStream = config.getOutputStream();
+                PrintWriter pw = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true); // NOI18N
+                try {
+                    pw.write(options.getDefaultConfig());
+                } finally {
+                    pw.close();
+                }
+            } catch (FileAlreadyLockedException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
     }
 }
