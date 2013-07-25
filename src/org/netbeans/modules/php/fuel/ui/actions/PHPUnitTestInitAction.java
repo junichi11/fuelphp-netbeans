@@ -126,6 +126,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         FOR_MAKEGOOD = new HashSet<String>();
         FOR_MAKEGOOD.add("$_SERVER['doc_root'] = '../../';"); // NOI18N
         FOR_MAKEGOOD.add("$_SERVER['app_path'] = '" + fuel + "/app';"); // NOI18N
+        FOR_MAKEGOOD.add("$_SERVER['vendor_path'] = '" + fuel + "/vendor';"); // NOI18N
         FOR_MAKEGOOD.add("$_SERVER['core_path'] = '" + fuel + "/core';"); // NOI18N
         FOR_MAKEGOOD.add("$_SERVER['package_path'] = '" + fuel + "/packages';"); // NOI18N
 
