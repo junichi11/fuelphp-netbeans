@@ -68,4 +68,36 @@ public class FuelUtilsTest extends NbTestCase {
         assertEquals(expResult, FuelUtils.isActionName("index"));
         assertEquals(expResult, FuelUtils.isActionName("action_"));
     }
+
+    /**
+     * Test of moduleSplit method, of class FuelUtils.
+     */
+    @Test
+    public void testModuleSplit() {
+        String[] split = FuelUtils.moduleSplit("index");
+        assertEquals(1, split.length);
+        assertEquals("index", split[0]);
+
+        split = FuelUtils.moduleSplit("abc::index");
+        assertEquals(2, split.length);
+        assertEquals("abc", split[0]);
+        assertEquals("index", split[1]);
+
+        split = FuelUtils.moduleSplit("abc::");
+        assertEquals(1, split.length);
+        assertEquals("abc", split[0]);
+
+        split = FuelUtils.moduleSplit("def::sub/index");
+        assertEquals(2, split.length);
+        assertEquals("def", split[0]);
+        assertEquals("sub/index", split[1]);
+
+        split = FuelUtils.moduleSplit("");
+        assertEquals(1, split.length);
+        assertEquals("", split[0]);
+
+        split = FuelUtils.moduleSplit(null);
+        assertEquals(null, split);
+
+    }
 }

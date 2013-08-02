@@ -77,8 +77,17 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
 
         branchesLabel = new javax.swing.JLabel();
         branchesComboBox = new javax.swing.JComboBox();
+        defaultConfigCheckBox = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        defaultConfigEditorPane = new javax.swing.JEditorPane();
 
         org.openide.awt.Mnemonics.setLocalizedText(branchesLabel, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.branchesLabel.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(defaultConfigCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.defaultConfigCheckBox.text")); // NOI18N
+
+        defaultConfigEditorPane.setContentType("text/x-php5"); // NOI18N
+        jScrollPane1.setViewportView(defaultConfigEditorPane);
+        defaultConfigEditorPane.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.defaultConfigEditorPane.AccessibleContext.accessibleDescription")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -87,9 +96,14 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(branchesLabel)
-                    .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(188, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(branchesLabel)
+                            .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(defaultConfigCheckBox))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,7 +112,11 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
                 .addComponent(branchesLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(defaultConfigCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -109,17 +127,28 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         for (String branch : getBranches()) {
             branchesComboBox.addItem(branch);
         }
-        branchesComboBox.setSelectedItem(FuelPhpOptions.getInstance().getGitBranchName());
+        FuelPhpOptions options = FuelPhpOptions.getInstance();
+        branchesComboBox.setSelectedItem(options.getGitBranchName());
         branchesComboBox.setEnabled(!isNetworkError);
+        // default config
+        defaultConfigCheckBox.setSelected(options.isDefaultConfig());
+        defaultConfigEditorPane.setText(options.getDefaultConfig());
     }
 
     void store() {
+        FuelPhpOptions options = FuelPhpOptions.getInstance();
+        // default config
+        options.setDefaultConfig(defaultConfigCheckBox.isSelected());
+        options.setDefaultConfig(defaultConfigEditorPane.getText());
+
         if (isNetworkError) {
             return;
         }
+
+        // branch
         String selectedItem = (String) branchesComboBox.getSelectedItem();
         if (selectedItem != null) {
-            FuelPhpOptions.getInstance().setGitBranchName(selectedItem);
+            options.setGitBranchName(selectedItem);
         }
     }
 
@@ -158,5 +187,8 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox branchesComboBox;
     private javax.swing.JLabel branchesLabel;
+    private javax.swing.JCheckBox defaultConfigCheckBox;
+    private javax.swing.JEditorPane defaultConfigEditorPane;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

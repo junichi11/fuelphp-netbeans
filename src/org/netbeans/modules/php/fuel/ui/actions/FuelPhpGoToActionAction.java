@@ -41,14 +41,21 @@
  */
 package org.netbeans.modules.php.fuel.ui.actions;
 
-import java.util.Collection;
-import org.netbeans.modules.csl.api.UiUtils;
-import org.netbeans.modules.php.api.editor.EditorSupport;
-import org.netbeans.modules.php.api.editor.PhpClass;
-import org.netbeans.modules.php.fuel.util.FuelUtils;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.List;
+import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
+import org.netbeans.api.editor.EditorRegistry;
+import org.netbeans.modules.php.fuel.ui.GoToPopup;
+import org.netbeans.modules.php.fuel.ui.PopupUtil;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.items.GoToItem;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.statuses.FuelPhpGoToStatus;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.statuses.FuelPhpGoToStatusFactory;
 import org.netbeans.modules.php.spi.framework.actions.GoToActionAction;
 import org.openide.filesystems.FileObject;
-import org.openide.util.Lookup;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -67,35 +74,33 @@ public class FuelPhpGoToActionAction extends GoToActionAction {
 
     @Override
     public boolean goToAction() {
-        FileObject controller = FuelUtils.getInferedController(view);
-        if (controller == null) {
+        FuelPhpGoToStatusFactory factory = FuelPhpGoToStatusFactory.getInstance();
+        FuelPhpGoToStatus status = factory.create(view, offset);
+        status.scan();
+        final List<GoToItem> items = status.getControllers();
+        if (items.isEmpty()) {
             return false;
         }
 
-        UiUtils.open(controller, getActionOffset(controller));
-        return true;
-    }
-
-    /**
-     * Get action method offset
-     *
-     * @param controller controller FileObject
-     * @return offset
-     */
-    private int getActionOffset(FileObject controller) {
-        EditorSupport editorSupport = Lookup.getDefault().lookup(EditorSupport.class);
-        Collection<PhpClass> phpClasses = editorSupport.getClasses(controller);
-
-        // find target action method
-        for (PhpClass phpClass : phpClasses) {
-            for (PhpClass.Method method : phpClass.getMethods()) {
-                String methodName = method.getName();
-                if (methodName.equals(FuelUtils.getInferedActionName(view))) {
-                    return method.getOffset();
-                }
-            }
+        // show popup
+        JTextComponent editor = EditorRegistry.lastFocusedComponent();
+        if (editor == null) {
+            return false;
         }
-
-        return DEFAULT_OFFSET;
+        try {
+            Rectangle rectangle = editor.modelToView(editor.getCaretPosition());
+            final Point point = new Point(rectangle.x, rectangle.y + rectangle.height);
+            SwingUtilities.convertPointToScreen(point, editor);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    String title = "Go To Action"; // NOI18N
+                    PopupUtil.showPopup(new GoToPopup(title, items), title, point.x, point.y, true, 0);
+                }
+            });
+        } catch (BadLocationException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return true;
     }
 }

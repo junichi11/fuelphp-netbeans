@@ -8,6 +8,7 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - create a new FuelPHP Project from New Project Option
 - create a file for auto completion
 - Action : go to view , go to action
+- Smart Go To and some go to actions
 - Support for custom fuel directory name
 - Support for view path code completion
 - MVC Node
@@ -15,6 +16,8 @@ This NetBeans plugin provides support for FuelPHP Framework.
 - Hyperlink navigation
 - Run Command Action
 - Generate Action
+- Default config option
+- Save config as default action
 
 ## Install
 
@@ -45,6 +48,41 @@ If create a project from new project, add it automatically.
 - Right-click in the view or view model file.
 - Navigate
 - Go to action
+
+## Smart Go To / Go To Actions
+
+### Smart Go To
+
+We can go to specific files relevant to a current file.
+
+**[Ctrl + Shift + G] [S]** or **[Ctrl + J] [S]**
+
+(from : to)
+
+- controller : view, view model, test
+- model : test
+- view: controller
+- view model : controller, test
+- test : tested class
+
+### Go To Actions
+
+It is available the following actions:
+
+- [Ctrl + Shift + G] [C] Controller 
+- [Ctrl + Shift + G] [V] View
+- [Ctrl + Shift + G] [W] View Model
+- [Ctrl + Shift + G] [T] Test
+- [Ctrl + Shift + G] [Ctrl + C] All Controllers
+- [Ctrl + Shift + G] [Ctrl + M] All Models
+- [Ctrl + Shift + G] [Ctrl + W] All View Models
+- [Ctrl + Shift + G] [Ctrl + T] All Tests
+- [Ctrl + Shift + G] [Ctrl + K] All Tasks
+- [Ctrl + Shift + G] [Ctrl + I] All Configurations
+
+### Keymap
+
+If you have already used these shortcuts, please try to set shortcuts to keymap (Tools > Options).
 
 ## Custom fuel directory name
 
@@ -141,6 +179,17 @@ Right-click project > FuelPHP > Run Command or Shortcut key `Alt + Shift + X`
 You can run `oil generate` command with GUI.
 
 Right-click project > FuelPHP > Generate
+
+## Default Config Option
+
+Tools > Options > PHP > FuelPHP  
+We can set default config(app/conifg/config.php) to the Options.  
+This is used when new project is created.
+
+## Save Config As Default Action
+
+This is able to set current project config to the Options.  
+Right-click project > Fuel > save config as default
 
 ## Important!
 Don't clone to SD Card port from new project option!(Hang up...)
