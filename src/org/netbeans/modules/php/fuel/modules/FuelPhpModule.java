@@ -81,6 +81,10 @@ public class FuelPhpModule {
         TESTS,
     }
 
+    public FuelPhpVersion getVersion() {
+        return impl.getVersion();
+    }
+
     public FileObject getDirectory(DIR_TYPE dirType) {
         return impl.getDirectory(dirType);
     }
