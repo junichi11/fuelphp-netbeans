@@ -43,6 +43,9 @@ package org.netbeans.modules.php.fuel.modules;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule.DIR_TYPE;
@@ -50,6 +53,7 @@ import org.netbeans.modules.php.fuel.modules.FuelPhpModule.FILE_TYPE;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -58,9 +62,22 @@ import org.openide.filesystems.FileUtil;
 public abstract class FuelPhpModuleImpl {
 
     protected PhpModule phpModule;
+    private final FuelPhpVersion version;
 
     public FuelPhpModuleImpl(PhpModule phpModule) {
         this.phpModule = phpModule;
+
+        // version
+        FileObject fuelClass = getFuelClass();
+        String versionNumber = null;
+        if (fuelClass != null) {
+            versionNumber = getVersionNumber(fuelClass);
+        }
+        this.version = new FuelPhpVersion(versionNumber);
+    }
+
+    public FuelPhpVersion getVersion() {
+        return version;
     }
 
     /**
@@ -250,5 +267,38 @@ public abstract class FuelPhpModuleImpl {
             parentFile.mkdirs();
         }
         return targetFile.createNewFile();
+    }
+
+    private FileObject getFuelClass() {
+        // get core
+        FileObject core = getDirectory(DIR_TYPE.CORE);
+        if (core == null) {
+            return null;
+        }
+
+        // get fuel class
+        return core.getFileObject("classes/fuel.php"); // NOI18N
+    }
+
+    /**
+     * Get version number.
+     *
+     * @param fuelClass fuel.php file
+     * @return version number, null if it doesn't exit.
+     */
+    private String getVersionNumber(FileObject fuelClass) {
+        try {
+            List<String> lines = fuelClass.asLines("UTF-8"); // NOI18N
+            Pattern pattern = Pattern.compile("\tconst VERSION = '([a-zA-Z0-9.-]+)';"); // NOI18N
+            for (String line : lines) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    return matcher.group(1);
+                }
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
     }
 }
