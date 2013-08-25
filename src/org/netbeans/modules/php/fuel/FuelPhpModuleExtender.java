@@ -54,7 +54,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
+import org.netbeans.modules.php.api.executable.InvalidPhpExecutableException;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.composer.api.Composer;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.modules.FuelPhpVersion;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
@@ -184,6 +188,9 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
             }
         }
 
+        // composer update
+        update(pm);
+
         // set open file
         Set<FileObject> files = new HashSet<FileObject>();
         FileObject config = sourceDirectory.getFileObject(CONFIG_PHP);
@@ -233,6 +240,26 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
+            }
+        }
+    }
+
+    /**
+     * Update with Composer.
+     *
+     * @param phpModule
+     */
+    private void update(PhpModule phpModule) {
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+        FuelPhpVersion version = fuelModule.getVersion();
+
+        // version >= 1.6
+        if (version.getMajor() >= 1 && version.getMinor() >= 6) {
+            try {
+                Composer composer = Composer.getDefault();
+                composer.update(phpModule);
+            } catch (InvalidPhpExecutableException ex) {
+                LOGGER.log(Level.WARNING, "can't use composer. please, set composer path to the Options");
             }
         }
     }
