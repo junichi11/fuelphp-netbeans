@@ -212,7 +212,6 @@ public final class FuelUtils {
                     if (line.startsWith("interface")) { // NOI18N
                         break;
                     }
-                    String writeString = "";
                     Pattern pattern = Pattern.compile(CLASS_REGEX);
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.find()) {
@@ -223,7 +222,7 @@ public final class FuelUtils {
                                 className = matcher.group(3 + i);
                             }
                         }
-                        writeString = matcher.group(1) + className + " extends Fuel\\Core\\" + className + " {}";
+                        String writeString = matcher.group(1) + className + " extends Fuel\\Core\\" + className + " {}";
                         if (useTestMethod && writeString.contains("TestCase")) { // NOI18N
                             writeTestCaseMethod(printWriter);
                         }
