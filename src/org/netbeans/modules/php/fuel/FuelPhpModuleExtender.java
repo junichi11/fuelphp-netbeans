@@ -41,6 +41,7 @@
  */
 package org.netbeans.modules.php.fuel;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -56,7 +57,9 @@ import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.executable.InvalidPhpExecutableException;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.composer.api.Composer;
+import org.netbeans.modules.php.composer.options.ComposerOptions;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
 import org.netbeans.modules.php.fuel.modules.FuelPhpVersion;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
@@ -68,6 +71,7 @@ import org.netbeans.modules.php.spi.framework.PhpModuleExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender.ExtendingException;
 import org.openide.filesystems.FileAlreadyLockedException;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
@@ -255,11 +259,34 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
 
         // version >= 1.6
         if (version.getMajor() >= 1 && version.getMinor() >= 6) {
+            String composerPath = ComposerOptions.getInstance().getComposerPath();
             try {
+                if (StringUtils.isEmpty(composerPath)) {
+                    // use composer.phar of fuel project
+                    setComposerPath(phpModule);
+                }
+
                 Composer composer = Composer.getDefault();
                 composer.update(phpModule);
             } catch (InvalidPhpExecutableException ex) {
                 LOGGER.log(Level.WARNING, "can't use composer. please, set composer path to the Options");
+            }
+        }
+    }
+
+    /**
+     * Set composer path. If composer is not set, use composer.phar of fuel
+     * project.
+     *
+     * @param phpModule
+     */
+    private void setComposerPath(PhpModule phpModule) {
+        FileObject sourceDirectory = phpModule.getSourceDirectory();
+        if (sourceDirectory != null) {
+            FileObject composerPhar = sourceDirectory.getFileObject("composer.phar"); // NOI18N
+            if (composerPhar != null) {
+                File phar = FileUtil.toFile(composerPhar);
+                ComposerOptions.getInstance().setComposerPath(phar.getAbsolutePath());
             }
         }
     }
