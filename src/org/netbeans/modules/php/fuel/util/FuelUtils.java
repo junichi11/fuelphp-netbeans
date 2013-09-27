@@ -116,6 +116,28 @@ public final class FuelUtils {
         return null;
     }
 
+    /**
+     * Get nbproject directory
+     *
+     * @param phpModule
+     * @return
+     */
+    public static FileObject getNbproject(PhpModule phpModule) {
+        FileObject projectDirectory = phpModule.getProjectDirectory();
+        return projectDirectory.getFileObject(NBPROJECT_DIR_NAME);
+    }
+
+    /**
+     * Get project.properties.
+     *
+     * @param phpModule
+     * @return project.properties if file exists, false otherwise
+     */
+    public static FileObject getProjectProperties(PhpModule phpModule) {
+        FileObject nbproject = getNbproject(phpModule);
+        return nbproject == null ? null : nbproject.getFileObject("project.properties"); // NOI18N
+    }
+
     public static void getAutoCompletionFile(FileObject projectDirectory) {
         if (projectDirectory == null) {
             return;
