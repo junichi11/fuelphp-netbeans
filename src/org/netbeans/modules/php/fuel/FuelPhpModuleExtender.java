@@ -66,10 +66,13 @@ import org.netbeans.modules.php.fuel.util.FuelZipEntryFilter;
 import org.netbeans.modules.php.fuel.util.UrlZipper;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender.ExtendingException;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileAlreadyLockedException;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -249,6 +252,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
      *
      * @param phpModule
      */
+    @NbBundle.Messages("FuelPhpModuleExtender.not.found.composer=Can't use composer. Please set composer path to the Options and run composer update manually.")
     private void update(PhpModule phpModule) {
         FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
         FuelPhpVersion version = fuelModule.getVersion();
@@ -259,7 +263,9 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 Composer composer = Composer.getDefault();
                 composer.update(phpModule);
             } catch (InvalidPhpExecutableException ex) {
-                LOGGER.log(Level.WARNING, "can't use composer. please, set composer path to the Options");
+                NotifyDescriptor.Message message = new NotifyDescriptor.Message(Bundle.FuelPhpModuleExtender_not_found_composer(), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(message);
+                LOGGER.log(Level.WARNING, Bundle.FuelPhpModuleExtender_not_found_composer());
             }
         }
     }
