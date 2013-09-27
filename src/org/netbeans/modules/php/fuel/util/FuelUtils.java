@@ -329,6 +329,12 @@ public final class FuelUtils {
             return false;
         }
         PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        if (phpModule == null) {
+            phpModule = PhpModule.inferPhpModule();
+        }
+        if (phpModule == null) {
+            return false;
+        }
         FileObject sourceDirectory = phpModule.getSourceDirectory();
         if (sourceDirectory == null) {
             return false;
@@ -543,6 +549,12 @@ public final class FuelUtils {
      */
     private static String getViewPath(FileObject view) {
         PhpModule phpModule = PhpModule.forFileObject(view);
+        if (phpModule == null) {
+            phpModule = PhpModule.inferPhpModule();
+        }
+        if (phpModule == null) {
+            return null;
+        }
         FileObject sourceDirectory = phpModule.getSourceDirectory();
         if (sourceDirectory == null) {
             return null;
@@ -626,6 +638,12 @@ public final class FuelUtils {
             return false;
         }
         PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        if (phpModule == null) {
+            phpModule = PhpModule.inferPhpModule();
+        }
+        if (phpModule == null) {
+            return false;
+        }
         FileObject sourceDirectory = phpModule.getSourceDirectory();
         if (sourceDirectory == null) {
             return false;
