@@ -54,7 +54,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
+import org.netbeans.modules.php.api.executable.InvalidPhpExecutableException;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.composer.api.Composer;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.modules.FuelPhpVersion;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
@@ -62,10 +66,13 @@ import org.netbeans.modules.php.fuel.util.FuelZipEntryFilter;
 import org.netbeans.modules.php.fuel.util.UrlZipper;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender.ExtendingException;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileAlreadyLockedException;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -184,6 +191,9 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
             }
         }
 
+        // composer update
+        update(pm);
+
         // set open file
         Set<FileObject> files = new HashSet<FileObject>();
         FileObject config = sourceDirectory.getFileObject(CONFIG_PHP);
@@ -236,4 +246,28 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
             }
         }
     }
+
+    /**
+     * Update with Composer.
+     *
+     * @param phpModule
+     */
+    @NbBundle.Messages("FuelPhpModuleExtender.not.found.composer=Can't use composer. Please set composer path to the Options and run composer update manually.")
+    private void update(PhpModule phpModule) {
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+        FuelPhpVersion version = fuelModule.getVersion();
+
+        // version >= 1.6
+        if (version.getMajor() >= 1 && version.getMinor() >= 6) {
+            try {
+                Composer composer = Composer.getDefault();
+                composer.update(phpModule);
+            } catch (InvalidPhpExecutableException ex) {
+                NotifyDescriptor.Message message = new NotifyDescriptor.Message(Bundle.FuelPhpModuleExtender_not_found_composer(), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(message);
+                LOGGER.log(Level.WARNING, Bundle.FuelPhpModuleExtender_not_found_composer());
+            }
+        }
+    }
+
 }

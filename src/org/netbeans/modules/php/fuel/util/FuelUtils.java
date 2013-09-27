@@ -116,6 +116,28 @@ public final class FuelUtils {
         return null;
     }
 
+    /**
+     * Get nbproject directory
+     *
+     * @param phpModule
+     * @return
+     */
+    public static FileObject getNbproject(PhpModule phpModule) {
+        FileObject projectDirectory = phpModule.getProjectDirectory();
+        return projectDirectory.getFileObject(NBPROJECT_DIR_NAME);
+    }
+
+    /**
+     * Get project.properties.
+     *
+     * @param phpModule
+     * @return project.properties if file exists, false otherwise
+     */
+    public static FileObject getProjectProperties(PhpModule phpModule) {
+        FileObject nbproject = getNbproject(phpModule);
+        return nbproject == null ? null : nbproject.getFileObject("project.properties"); // NOI18N
+    }
+
     public static void getAutoCompletionFile(FileObject projectDirectory) {
         if (projectDirectory == null) {
             return;
@@ -190,7 +212,6 @@ public final class FuelUtils {
                     if (line.startsWith("interface")) { // NOI18N
                         break;
                     }
-                    String writeString = "";
                     Pattern pattern = Pattern.compile(CLASS_REGEX);
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.find()) {
@@ -201,7 +222,7 @@ public final class FuelUtils {
                                 className = matcher.group(3 + i);
                             }
                         }
-                        writeString = matcher.group(1) + className + " extends Fuel\\Core\\" + className + " {}";
+                        String writeString = matcher.group(1) + className + " extends Fuel\\Core\\" + className + " {}";
                         if (useTestMethod && writeString.contains("TestCase")) { // NOI18N
                             writeTestCaseMethod(printWriter);
                         }
@@ -307,6 +328,12 @@ public final class FuelUtils {
             return false;
         }
         PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        if (phpModule == null) {
+            phpModule = PhpModule.inferPhpModule();
+        }
+        if (phpModule == null) {
+            return false;
+        }
         FileObject sourceDirectory = phpModule.getSourceDirectory();
         if (sourceDirectory == null) {
             return false;
@@ -521,6 +548,12 @@ public final class FuelUtils {
      */
     private static String getViewPath(FileObject view) {
         PhpModule phpModule = PhpModule.forFileObject(view);
+        if (phpModule == null) {
+            phpModule = PhpModule.inferPhpModule();
+        }
+        if (phpModule == null) {
+            return null;
+        }
         FileObject sourceDirectory = phpModule.getSourceDirectory();
         if (sourceDirectory == null) {
             return null;
@@ -604,6 +637,12 @@ public final class FuelUtils {
             return false;
         }
         PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        if (phpModule == null) {
+            phpModule = PhpModule.inferPhpModule();
+        }
+        if (phpModule == null) {
+            return false;
+        }
         FileObject sourceDirectory = phpModule.getSourceDirectory();
         if (sourceDirectory == null) {
             return false;

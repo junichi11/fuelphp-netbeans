@@ -186,7 +186,7 @@ public class PHPUnitTestInitAction extends BaseAction {
      * @param phpModule
      */
     private void createNetBeansSuite(PhpModule phpModule) {
-        FileObject nbproject = getNbproject(phpModule);
+        FileObject nbproject = FuelUtils.getNbproject(phpModule);
         FileObject nbSuite = nbproject.getFileObject(NET_BEANS_SUITE_PHP);
         if (nbSuite != null) {
             try {
@@ -211,17 +211,12 @@ public class PHPUnitTestInitAction extends BaseAction {
      * @param phpModule
      */
     private void createScript(PhpModule phpModule) {
-        FileObject nbproject = getNbproject(phpModule);
-        String scriptFileName = ""; // NOI18N
+        FileObject nbproject = FuelUtils.getNbproject(phpModule);
+        String scriptFileName = getScriptFileName();
         String phpUnit = getPHPUnitPath();
         if (phpUnit == null || phpUnit.isEmpty()) {
             messages.put(PHPUNIT, FAIL_MSG + "(isn't set phpunit option)");
             return;
-        }
-        if (Utilities.isUnix() || Utilities.isMac()) {
-            scriptFileName = PHPUNIT_SH; // NOI18N
-        } else {
-            scriptFileName = PHPUNIT_BAT; // NOI18N
         }
         if (nbproject.getFileObject(scriptFileName) == null) {
             FileObject script = FileUtil.getConfigFile(CONFIG_PATH + scriptFileName);
@@ -247,20 +242,19 @@ public class PHPUnitTestInitAction extends BaseAction {
         }
     }
 
-    private String getPHPUnitPath() {
-        Preferences preference = NbPreferences.root().node("/org/netbeans/modules/php/project/general"); // NOI18N
-        return preference.get("phpUnit", null); // NOI18N
+    private String getScriptFileName() {
+        String scriptFileName;
+        if (Utilities.isUnix() || Utilities.isMac()) {
+            scriptFileName = PHPUNIT_SH; // NOI18N
+        } else {
+            scriptFileName = PHPUNIT_BAT; // NOI18N
+        }
+        return scriptFileName;
     }
 
-    /**
-     * Get nbproject directory
-     *
-     * @param phpModule
-     * @return
-     */
-    private FileObject getNbproject(PhpModule phpModule) {
-        FileObject projectDirectory = phpModule.getProjectDirectory();
-        return projectDirectory.getFileObject("nbproject"); // NOI18N
+    private String getPHPUnitPath() {
+        Preferences preference = NbPreferences.root().node("/org/netbeans/modules/php/phpunit/phpunit"); // NOI18N
+        return preference.get("phpUnit.path", null); // NOI18N
     }
 
     /**
@@ -277,7 +271,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         } else {
             script = PHPUNIT_SH;
         }
-        String scriptPath = getNbproject(phpModule).getPath() + "/" + script;
+        String scriptPath = FuelUtils.getNbproject(phpModule).getPath() + "/" + script; // NOI18N
         ProjectPropertiesSupport.setPHPUnit(phpModule, bootstrapPath, scriptPath);
     }
 }
