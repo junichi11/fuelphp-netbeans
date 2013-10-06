@@ -80,6 +80,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         defaultConfigCheckBox = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         defaultConfigEditorPane = new javax.swing.JEditorPane();
+        reloadButton = new javax.swing.JButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(branchesLabel, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.branchesLabel.text")); // NOI18N
 
@@ -88,6 +89,13 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         defaultConfigEditorPane.setContentType("text/x-php5"); // NOI18N
         jScrollPane1.setViewportView(defaultConfigEditorPane);
         defaultConfigEditorPane.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.defaultConfigEditorPane.AccessibleContext.accessibleDescription")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(reloadButton, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.reloadButton.text")); // NOI18N
+        reloadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reloadButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -100,7 +108,10 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(branchesLabel)
-                            .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(reloadButton))
                             .addComponent(defaultConfigCheckBox))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -111,7 +122,9 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(branchesLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(reloadButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(defaultConfigCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -120,8 +133,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    void load() {
-        // branchesComboBox.add
+    private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadButtonActionPerformed
         branchesComboBox.removeAllItems();
         branchesComboBox.addItem(""); // NOI18N
         for (String branch : getBranches()) {
@@ -129,6 +141,14 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         }
         FuelPhpOptions options = FuelPhpOptions.getInstance();
         branchesComboBox.setSelectedItem(options.getGitBranchName());
+        branchesComboBox.setEnabled(!isNetworkError);
+    }//GEN-LAST:event_reloadButtonActionPerformed
+
+    void load() {
+        // branchesComboBox.add
+        branchesComboBox.removeAllItems();
+        FuelPhpOptions options = FuelPhpOptions.getInstance();
+        branchesComboBox.addItem(options.getGitBranchName());
         branchesComboBox.setEnabled(!isNetworkError);
         // default config
         defaultConfigCheckBox.setSelected(options.isDefaultConfig());
@@ -158,7 +178,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     }
 
     private List<String> getBranches() {
-        List<String> branchesArray = new ArrayList<String>();
+        List<String> branches = new ArrayList<String>();
         isNetworkError = false;
         try {
             // Get JSON
@@ -171,18 +191,18 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
             }
 
             JSONArray json = new JSONArray(contents.toString());
-            branchesArray = new ArrayList<String>(json.length());
+            branches = new ArrayList<String>(json.length());
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jObject = (JSONObject) json.get(i);
-                branchesArray.add(jObject.getString("name")); // NOI18N
+                branches.add(jObject.getString("name")); // NOI18N
             }
         } catch (JSONException ex) {
             LOGGER.log(Level.WARNING, null, ex);
         } catch (IOException ex) {
             isNetworkError = true;
-            LOGGER.log(Level.WARNING, "Can not connect to the internet.");
+            LOGGER.log(Level.WARNING, "Can not connect to Internet.");
         }
-        return branchesArray;
+        return branches;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox branchesComboBox;
@@ -190,5 +210,6 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox defaultConfigCheckBox;
     private javax.swing.JEditorPane defaultConfigEditorPane;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton reloadButton;
     // End of variables declaration//GEN-END:variables
 }
