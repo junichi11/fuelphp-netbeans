@@ -49,6 +49,8 @@ import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeFactorySupport;
@@ -63,6 +65,8 @@ import org.openide.nodes.Node;
  */
 @NodeFactory.Registration(projectType = "org-netbeans-modules-php-project", position = 500)
 public class MVCNodeFactory implements NodeFactory {
+
+    private static final String ASSETS = "assets"; // NOI18N
 
     public MVCNodeFactory() {
     }
@@ -88,11 +92,17 @@ public class MVCNodeFactory implements NodeFactory {
         @Override
         public List<FileObject> keys() {
             if (FuelUtils.isFuelPHP(phpModule)) {
+                FuelPhpOptions options = FuelPhpOptions.getInstance();
+                List<String> availableNodes = options.getAvailableNodes();
                 List<FileObject> list = new ArrayList<FileObject>();
-                list.add(FuelUtils.getControllerDirectory(phpModule));
-                list.add(FuelUtils.getModelDirectory(phpModule));
-                list.add(FuelUtils.getViewsDirectory(phpModule));
-                list.add(FuelUtils.getModulesDirectory(phpModule));
+
+                for (String node : availableNodes) {
+                    FileObject rootNode = getRootNode(node);
+                    if (rootNode == null) {
+                        continue;
+                    }
+                    list.add(rootNode);
+                }
                 return list;
             }
             return Collections.emptyList();
@@ -137,6 +147,39 @@ public class MVCNodeFactory implements NodeFactory {
 
         @Override
         public void removeNotify() {
+        }
+
+        private FileObject getRootNode(String node) {
+            FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+
+            if (node.equals("controller")) { // NOI18N
+                return fuelModule.getDirectory(FuelPhpModule.DIR_TYPE.APP, FuelPhpModule.FILE_TYPE.CONTROLLER, null);
+            }
+
+            if (node.equals("model")) { // NOI18N
+                return fuelModule.getDirectory(FuelPhpModule.DIR_TYPE.APP, FuelPhpModule.FILE_TYPE.MODEL, null);
+            }
+
+            if (node.equals("views")) { // NOI18N
+                return fuelModule.getDirectory(FuelPhpModule.DIR_TYPE.APP, FuelPhpModule.FILE_TYPE.VIEW, null);
+            }
+
+            if (node.equals("modules")) { // NOI18N
+                return fuelModule.getDirectory(FuelPhpModule.DIR_TYPE.MODULES);
+            }
+
+            if (node.equals(ASSETS)) {
+                FileObject publicDirectory = fuelModule.getDirectory(FuelPhpModule.DIR_TYPE.PUBLIC, FuelPhpModule.FILE_TYPE.NONE, null); // NOI18N
+                if (publicDirectory != null) {
+                    return publicDirectory.getFileObject(ASSETS);
+                }
+            }
+
+            if (node.equals("tasks")) { // NOI18N
+                return fuelModule.getDirectory(FuelPhpModule.DIR_TYPE.APP, FuelPhpModule.FILE_TYPE.TASKS, null);
+            }
+
+            return null;
         }
     }
 }
