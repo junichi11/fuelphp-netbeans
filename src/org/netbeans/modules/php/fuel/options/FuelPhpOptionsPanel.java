@@ -49,9 +49,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.netbeans.modules.php.fuel.FuelPhp;
 
 final class FuelPhpOptionsPanel extends javax.swing.JPanel {
 
@@ -64,7 +66,34 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     FuelPhpOptionsPanel(FuelPhpOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
-        // TODO listen to changes in form fields and call controller.changed()
+    }
+
+    private void setBranches() {
+        // branchesComboBox.add
+        FuelPhpOptions options = FuelPhpOptions.getInstance();
+        branchesComboBox.removeAllItems();
+        branchesComboBox.addItem(options.getGitBranchName());
+        branchesComboBox.setEnabled(!isNetworkError);
+    }
+
+    private void setDefaultConfig() {
+        // default config
+        FuelPhpOptions options = FuelPhpOptions.getInstance();
+        defaultConfigCheckBox.setSelected(options.isDefaultConfig());
+        defaultConfigEditorPane.setText(options.getDefaultConfig());
+    }
+
+    private void setAvailableNodes() {
+        DefaultListModel<String> defaultListModel = new DefaultListModel<String>();
+        for (String node : FuelPhp.CUSTOM_NODES) {
+            defaultListModel.addElement(node);
+        }
+        nodeList.setModel(defaultListModel);
+        List<String> availableNodes = FuelPhpOptions.getInstance().getAvailableNodes();
+        for (String node : availableNodes) {
+            int indexOf = defaultListModel.indexOf(node);
+            nodeList.addSelectionInterval(indexOf, indexOf);
+        }
     }
 
     /**
@@ -81,6 +110,9 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         defaultConfigEditorPane = new javax.swing.JEditorPane();
         reloadButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        nodeList = new javax.swing.JList();
+        availableNodesLabel = new javax.swing.JLabel();
 
         org.openide.awt.Mnemonics.setLocalizedText(branchesLabel, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.branchesLabel.text")); // NOI18N
 
@@ -96,6 +128,10 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
                 reloadButtonActionPerformed(evt);
             }
         });
+
+        jScrollPane2.setViewportView(nodeList);
+
+        org.openide.awt.Mnemonics.setLocalizedText(availableNodesLabel, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.availableNodesLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -114,6 +150,10 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
                                 .addComponent(reloadButton))
                             .addComponent(defaultConfigCheckBox))
                         .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(availableNodesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -126,9 +166,13 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
                     .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(reloadButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(defaultConfigCheckBox)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(defaultConfigCheckBox)
+                    .addComponent(availableNodesLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -145,14 +189,9 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_reloadButtonActionPerformed
 
     void load() {
-        // branchesComboBox.add
-        branchesComboBox.removeAllItems();
-        FuelPhpOptions options = FuelPhpOptions.getInstance();
-        branchesComboBox.addItem(options.getGitBranchName());
-        branchesComboBox.setEnabled(!isNetworkError);
-        // default config
-        defaultConfigCheckBox.setSelected(options.isDefaultConfig());
-        defaultConfigEditorPane.setText(options.getDefaultConfig());
+        setBranches();
+        setDefaultConfig();
+        setAvailableNodes();
     }
 
     void store() {
@@ -170,6 +209,10 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         if (selectedItem != null) {
             options.setGitBranchName(selectedItem);
         }
+
+        // nodes
+        List<String> selectedNodes = nodeList.getSelectedValuesList();
+        options.setAvailableNodes(selectedNodes);
     }
 
     boolean valid() {
@@ -205,11 +248,14 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         return branches;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel availableNodesLabel;
     private javax.swing.JComboBox branchesComboBox;
     private javax.swing.JLabel branchesLabel;
     private javax.swing.JCheckBox defaultConfigCheckBox;
     private javax.swing.JEditorPane defaultConfigEditorPane;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JList nodeList;
     private javax.swing.JButton reloadButton;
     // End of variables declaration//GEN-END:variables
 }

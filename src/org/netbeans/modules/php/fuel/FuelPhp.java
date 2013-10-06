@@ -41,6 +41,9 @@
  */
 package org.netbeans.modules.php.fuel;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author junichi11
@@ -57,4 +60,13 @@ public class FuelPhp {
     public static final String GO_TO_CONFIG_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_config_icon.png"; // NOI18N
     public static final String GO_TO_TASK_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_task_icon.png"; // NOI18N
     public static final String GO_TO_TEST_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_test_icon.png"; // NOI18N
+
+    public static final List<String> CUSTOM_NODES = Arrays.asList(
+            "controller",
+            "model",
+            "views",
+            "tasks",
+            "assets",
+            "modules"
+    );
 }
