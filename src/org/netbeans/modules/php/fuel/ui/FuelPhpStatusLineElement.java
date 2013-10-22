@@ -96,6 +96,10 @@ public class FuelPhpStatusLineElement implements StatusLineElementProvider {
         return panelWithSeparator(fuelVersionLabel);
     }
 
+    public void reset() {
+        phpModule = null;
+    }
+
     /**
      * Create Component(JPanel) and add separator and JLabel to it.
      *

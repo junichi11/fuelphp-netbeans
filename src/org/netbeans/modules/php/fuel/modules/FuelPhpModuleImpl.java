@@ -43,7 +43,10 @@ package org.netbeans.modules.php.fuel.modules;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
@@ -51,9 +54,15 @@ import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule.DIR_TYPE;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule.FILE_TYPE;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
+import org.netbeans.modules.php.fuel.ui.FuelPhpStatusLineElement;
+import org.openide.awt.StatusLineElementProvider;
+import org.openide.filesystems.FileChangeAdapter;
+import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -62,16 +71,24 @@ import org.openide.util.Exceptions;
 public abstract class FuelPhpModuleImpl {
 
     protected PhpModule phpModule;
-    private final FuelPhpVersion version;
+    private FuelPhpVersion version;
+    private final FileObject fuelClass;
+    private static final Logger LOGGER = Logger.getLogger(FuelPhpModuleImpl.class.getName());
 
+    @NbBundle.Messages("FuelPhpModuleImpl.fuelclass.notFound=Not found: core/classes/fuel.php")
     public FuelPhpModuleImpl(PhpModule phpModule) {
         this.phpModule = phpModule;
 
         // version
-        FileObject fuelClass = getFuelClass();
+        fuelClass = getFuelClass();
         String versionNumber = null;
         if (fuelClass != null) {
+            // add change listener #26
+            FuelFileChangeAdapter fuelFileChangeAdapter = new FuelFileChangeAdapter();
+            fuelClass.addFileChangeListener(fuelFileChangeAdapter);
             versionNumber = getVersionNumber(fuelClass);
+        } else {
+            LOGGER.log(Level.WARNING, Bundle.FuelPhpModuleImpl_fuelclass_notFound());
         }
         this.version = new FuelPhpVersion(versionNumber);
     }
@@ -300,5 +317,34 @@ public abstract class FuelPhpModuleImpl {
             Exceptions.printStackTrace(ex);
         }
         return null;
+    }
+
+    private class FuelFileChangeAdapter extends FileChangeAdapter {
+
+        public FuelFileChangeAdapter() {
+        }
+
+        @Override
+        public void fileChanged(FileEvent fe) {
+            FileObject fuel = fe.getFile();
+            fireChange(fuel);
+        }
+
+        private void fireChange(FileObject fuel) {
+            if (fuel == null) {
+                return;
+            }
+            String version = getVersionNumber(fuel);
+            FuelPhpModuleImpl.this.version = new FuelPhpVersion(version);
+            Collection<? extends StatusLineElementProvider> elements = Lookup.getDefault().lookupAll(StatusLineElementProvider.class);
+            for (StatusLineElementProvider element : elements) {
+                if (element instanceof FuelPhpStatusLineElement) {
+                    FuelPhpStatusLineElement statusbar = (FuelPhpStatusLineElement) element;
+                    statusbar.reset();
+                    break;
+                }
+            }
+        }
+
     }
 }
