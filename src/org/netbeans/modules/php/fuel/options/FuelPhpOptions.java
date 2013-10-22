@@ -41,7 +41,10 @@
  */
 package org.netbeans.modules.php.fuel.options;
 
+import java.util.List;
 import java.util.prefs.Preferences;
+import org.netbeans.modules.php.api.util.StringUtils;
+import org.netbeans.modules.php.fuel.FuelPhp;
 import org.openide.util.NbPreferences;
 
 /**
@@ -55,6 +58,7 @@ public class FuelPhpOptions {
     private static final String GIT_BRANCH_NAME = "git.branch.name"; // NOI18N
     private static final String DEFAULT_CONFIG = "default.config"; // NOI18N
     private static final String USE_DEFAULT_CONFIG = "use.default.config"; // NOI18N
+    private static final String AVAILABLE_NODES = "available.nodes"; // NOI18N
 
     private FuelPhpOptions() {
     }
@@ -85,6 +89,18 @@ public class FuelPhpOptions {
 
     public void setDefaultConfig(String config) {
         getPreferences().put(DEFAULT_CONFIG, config);
+    }
+
+    public List<String> getAvailableNodes() {
+        String nodes = getPreferences().get(AVAILABLE_NODES, null);
+        if (nodes == null) {
+            return FuelPhp.CUSTOM_NODES;
+        }
+        return StringUtils.explode(nodes, "|"); // NOI18N
+    }
+
+    public void setAvailableNodes(List<String> nodes) {
+        getPreferences().put(AVAILABLE_NODES, StringUtils.implode(nodes, "|"));; // NOI18N
     }
 
     private Preferences getPreferences() {

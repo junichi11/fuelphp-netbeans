@@ -44,17 +44,25 @@ package org.netbeans.modules.php.fuel.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.FuelPhp;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
 import org.netbeans.modules.php.fuel.modules.FuelPhpVersion;
+import org.netbeans.modules.php.fuel.ui.actions.CreateAutoCompletionFileAction;
+import org.netbeans.modules.php.fuel.ui.actions.FuelPhpOilGenerateAction;
+import org.netbeans.modules.php.fuel.ui.actions.FuelPhpRunCommandAction;
+import org.netbeans.modules.php.fuel.ui.actions.FuelPhpSaveAsDefaultConfigAction;
+import org.netbeans.modules.php.fuel.ui.actions.PHPUnitTestInitAction;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.openide.awt.StatusLineElementProvider;
 import org.openide.filesystems.FileObject;
@@ -80,11 +88,16 @@ public class FuelPhpStatusLineElement implements StatusLineElementProvider {
         // add lookup listener
         result = Utilities.actionsGlobalContext().lookupResult(FileObject.class);
         result.addLookupListener(new LookupListenerImpl());
+        fuelVersionLabel.addMouseListener(new DefaultMouseAdapter());
     }
 
     @Override
     public Component getStatusLineElement() {
         return panelWithSeparator(fuelVersionLabel);
+    }
+
+    public void reset() {
+        phpModule = null;
     }
 
     /**
@@ -166,6 +179,38 @@ public class FuelPhpStatusLineElement implements StatusLineElementProvider {
                 fileObject = (FileObject) c.iterator().next();
             }
             return fileObject;
+        }
+    }
+
+    //~ Inner class
+    private class DefaultMouseAdapter extends MouseAdapter {
+
+        private final JPopupMenu popup = new JPopupMenu();
+
+        public DefaultMouseAdapter() {
+            popup.add(FuelPhpRunCommandAction.getInstance());
+            popup.add(CreateAutoCompletionFileAction.getInstance());
+            popup.add(PHPUnitTestInitAction.getInstance());
+            popup.add(FuelPhpSaveAsDefaultConfigAction.getInstance());
+            popup.add(FuelPhpOilGenerateAction.getInstance());
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent mouseEvent) {
+            if (mouseEvent.isPopupTrigger()) {
+                popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent mouseEvent) {
+            if (mouseEvent.isPopupTrigger()) {
+                popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+            }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
         }
     }
 }
