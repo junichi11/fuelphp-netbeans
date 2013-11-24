@@ -1985,17 +1985,12 @@ public class FuelPhpGeneratePanel extends JPanel {
                 }
             }
 
-            // NULL
-            Boolean isNULL = (Boolean) table.getValueAt(i, MODEL_FIELD_NULL);
-            if (isNULL != null && isNULL.booleanValue()) {
-                sb.append(":null"); // NOI18N
-            }
-
             // field default
             String fieldDefault = (String) table.getValueAt(i, MODEL_FIELD_DEFAULT);
             if (!StringUtils.isEmpty(fieldDefault)) {
                 fieldDefault = fieldDefault.trim();
                 if (!StringUtils.isEmpty(fieldDefault)) {
+                    sb.append(":default"); // NOI18N
                     sb.append("["); // NOI18N
                     sb.append(fieldDefault);
                     sb.append("]"); // NOI18N
@@ -2010,6 +2005,13 @@ public class FuelPhpGeneratePanel extends JPanel {
                     sb.append(fieldOthers);
                 }
             }
+
+            // NULL
+            Boolean isNULL = (Boolean) table.getValueAt(i, MODEL_FIELD_NULL);
+            if (isNULL != null && isNULL.booleanValue()) {
+                sb.append(":null"); // NOI18N
+            }
+
             params.add(sb.toString());
         }
         return params;
