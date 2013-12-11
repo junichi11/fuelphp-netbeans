@@ -73,7 +73,7 @@ public class MVCNodeFactory implements NodeFactory {
 
     @Override
     public NodeList<?> createNodes(Project p) {
-        PhpModule phpModule = PhpModule.lookupPhpModule(p);
+        PhpModule phpModule = PhpModule.Factory.lookupPhpModule(p);
         if (FuelUtils.isFuelPHP(phpModule)) {
             return new MVCNodeList(phpModule);
         }

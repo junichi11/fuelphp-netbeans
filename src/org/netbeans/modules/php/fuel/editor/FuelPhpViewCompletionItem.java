@@ -131,7 +131,7 @@ public class FuelPhpViewCompletionItem extends FuelPhpCompletionItem {
 
         // get base directory
         FileObject fileObject = NbEditorUtilities.getFileObject(doc);
-        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(PhpModule.forFileObject(fileObject));
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(PhpModule.Factory.forFileObject(fileObject));
         FileObject baseDirectory;
         if (!moduleName.isEmpty()) {
             baseDirectory = fuelModule.getDirectory(DIR_TYPE.MODULES, fileType, moduleName);

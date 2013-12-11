@@ -118,7 +118,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
                 public void fileRenamed(FileRenameEvent fe) {
                     FileObject file = fe.getFile();
                     String newFuelName = file.getName();
-                    PhpModule phpModule = PhpModule.forFileObject(file);
+                    PhpModule phpModule = PhpModule.Factory.forFileObject(file);
                     String fuelName = FuelPhpPreferences.getFuelName(phpModule);
                     if (newFuelName != null && !newFuelName.equals(fuelName)) {
                         FuelPhpPreferences.setFuelName(phpModule, newFuelName);

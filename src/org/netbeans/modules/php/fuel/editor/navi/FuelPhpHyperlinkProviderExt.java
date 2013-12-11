@@ -65,7 +65,7 @@ public abstract class FuelPhpHyperlinkProviderExt implements HyperlinkProviderEx
 
     @Override
     public boolean isHyperlinkPoint(Document document, int offset, HyperlinkType type) {
-        if (!FuelUtils.isFuelPHP(PhpModule.inferPhpModule())) {
+        if (!FuelUtils.isFuelPHP(PhpModule.Factory.inferPhpModule())) {
             return false;
         }
         return verifyState(document, offset, type);

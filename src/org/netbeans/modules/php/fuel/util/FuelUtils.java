@@ -327,9 +327,9 @@ public final class FuelUtils {
         if (fileObject == null || !FileUtils.isPhpFile(fileObject)) {
             return false;
         }
-        PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        PhpModule phpModule = PhpModule.Factory.forFileObject(fileObject);
         if (phpModule == null) {
-            phpModule = PhpModule.inferPhpModule();
+            phpModule = PhpModule.Factory.inferPhpModule();
         }
         if (phpModule == null) {
             return false;
@@ -354,7 +354,7 @@ public final class FuelUtils {
      * @return views directory FileObject
      */
     public static FileObject getViewsDirectory(FileObject fo) {
-        PhpModule pm = PhpModule.forFileObject(fo);
+        PhpModule pm = PhpModule.Factory.forFileObject(fo);
         return getViewsDirectory(pm);
     }
 
@@ -375,7 +375,7 @@ public final class FuelUtils {
      * @return controller directory FileObject
      */
     public static FileObject getControllerDirectory(FileObject fo) {
-        PhpModule pm = PhpModule.forFileObject(fo);
+        PhpModule pm = PhpModule.Factory.forFileObject(fo);
         return getControllerDirectory(pm);
     }
 
@@ -406,7 +406,7 @@ public final class FuelUtils {
      * @return view model directory FileObject
      */
     public static FileObject getViewModelDirectory(FileObject fo) {
-        PhpModule pm = PhpModule.forFileObject(fo);
+        PhpModule pm = PhpModule.Factory.forFileObject(fo);
         return getViewModelDirectory(pm);
     }
 
@@ -547,9 +547,9 @@ public final class FuelUtils {
      * @return view file relative path. contain extension.
      */
     private static String getViewPath(FileObject view) {
-        PhpModule phpModule = PhpModule.forFileObject(view);
+        PhpModule phpModule = PhpModule.Factory.forFileObject(view);
         if (phpModule == null) {
-            phpModule = PhpModule.inferPhpModule();
+            phpModule = PhpModule.Factory.inferPhpModule();
         }
         if (phpModule == null) {
             return null;
@@ -636,9 +636,9 @@ public final class FuelUtils {
         if (fileObject == null) {
             return false;
         }
-        PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        PhpModule phpModule = PhpModule.Factory.forFileObject(fileObject);
         if (phpModule == null) {
-            phpModule = PhpModule.inferPhpModule();
+            phpModule = PhpModule.Factory.inferPhpModule();
         }
         if (phpModule == null) {
             return false;

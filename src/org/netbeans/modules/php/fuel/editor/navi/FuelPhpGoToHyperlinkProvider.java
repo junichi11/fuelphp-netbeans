@@ -236,6 +236,6 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
         if (fileObject == null) {
             return null;
         }
-        return PhpModule.forFileObject(fileObject);
+        return PhpModule.Factory.forFileObject(fileObject);
     }
 }

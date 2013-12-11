@@ -68,7 +68,7 @@ public class GoToDefaultItem implements GoToItem {
 
     @Override
     public String toString() {
-        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(PhpModule.forFileObject(fileObject));
+        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(PhpModule.Factory.forFileObject(fileObject));
         String sourceDirectoryPath = fuelModule.getSourceDirectoryPath();
         String path = fileObject.getPath();
         String nameWithExt = fileObject.getNameExt();

@@ -63,7 +63,7 @@ public abstract class FuelPhpCompletionProvider implements CompletionProvider {
         if (fo == null) {
             return null;
         }
-        PhpModule phpModule = PhpModule.forFileObject(fo);
+        PhpModule phpModule = PhpModule.Factory.forFileObject(fo);
         if (!FuelUtils.isFuelPHP(phpModule)) {
             return null;
         }

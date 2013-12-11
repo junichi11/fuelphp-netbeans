@@ -145,7 +145,7 @@ public class FuelPhpStatusLineElement implements StatusLineElementProvider {
                 return;
             }
 
-            PhpModule tmpPhpModule = PhpModule.forFileObject(fileObject);
+            PhpModule tmpPhpModule = PhpModule.Factory.forFileObject(fileObject);
             if (!FuelUtils.isFuelPHP(tmpPhpModule)) {
                 clearLabel();
                 phpModule = null;

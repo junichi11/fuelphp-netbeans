@@ -77,7 +77,7 @@ public final class FuelPhpGoToStatusFactory {
                 return status;
             }
         }
-        PhpModule phpModule = PhpModule.forFileObject(targetFile);
+        PhpModule phpModule = PhpModule.Factory.forFileObject(targetFile);
         this.targetFile = targetFile;
         this.offset = offset;
 
