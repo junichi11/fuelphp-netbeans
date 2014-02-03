@@ -44,7 +44,10 @@ package org.netbeans.modules.php.fuel.ui;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JRadioButton;
 import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.util.FuelDownloads;
@@ -57,7 +60,7 @@ import org.openide.util.Exceptions;
 public class NewProjectConfigurationPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 7874450246517944114L;
-    private Map<String, String> downloadsMap = new HashMap<String, String>();
+    private final Map<String, String> downloadsMap = new HashMap<String, String>();
     private String errorMessage = null; // NOI18N
 
     /**

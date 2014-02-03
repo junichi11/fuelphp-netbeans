@@ -60,14 +60,14 @@ import org.openide.util.NbBundle;
 public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender {
 
     private FuelPhpCustomizerPanel panel;
-    private PhpModule phpModule;
-    private String fuelName;
-    private boolean useTestCaseMethod;
-    private boolean ignoreMVCNode;
-    private String testCasePrefix;
-    private String testCaseSuffix;
+    private final PhpModule phpModule;
+    private final String fuelName;
+    private final String testCasePrefix;
+    private final String testCaseSuffix;
     private final String testGroupAnnotation;
-    private boolean useAutoCreateFile;
+    private final boolean useAutoCreateFile;
+    private final boolean useTestCaseMethod;
+    private boolean ignoreMVCNode;
 
     public FuelPhpModuleCustomizerExtender(PhpModule phpModule) {
         this.phpModule = phpModule;

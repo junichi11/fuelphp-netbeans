@@ -82,7 +82,7 @@ public class MVCNodeFactory implements NodeFactory {
 
     private static class MVCNodeList implements NodeList<FileObject> {
 
-        private PhpModule phpModule;
+        private final PhpModule phpModule;
         private static final Logger LOGGER = Logger.getLogger(MVCNodeList.class.getName());
 
         public MVCNodeList(PhpModule phpModule) {

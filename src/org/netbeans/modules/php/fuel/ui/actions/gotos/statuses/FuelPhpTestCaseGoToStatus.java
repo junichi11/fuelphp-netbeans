@@ -80,7 +80,7 @@ public class FuelPhpTestCaseGoToStatus extends FuelPhpGoToStatus {
         }
         String path = currentFile.getPath();
         String relativePath = ""; // NOI18N
-        int index = 0;
+        int index;
         List<String> dirNames = Arrays.asList("/controller/", "/model/", "/view/"); // NOI18N
         for (String name : dirNames) {
             index = path.indexOf(name); // NOI18N

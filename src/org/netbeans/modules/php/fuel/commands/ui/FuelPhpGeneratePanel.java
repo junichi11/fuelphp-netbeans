@@ -2008,7 +2008,7 @@ public class FuelPhpGeneratePanel extends JPanel {
 
             // NULL
             Boolean isNULL = (Boolean) table.getValueAt(i, MODEL_FIELD_NULL);
-            if (isNULL != null && isNULL.booleanValue()) {
+            if (isNULL != null && isNULL) {
                 sb.append(":null"); // NOI18N
             }
 

@@ -155,7 +155,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         FileObject bootstrapPhpunit = coreDirectory.getFileObject(BOOTSTRAP_PHPUNIT);
         FileObject bootstrapMakegood = coreDirectory.getFileObject(BOOTSTRAP_MAKEGOOD);
         if (bootstrapPhpunit != null) {
-            OutputStream outputStream = null;
+            OutputStream outputStream;
             try {
                 if (bootstrapMakegood == null) {
                     outputStream = coreDirectory.createAndOpen(BOOTSTRAP_MAKEGOOD);
@@ -221,7 +221,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         if (nbproject.getFileObject(scriptFileName) == null) {
             FileObject script = FileUtil.getConfigFile(CONFIG_PATH + scriptFileName);
             try {
-                String format = ""; // NOI18N
+                String format;
                 if (Utilities.isWindows()) {
                     String path = nbproject.getPath().replace("/", "\\"); // NOI18N
                     format = script.asText();
@@ -265,7 +265,7 @@ public class PHPUnitTestInitAction extends BaseAction {
     private void setPhpProjectProperties(PhpModule phpModule) {
         // set bootstrap and script
         String bootstrapPath = coreDirectory.getPath() + "/bootstrap_makegood.php"; // NOI18N
-        String script = ""; // NOI18N
+        String script;
         if (Utilities.isWindows()) {
             script = PHPUNIT_BAT;
         } else {

@@ -90,7 +90,7 @@ public class UrlZipper {
         }
 
         ZipInputStream zipInputStream = getZipInputStream();
-        ZipEntry zipEntry = null;
+        ZipEntry zipEntry;
 
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             if (!filter.accept(zipEntry)) {
@@ -115,7 +115,7 @@ public class UrlZipper {
 
             // write data
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(unzipFile));
-            int data = 0;
+            int data;
             while ((data = zipInputStream.read()) != -1) {
                 outputStream.write(data);
             }

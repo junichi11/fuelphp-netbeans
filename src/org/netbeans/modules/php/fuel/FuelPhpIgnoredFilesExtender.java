@@ -56,7 +56,7 @@ import org.openide.filesystems.FileUtil;
  */
 public class FuelPhpIgnoredFilesExtender extends PhpModuleIgnoredFilesExtender {
 
-    private File docs;
+    private final File docs;
     private File controller;
     private File model;
     private File views;

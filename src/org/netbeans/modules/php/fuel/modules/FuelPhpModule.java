@@ -51,8 +51,8 @@ import org.openide.filesystems.FileObject;
  */
 public class FuelPhpModule {
 
-    private PhpModule phpModule;
-    private FuelPhpModuleImpl impl;
+    private final PhpModule phpModule;
+    private final FuelPhpModuleImpl impl;
 
     public FuelPhpModule(PhpModule phpModule, FuelPhpModuleImpl impl) {
         this.phpModule = phpModule;

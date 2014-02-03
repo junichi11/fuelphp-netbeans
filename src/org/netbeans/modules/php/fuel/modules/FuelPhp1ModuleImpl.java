@@ -199,10 +199,7 @@ public class FuelPhp1ModuleImpl extends FuelPhpModuleImpl {
 
     private boolean isIn(DIR_TYPE dirType, FileObject current) {
         DIR_TYPE currentDirType = getDirType(current);
-        if (dirType == currentDirType) {
-            return true;
-        }
-        return false;
+        return dirType == currentDirType;
     }
 
     @Override

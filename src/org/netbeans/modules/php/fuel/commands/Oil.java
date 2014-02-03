@@ -449,7 +449,7 @@ public class Oil {
     //~ Inner classes
     private static class HelpLineProcessor implements LineProcessor {
 
-        private StringBuilder sb = new StringBuilder();
+        private final StringBuilder sb = new StringBuilder();
 
         @Override
         public void processLine(String line) {
