@@ -58,7 +58,7 @@ public class GoToViewPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public JList getViewList() {
+    public JList<String> getViewList() {
         return viewList;
     }
 
@@ -72,15 +72,14 @@ public class GoToViewPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        viewList = new javax.swing.JList();
+        viewList = new javax.swing.JList<String>();
 
-        viewList.setModel(new javax.swing.AbstractListModel() {
+        viewList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "View", "ViewModel" };
             public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+            public String getElementAt(int i) { return strings[i]; }
         });
         viewList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        viewList.setSelectedIndex(0);
         jScrollPane1.setViewportView(viewList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -96,6 +95,6 @@ public class GoToViewPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList viewList;
+    private javax.swing.JList<String> viewList;
     // End of variables declaration//GEN-END:variables
 }

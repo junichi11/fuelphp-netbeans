@@ -52,6 +52,7 @@ import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.editor.PhpClass.Method;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.spi.framework.actions.BaseAction;
@@ -135,7 +136,7 @@ public final class CreateTestAction extends BaseAction {
         }
 
         // get encoding
-        String encoding = phpModule.getProperties().getEncoding();
+        String encoding = phpModule.getLookup().lookup(PhpModuleProperties.class).getEncoding();
 
         // get prefix, suffix
         String prefix = FuelPhpPreferences.getTestCasePrefix(phpModule);

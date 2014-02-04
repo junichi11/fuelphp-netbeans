@@ -87,7 +87,7 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
         return gettingFileInfoLabel;
     }
 
-    public JList getVersionList() {
+    public JList<String> getVersionList() {
         return versionList;
     }
 
@@ -123,7 +123,7 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
         buttonGroup = new javax.swing.ButtonGroup();
         selectVersionLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        versionList = new javax.swing.JList();
+        versionList = new javax.swing.JList<String>();
         gettingFileInfoLabel = new javax.swing.JLabel();
         gitCloneRadioButton = new javax.swing.JRadioButton();
         unzipRadioButton = new javax.swing.JRadioButton();
@@ -206,7 +206,7 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel selectVersionLabel;
     private javax.swing.JRadioButton unzipRadioButton;
-    private javax.swing.JList versionList;
+    private javax.swing.JList<String> versionList;
     // End of variables declaration//GEN-END:variables
 
     private void setEnabledColenRadioButton(boolean isEnabled) {

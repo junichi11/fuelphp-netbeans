@@ -105,13 +105,13 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         branchesLabel = new javax.swing.JLabel();
-        branchesComboBox = new javax.swing.JComboBox();
+        branchesComboBox = new javax.swing.JComboBox<String>();
         defaultConfigCheckBox = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         defaultConfigEditorPane = new javax.swing.JEditorPane();
         reloadButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        nodeList = new javax.swing.JList();
+        nodeList = new javax.swing.JList<String>();
         availableNodesLabel = new javax.swing.JLabel();
 
         org.openide.awt.Mnemonics.setLocalizedText(branchesLabel, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.branchesLabel.text")); // NOI18N
@@ -249,13 +249,13 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel availableNodesLabel;
-    private javax.swing.JComboBox branchesComboBox;
+    private javax.swing.JComboBox<String> branchesComboBox;
     private javax.swing.JLabel branchesLabel;
     private javax.swing.JCheckBox defaultConfigCheckBox;
     private javax.swing.JEditorPane defaultConfigEditorPane;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JList nodeList;
+    private javax.swing.JList<String> nodeList;
     private javax.swing.JButton reloadButton;
     // End of variables declaration//GEN-END:variables
 }
