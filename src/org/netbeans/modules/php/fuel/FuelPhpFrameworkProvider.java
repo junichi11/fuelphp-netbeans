@@ -54,6 +54,7 @@ import org.netbeans.modules.php.api.framework.BadgeIcon;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
 import org.netbeans.modules.php.fuel.commands.FuelPhpFrameworkCommandSupport;
+import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.spi.editor.EditorExtender;
 import org.netbeans.modules.php.spi.framework.PhpFrameworkProvider;
@@ -226,7 +227,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     })
     @Override
     public void phpModuleOpened(final PhpModule phpModule) {
-        if (!isInPhpModule(phpModule)) {
+        if (!isInPhpModule(phpModule) && FuelPhpOptions.getInstance().isNotifyAutodetection()) {
             // wait 1 minute since after projects is opened, scanning and VCS tasks are running
             RP.schedule(new FuelPhpAutoDetectionTask(phpModule), 1, TimeUnit.MINUTES);
         }
