@@ -53,9 +53,11 @@ import java.util.concurrent.TimeUnit;
 import org.netbeans.modules.php.api.framework.BadgeIcon;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
+import org.netbeans.modules.php.api.validation.ValidationResult;
 import org.netbeans.modules.php.fuel.commands.FuelPhpFrameworkCommandSupport;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
+import org.netbeans.modules.php.fuel.validator.FuelPhpCustomizerValidator;
 import org.netbeans.modules.php.spi.editor.EditorExtender;
 import org.netbeans.modules.php.spi.framework.PhpFrameworkProvider;
 import org.netbeans.modules.php.spi.framework.PhpModuleActionsExtender;
@@ -249,10 +251,11 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
             FileObject sourceDirectory = phpModule.getSourceDirectory();
             String fuelName = FuelPhpPreferences.getFuelName(phpModule);
             if (sourceDirectory != null) {
-                // TODO add validator class
-                FileObject fuelDir = sourceDirectory.getFileObject(fuelName);
-                FileObject oil = sourceDirectory.getFileObject("oil"); // NOI18N
-                if (fuelDir == null || oil == null) {
+                FuelPhpCustomizerValidator validator = new FuelPhpCustomizerValidator()
+                        .validateFuelDirectoryName(sourceDirectory, fuelName)
+                        .validateOilPath(sourceDirectory);
+                ValidationResult result = validator.getResult();
+                if (result.hasWarnings()) {
                     return;
                 }
 
