@@ -136,7 +136,7 @@ public final class CreateTestAction extends BaseAction {
         }
 
         // get encoding
-        String encoding = phpModule.getLookup().lookup(PhpModuleProperties.class).getEncoding();
+        String encoding = phpModule.getLookup().lookup(PhpModuleProperties.Factory.class).getProperties().getEncoding();
 
         // get prefix, suffix
         String prefix = FuelPhpPreferences.getTestCasePrefix(phpModule);
