@@ -41,6 +41,7 @@
  */
 package org.netbeans.modules.php.fuel.options;
 
+import java.beans.PropertyChangeEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,7 +54,12 @@ import javax.swing.DefaultListModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ui.OpenProjects;
+import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.FuelPhp;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.util.FuelUtils;
 
 final class FuelPhpOptionsPanel extends javax.swing.JPanel {
 
@@ -230,6 +236,16 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         // nodes
         List<String> selectedNodes = nodeList.getSelectedValuesList();
         options.setAvailableNodes(selectedNodes);
+        Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
+        for (Project project : openProjects) {
+            PhpModule phpModule = PhpModule.Factory.lookupPhpModule(project);
+            if (phpModule != null) {
+                if (FuelUtils.isFuelPHP(phpModule)) {
+                    FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+                    fuelModule.notifyPropertyChanged(new PropertyChangeEvent(this, FuelPhpModule.PROPERTY_CHANGE_FUEL, null, null));
+                }
+            }
+        }
     }
 
     boolean valid() {

@@ -1,10 +1,12 @@
 package org.netbeans.modules.php.fuel;
 
+import java.beans.PropertyChangeEvent;
 import java.util.EnumSet;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.validation.ValidationResult;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.support.ProjectPropertiesSupport;
 import org.netbeans.modules.php.fuel.ui.FuelPhpCustomizerPanel;
@@ -168,6 +170,8 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
         if (tempIsEnabled != isEnabled) {
             FuelPhpPreferences.setEnabled(phpModule, tempIsEnabled);
             enumSet.add(Change.FRAMEWORK_CHANGE);
+            FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+            fuelModule.notifyPropertyChanged(new PropertyChangeEvent(this, FuelPhpModule.PROPERTY_CHANGE_FUEL, isValid, isValid));
         }
 
         boolean tempUseTestCaseMethod = panel.useTestCaseMethod();
