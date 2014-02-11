@@ -131,7 +131,7 @@ public class FuelPhpModule {
     }
 
     public String getModuleName(FileObject fileObject) {
-        return impl.getModuelName(fileObject);
+        return impl.getModuleName(fileObject);
     }
 
     public String getPackageName(FileObject fileObject) {
