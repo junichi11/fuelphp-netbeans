@@ -55,6 +55,7 @@ import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
 import org.netbeans.modules.php.api.validation.ValidationResult;
 import org.netbeans.modules.php.fuel.commands.FuelPhpFrameworkCommandSupport;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.validator.FuelPhpCustomizerValidator;
@@ -280,7 +281,9 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
             @Override
             public void actionPerformed(ActionEvent e) {
                 FuelPhpPreferences.setEnabled(phpModule, true);
+                FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
                 phpModule.notifyPropertyChanged(new PropertyChangeEvent(this, PhpModule.PROPERTY_FRAMEWORKS, null, null));
+                fuelModule.notifyPropertyChanged(new PropertyChangeEvent(this, FuelPhpModule.PROPERTY_CHANGE_FUEL, null, null));
                 notification.clear();
             }
         }
