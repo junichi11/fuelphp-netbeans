@@ -43,6 +43,7 @@ package org.netbeans.modules.php.fuel.ui.actions;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,7 +65,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.openide.util.Utilities;
 
 /**
  *
@@ -83,12 +83,12 @@ public class PHPUnitTestInitAction extends BaseAction {
     private static final String CONFIG_PATH = "org-netbeans-modules-php-fuel/"; // NOI18N
     private static final String CONFIG_NET_BEANS_SUITE_PHP = CONFIG_PATH + NET_BEANS_SUITE_PHP;
     private static final String PHPUNIT = "phpunit"; // NOI18N
-    private static final String PHPUNIT_BAT = PHPUNIT + ".bat"; // NOI18N
-    private static final String PHPUNIT_SH = PHPUNIT + ".sh"; // NOI18N
+    private static final String PHPUNIT_PHP = PHPUNIT + ".php"; // NOI18N
     private static final Map<String, String> messages = new HashMap<String, String>();
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "fail";
-    private static final String BOOTSTRAP = "bootstrap";
+    private static final String BOOTSTRAP = "bootstrap"; // NOI18N
+    private static final String UTF8 = "UTF-8"; // NOI18N
     private FileObject coreDirectory;
 
     static {
@@ -218,38 +218,33 @@ public class PHPUnitTestInitAction extends BaseAction {
             messages.put(PHPUNIT, FAIL_MSG + "(isn't set phpunit option)");
             return;
         }
-        if (nbproject.getFileObject(scriptFileName) == null) {
-            FileObject script = FileUtil.getConfigFile(CONFIG_PATH + scriptFileName);
-            try {
-                String format;
-                if (Utilities.isWindows()) {
-                    String path = nbproject.getPath().replace("/", "\\"); // NOI18N
-                    format = script.asText();
-                    format = format.replace(":NetBeansSuite:", path + "\\" + NET_BEANS_SUITE_PHP); // NOI18N
-                    format = format.replace(":PHPUnitPath:", phpUnit); // NOI18N
-                } else {
-                    format = String.format(script.asText(), nbproject.getPath() + "/" + NET_BEANS_SUITE_PHP, phpUnit); // NOI18N
-                }
-                PrintWriter pw = new PrintWriter(nbproject.createAndOpen(scriptFileName));
-                pw.print(format);
-                pw.close();
-                messages.put(PHPUNIT, SUCCESS_MSG);
-            } catch (IOException ex) {
-                messages.put(PHPUNIT, FAIL_MSG);
+        FileObject phpUnitScript = nbproject.getFileObject(scriptFileName);
+        FileObject script = FileUtil.getConfigFile(CONFIG_PATH + scriptFileName);
+
+        // over write phpunit script (phpunit.php)
+        try {
+            String format = String.format(script.asText(UTF8), phpUnit);
+            PrintWriter pw;
+            if (phpUnitScript == null) {
+                pw = new PrintWriter(new OutputStreamWriter(nbproject.createAndOpen(scriptFileName), UTF8));
+            } else {
+                pw = new PrintWriter(new OutputStreamWriter(phpUnitScript.getOutputStream(), UTF8));
             }
-            FileObject createdFile = nbproject.getFileObject(scriptFileName);
-            FileUtil.toFile(createdFile).setExecutable(true);
+            try {
+                pw.print(format);
+            } finally {
+                pw.close();
+            }
+            messages.put(PHPUNIT, SUCCESS_MSG);
+        } catch (IOException ex) {
+            messages.put(PHPUNIT, FAIL_MSG);
         }
+        FileObject createdFile = nbproject.getFileObject(scriptFileName);
+        FileUtil.toFile(createdFile).setExecutable(true);
     }
 
     private String getScriptFileName() {
-        String scriptFileName;
-        if (Utilities.isUnix() || Utilities.isMac()) {
-            scriptFileName = PHPUNIT_SH; // NOI18N
-        } else {
-            scriptFileName = PHPUNIT_BAT; // NOI18N
-        }
-        return scriptFileName;
+        return PHPUNIT_PHP;
     }
 
     private String getPHPUnitPath() {
@@ -265,13 +260,7 @@ public class PHPUnitTestInitAction extends BaseAction {
     private void setPhpProjectProperties(PhpModule phpModule) {
         // set bootstrap and script
         String bootstrapPath = coreDirectory.getPath() + "/bootstrap_makegood.php"; // NOI18N
-        String script;
-        if (Utilities.isWindows()) {
-            script = PHPUNIT_BAT;
-        } else {
-            script = PHPUNIT_SH;
-        }
-        String scriptPath = FuelUtils.getNbproject(phpModule).getPath() + "/" + script; // NOI18N
+        String scriptPath = FuelUtils.getNbproject(phpModule).getPath() + "/" + PHPUNIT_PHP; // NOI18N
         ProjectPropertiesSupport.setPHPUnit(phpModule, bootstrapPath, scriptPath);
     }
 }
