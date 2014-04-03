@@ -45,11 +45,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -77,7 +76,6 @@ public class PHPUnitTestInitAction extends BaseAction {
     private static final Logger LOGGER = Logger.getLogger(PHPUnitTestInitAction.class.getName());
     private static final String BOOTSTRAP_PHPUNIT = "bootstrap_phpunit.php"; // NOI18N
     private static final String BOOTSTRAP_MAKEGOOD = "bootstrap_makegood.php"; // NOI18N
-    private Set<String> FOR_MAKEGOOD;
     private static final String NET_BEANS_SUITE = "NetBeansSuite"; // NOI18N
     private static final String NET_BEANS_SUITE_PHP = NET_BEANS_SUITE + ".php"; // NOI18N
     private static final String CONFIG_PATH = "org-netbeans-modules-php-fuel/"; // NOI18N
@@ -90,6 +88,7 @@ public class PHPUnitTestInitAction extends BaseAction {
     private static final String BOOTSTRAP = "bootstrap"; // NOI18N
     private static final String UTF8 = "UTF-8"; // NOI18N
     private FileObject coreDirectory;
+    private final List<String> serverSettings = new ArrayList<String>();
 
     static {
     }
@@ -123,12 +122,12 @@ public class PHPUnitTestInitAction extends BaseAction {
             return;
         }
         String fuel = FuelPhpPreferences.getFuelName(phpModule);
-        FOR_MAKEGOOD = new HashSet<String>();
-        FOR_MAKEGOOD.add("$_SERVER['doc_root'] = '../../';"); // NOI18N
-        FOR_MAKEGOOD.add("$_SERVER['app_path'] = '" + fuel + "/app';"); // NOI18N
-        FOR_MAKEGOOD.add("$_SERVER['vendor_path'] = '" + fuel + "/vendor';"); // NOI18N
-        FOR_MAKEGOOD.add("$_SERVER['core_path'] = '" + fuel + "/core';"); // NOI18N
-        FOR_MAKEGOOD.add("$_SERVER['package_path'] = '" + fuel + "/packages';"); // NOI18N
+        serverSettings.clear();
+        serverSettings.add("$_SERVER['doc_root'] = '../../';"); // NOI18N
+        serverSettings.add("$_SERVER['app_path'] = '" + fuel + "/app';"); // NOI18N
+        serverSettings.add("$_SERVER['vendor_path'] = '" + fuel + "/vendor';"); // NOI18N
+        serverSettings.add("$_SERVER['core_path'] = '" + fuel + "/core';"); // NOI18N
+        serverSettings.add("$_SERVER['package_path'] = '" + fuel + "/packages';"); // NOI18N
 
         // create files
         createBootstrap();
@@ -166,9 +165,10 @@ public class PHPUnitTestInitAction extends BaseAction {
                 PrintWriter pw = new PrintWriter(outputStream);
                 for (String line : lines) {
                     if (line.startsWith("$app_path")) { // NOI18N
-                        for (String str : FOR_MAKEGOOD) {
+                        for (String str : serverSettings) {
                             pw.println(str);
                         }
+                        serverSettings.clear();
                     }
                     pw.println(line);
                 }
