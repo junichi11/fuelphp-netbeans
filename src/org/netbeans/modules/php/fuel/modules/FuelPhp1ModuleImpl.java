@@ -155,21 +155,20 @@ public class FuelPhp1ModuleImpl extends FuelPhpModuleImpl {
 
     @Override
     public FileObject getDirectory(FileObject currentFile, FILE_TYPE fileType) {
-        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
-        DIR_TYPE dirType = fuelModule.getDirType(currentFile);
+        DIR_TYPE dirType = getDirType(currentFile);
         String dirName = ""; // NOI18N
         switch (dirType) {
             case MODULES:
-                dirName = fuelModule.getModuleName(currentFile);
+                dirName = getModuleName(currentFile);
                 break;
             case PACKAGES:
-                dirName = fuelModule.getPackageName(currentFile);
+                dirName = getPackageName(currentFile);
                 break;
             default:
                 // do nothing
                 break;
         }
-        return fuelModule.getDirectory(dirType, fileType, dirName);
+        return getDirectory(dirType, fileType, dirName);
     }
 
     @Override
@@ -199,10 +198,7 @@ public class FuelPhp1ModuleImpl extends FuelPhpModuleImpl {
 
     private boolean isIn(DIR_TYPE dirType, FileObject current) {
         DIR_TYPE currentDirType = getDirType(current);
-        if (dirType == currentDirType) {
-            return true;
-        }
-        return false;
+        return dirType == currentDirType;
     }
 
     @Override

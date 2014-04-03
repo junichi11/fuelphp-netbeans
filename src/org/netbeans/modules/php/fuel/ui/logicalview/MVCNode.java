@@ -148,8 +148,7 @@ public class MVCNode extends FilterNode {
         actions.add(SystemAction.get(ToolsAction.class));
         actions.add(null);
         // customizer - open sources for source node, phpunit for test node
-        Action customizeAction = null;
-        customizeAction = CommonProjectActions.customizeProjectAction();
+        Action customizeAction = CommonProjectActions.customizeProjectAction();
         actions.add(customizeAction);
         return actions.toArray(new Action[actions.size()]);
     }

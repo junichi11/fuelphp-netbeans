@@ -41,6 +41,9 @@
  */
 package org.netbeans.modules.php.fuel.modules;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.openide.filesystems.FileObject;
@@ -51,8 +54,10 @@ import org.openide.filesystems.FileObject;
  */
 public class FuelPhpModule {
 
-    private PhpModule phpModule;
-    private FuelPhpModuleImpl impl;
+    private final PhpModule phpModule;
+    private final FuelPhpModuleImpl impl;
+    private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    public static final String PROPERTY_CHANGE_FUEL = "property-change-fuel"; // NOI18N
 
     public FuelPhpModule(PhpModule phpModule, FuelPhpModuleImpl impl) {
         this.phpModule = phpModule;
@@ -126,7 +131,7 @@ public class FuelPhpModule {
     }
 
     public String getModuleName(FileObject fileObject) {
-        return impl.getModuelName(fileObject);
+        return impl.getModuleName(fileObject);
     }
 
     public String getPackageName(FileObject fileObject) {
@@ -166,5 +171,23 @@ public class FuelPhpModule {
         // factory
         FuelPhpModuleFactory factory = FuelPhpModuleFactory.getInstance();
         return factory.create(phpModule);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    public void notifyPropertyChanged(PropertyChangeEvent event) {
+        if (PROPERTY_CHANGE_FUEL.equals(event.getPropertyName())) {
+            resetNodes();
+        }
+    }
+
+    private void resetNodes() {
+        propertyChangeSupport.firePropertyChange(PROPERTY_CHANGE_FUEL, null, null);
     }
 }

@@ -60,6 +60,7 @@ import org.netbeans.modules.php.composer.api.Composer;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
 import org.netbeans.modules.php.fuel.modules.FuelPhpVersion;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
+import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.ui.NewProjectConfigurationPanel;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.modules.php.fuel.util.FuelZipEntryFilter;
@@ -190,6 +191,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 Exceptions.printStackTrace(ex);
             }
         }
+        FuelPhpPreferences.setEnabled(pm, true);
 
         // composer update
         update(pm);

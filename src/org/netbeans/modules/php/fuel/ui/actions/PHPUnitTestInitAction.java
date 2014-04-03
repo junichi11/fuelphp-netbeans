@@ -155,7 +155,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         FileObject bootstrapPhpunit = coreDirectory.getFileObject(BOOTSTRAP_PHPUNIT);
         FileObject bootstrapMakegood = coreDirectory.getFileObject(BOOTSTRAP_MAKEGOOD);
         if (bootstrapPhpunit != null) {
-            OutputStream outputStream = null;
+            OutputStream outputStream;
             try {
                 if (bootstrapMakegood == null) {
                     outputStream = coreDirectory.createAndOpen(BOOTSTRAP_MAKEGOOD);

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2014 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -37,11 +37,11 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2013 Sun Microsystems, Inc.
+ * Portions Copyrighted 2014 Sun Microsystems, Inc.
  *//*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2014 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -77,82 +77,52 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2013 Sun Microsystems, Inc.
+ * Portions Copyrighted 2014 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel.options;
+package org.netbeans.modules.php.fuel.validator;
 
-import java.util.List;
-import java.util.prefs.Preferences;
-import org.netbeans.modules.php.api.util.StringUtils;
-import org.netbeans.modules.php.fuel.FuelPhp;
-import org.openide.util.NbPreferences;
+import org.netbeans.modules.php.api.validation.ValidationResult;
+import org.openide.filesystems.FileObject;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author junichi11
  */
-public class FuelPhpOptions {
+public final class FuelPhpCustomizerValidator {
 
-    private static final FuelPhpOptions INSTANCE = new FuelPhpOptions();
-    private static final String NOTIFY_AUTODETECTION = "notify.autodetection";
-    private static final String PREFERENCES_PATH = "fuelphp"; // NOI18N
-    private static final String GIT_BRANCH_NAME = "git.branch.name"; // NOI18N
-    private static final String DEFAULT_CONFIG = "default.config"; // NOI18N
-    private static final String USE_DEFAULT_CONFIG = "use.default.config"; // NOI18N
-    private static final String AVAILABLE_NODES = "available.nodes"; // NOI18N
+    private final ValidationResult result = new ValidationResult();
 
-    private FuelPhpOptions() {
+    public ValidationResult getResult() {
+        return result;
     }
 
-    public static FuelPhpOptions getInstance() {
-        return INSTANCE;
-    }
-
-    public boolean isNotifyAutodetection() {
-        return getPreferences().getBoolean(NOTIFY_AUTODETECTION, true);
-    }
-
-    public void setNotifyAutodetection(boolean notify) {
-        getPreferences().putBoolean(NOTIFY_AUTODETECTION, notify);
-    }
-
-    public String getGitBranchName() {
-        return getPreferences().get(GIT_BRANCH_NAME, ""); // NOI18N
-    }
-
-    public void setGitBranchName(String name) {
-        getPreferences().put(GIT_BRANCH_NAME, name);
-    }
-
-    public boolean isDefaultConfig() {
-        return getPreferences().getBoolean(USE_DEFAULT_CONFIG, false);
-    }
-
-    public void setDefaultConfig(boolean isDefault) {
-        getPreferences().putBoolean(USE_DEFAULT_CONFIG, isDefault);
-    }
-
-    public String getDefaultConfig() {
-        return getPreferences().get(DEFAULT_CONFIG, ""); // NOI18N
-    }
-
-    public void setDefaultConfig(String config) {
-        getPreferences().put(DEFAULT_CONFIG, config);
-    }
-
-    public List<String> getAvailableNodes() {
-        String nodes = getPreferences().get(AVAILABLE_NODES, null);
-        if (nodes == null) {
-            return FuelPhp.CUSTOM_NODES;
+    @NbBundle.Messages({
+        "FuelPhpCustomizerValidator.error.fuel.path.invalid=Existing fuel directory must be set.",
+        "FuelPhpCustomizerValidator.error.fuel.dir.invalid=Directory path must be set."
+    })
+    public FuelPhpCustomizerValidator validateFuelDirectoryName(FileObject sourceDirectory, String path) {
+        FileObject targetDirectory = sourceDirectory.getFileObject(path);
+        if (targetDirectory == null) {
+            result.addWarning(new ValidationResult.Message("fuel.path", Bundle.FuelPhpCustomizerValidator_error_fuel_path_invalid()));
+            return this;
         }
-        return StringUtils.explode(nodes, "|"); // NOI18N
+
+        if (!targetDirectory.isFolder()) {
+            result.addWarning(new ValidationResult.Message("fuel.dir", Bundle.FuelPhpCustomizerValidator_error_fuel_dir_invalid()));
+        }
+        return this;
     }
 
-    public void setAvailableNodes(List<String> nodes) {
-        getPreferences().put(AVAILABLE_NODES, StringUtils.implode(nodes, "|")); // NOI18N
-    }
+    @NbBundle.Messages({
+        "FuelPhpCustomizerValidator.error.oil.script.invalid=Not found oil script."
+    })
+    public FuelPhpCustomizerValidator validateOilPath(FileObject sourceDirectory) {
+        FileObject targetDirectory = sourceDirectory.getFileObject("oil");
+        if (targetDirectory == null || targetDirectory.isFolder()) {
+            result.addWarning(new ValidationResult.Message("oil.script", Bundle.FuelPhpCustomizerValidator_error_oil_script_invalid()));
+        }
 
-    private Preferences getPreferences() {
-        return NbPreferences.forModule(FuelPhpOptions.class).node(PREFERENCES_PATH);
+        return this;
     }
 }

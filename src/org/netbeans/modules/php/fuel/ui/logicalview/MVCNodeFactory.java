@@ -41,11 +41,14 @@
  */
 package org.netbeans.modules.php.fuel.ui.logicalview;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeListener;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
@@ -53,11 +56,11 @@ import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.util.FuelUtils;
 import org.netbeans.spi.project.ui.support.NodeFactory;
-import org.netbeans.spi.project.ui.support.NodeFactorySupport;
 import org.netbeans.spi.project.ui.support.NodeList;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
 import org.openide.nodes.Node;
+import org.openide.util.ChangeSupport;
 
 /**
  *
@@ -73,35 +76,37 @@ public class MVCNodeFactory implements NodeFactory {
 
     @Override
     public NodeList<?> createNodes(Project p) {
-        PhpModule phpModule = PhpModule.lookupPhpModule(p);
-        if (FuelUtils.isFuelPHP(phpModule)) {
-            return new MVCNodeList(phpModule);
-        }
-        return NodeFactorySupport.fixedNodeList();
+        PhpModule phpModule = PhpModule.Factory.lookupPhpModule(p);
+        return new MVCNodeList(phpModule);
     }
 
-    private static class MVCNodeList implements NodeList<FileObject> {
+    private static class MVCNodeList implements NodeList<Node>, PropertyChangeListener {
 
-        private PhpModule phpModule;
+        private final PhpModule phpModule;
         private static final Logger LOGGER = Logger.getLogger(MVCNodeList.class.getName());
+        private final ChangeSupport changeSupport = new ChangeSupport(this);
 
         public MVCNodeList(PhpModule phpModule) {
             this.phpModule = phpModule;
         }
 
         @Override
-        public List<FileObject> keys() {
+        public List<Node> keys() {
             if (FuelUtils.isFuelPHP(phpModule)) {
                 FuelPhpOptions options = FuelPhpOptions.getInstance();
                 List<String> availableNodes = options.getAvailableNodes();
-                List<FileObject> list = new ArrayList<FileObject>();
+                List<Node> list = new ArrayList<Node>();
 
                 for (String node : availableNodes) {
                     FileObject rootNode = getRootNode(node);
                     if (rootNode == null) {
                         continue;
                     }
-                    list.add(rootNode);
+                    DataFolder folder = getFolder(rootNode);
+                    if (folder != null) {
+                        Node mvcNode = new MVCNode(folder, null, rootNode.getName());
+                        list.add(mvcNode);
+                    }
                 }
                 return list;
             }
@@ -110,23 +115,12 @@ public class MVCNodeFactory implements NodeFactory {
 
         @Override
         public void addChangeListener(ChangeListener l) {
+            changeSupport.addChangeListener(l);
         }
 
         @Override
         public void removeChangeListener(ChangeListener l) {
-        }
-
-        @Override
-        public Node node(FileObject key) {
-            Node node = null;
-            if (key != null) {
-                FileObject rootFolder = key;
-                DataFolder folder = getFolder(rootFolder);
-                if (folder != null) {
-                    node = new MVCNode(folder, null, key.getName());
-                }
-            }
-            return node;
+            changeSupport.removeChangeListener(l);
         }
 
         private DataFolder getFolder(FileObject fileObject) {
@@ -143,6 +137,8 @@ public class MVCNodeFactory implements NodeFactory {
 
         @Override
         public void addNotify() {
+            FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+            fuelModule.addPropertyChangeListener(this);
         }
 
         @Override
@@ -181,5 +177,28 @@ public class MVCNodeFactory implements NodeFactory {
 
             return null;
         }
+
+        @Override
+        public Node node(Node node) {
+            return node;
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (FuelPhpModule.PROPERTY_CHANGE_FUEL.equals(evt.getPropertyName())) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        fireChange();
+                    }
+                });
+            }
+        }
+
+        void fireChange() {
+            changeSupport.fireChange();
+        }
     }
+
 }

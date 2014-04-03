@@ -113,7 +113,7 @@ public abstract class FuelPhpGoToStatus {
     public void setCurrentFile(FileObject currentFile) {
         this.currentFile = currentFile;
         if (currentFile != null) {
-            this.phpModule = PhpModule.forFileObject(currentFile);
+            this.phpModule = PhpModule.Factory.forFileObject(currentFile);
         }
     }
 

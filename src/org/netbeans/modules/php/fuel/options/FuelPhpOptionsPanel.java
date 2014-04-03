@@ -41,6 +41,7 @@
  */
 package org.netbeans.modules.php.fuel.options;
 
+import java.beans.PropertyChangeEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,7 +54,12 @@ import javax.swing.DefaultListModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ui.OpenProjects;
+import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.fuel.FuelPhp;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.util.FuelUtils;
 
 final class FuelPhpOptionsPanel extends javax.swing.JPanel {
 
@@ -66,6 +72,10 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     FuelPhpOptionsPanel(FuelPhpOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
+    }
+
+    private void setNotifyAutodetection() {
+        notifyAutodetectionCheckBox.setSelected(FuelPhpOptions.getInstance().isNotifyAutodetection());
     }
 
     private void setBranches() {
@@ -105,14 +115,15 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         branchesLabel = new javax.swing.JLabel();
-        branchesComboBox = new javax.swing.JComboBox();
+        branchesComboBox = new javax.swing.JComboBox<String>();
         defaultConfigCheckBox = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         defaultConfigEditorPane = new javax.swing.JEditorPane();
         reloadButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        nodeList = new javax.swing.JList();
+        nodeList = new javax.swing.JList<String>();
         availableNodesLabel = new javax.swing.JLabel();
+        notifyAutodetectionCheckBox = new javax.swing.JCheckBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(branchesLabel, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.branchesLabel.text")); // NOI18N
 
@@ -133,6 +144,8 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(availableNodesLabel, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.availableNodesLabel.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(notifyAutodetectionCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpOptionsPanel.class, "FuelPhpOptionsPanel.notifyAutodetectionCheckBox.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -140,26 +153,33 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(branchesLabel)
+                            .addComponent(jScrollPane1)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(reloadButton))
-                            .addComponent(defaultConfigCheckBox))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(branchesLabel)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(branchesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(reloadButton))
+                                    .addComponent(defaultConfigCheckBox))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(availableNodesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(notifyAutodetectionCheckBox)
                         .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(availableNodesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(notifyAutodetectionCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(branchesLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -172,7 +192,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -192,10 +212,13 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         setBranches();
         setDefaultConfig();
         setAvailableNodes();
+        setNotifyAutodetection();
     }
 
     void store() {
         FuelPhpOptions options = FuelPhpOptions.getInstance();
+        // notify autodetection
+        options.setNotifyAutodetection(notifyAutodetectionCheckBox.isSelected());
         // default config
         options.setDefaultConfig(defaultConfigCheckBox.isSelected());
         options.setDefaultConfig(defaultConfigEditorPane.getText());
@@ -213,6 +236,16 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
         // nodes
         List<String> selectedNodes = nodeList.getSelectedValuesList();
         options.setAvailableNodes(selectedNodes);
+        Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
+        for (Project project : openProjects) {
+            PhpModule phpModule = PhpModule.Factory.lookupPhpModule(project);
+            if (phpModule != null) {
+                if (FuelUtils.isFuelPHP(phpModule)) {
+                    FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+                    fuelModule.notifyPropertyChanged(new PropertyChangeEvent(this, FuelPhpModule.PROPERTY_CHANGE_FUEL, null, null));
+                }
+            }
+        }
     }
 
     boolean valid() {
@@ -249,13 +282,14 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel availableNodesLabel;
-    private javax.swing.JComboBox branchesComboBox;
+    private javax.swing.JComboBox<String> branchesComboBox;
     private javax.swing.JLabel branchesLabel;
     private javax.swing.JCheckBox defaultConfigCheckBox;
     private javax.swing.JEditorPane defaultConfigEditorPane;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JList nodeList;
+    private javax.swing.JList<String> nodeList;
+    private javax.swing.JCheckBox notifyAutodetectionCheckBox;
     private javax.swing.JButton reloadButton;
     // End of variables declaration//GEN-END:variables
 }

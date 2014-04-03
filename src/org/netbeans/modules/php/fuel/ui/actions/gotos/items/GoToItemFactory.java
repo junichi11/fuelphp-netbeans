@@ -69,7 +69,7 @@ public class GoToItemFactory {
      * @return GoToItem object
      */
     public GoToItem create(FileObject fileObject, int offset, String name) {
-        PhpModule phpModule = PhpModule.forFileObject(fileObject);
+        PhpModule phpModule = PhpModule.Factory.forFileObject(fileObject);
         FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
         FuelPhpModule.FILE_TYPE fileType = fuelModule.getFileType(fileObject);
         if (offset < 0) {

@@ -50,6 +50,7 @@ import org.netbeans.modules.php.api.phpmodule.PhpModule;
  */
 public class FuelPhpPreferences {
 
+    private static final String ENABLED = "enabled"; // NOI18N
     private static final String FUEL_NAME = "fuel-name"; // NOI18N
     private static final String USE_TEST_CASE = "use-test-case"; // NOI18N
     private static final String IGNORE_MVC_NODE = "ignore-mvc-node"; // NOI18N
@@ -58,6 +59,14 @@ public class FuelPhpPreferences {
     private static final String TEST_CASE_SUFFIX = "test-case-suffix"; // NOI18N
     private static final String TEST_GROUP_ANNOTATION = "test-group-annotation"; // NOI18N
     private static final String AUTO_CREATE_FILE = "auto-create-file"; // NOI18N
+
+    public static boolean isEnabled(PhpModule phpModule) {
+        return getPreferences(phpModule).getBoolean(ENABLED, false);
+    }
+
+    public static void setEnabled(PhpModule phpModule, boolean isEnabled) {
+        getPreferences(phpModule).putBoolean(ENABLED, isEnabled);
+    }
 
     public static String getFuelName(PhpModule phpModule) {
         String fuelName = getPreferences(phpModule).get(FUEL_NAME, ""); // NOI18N

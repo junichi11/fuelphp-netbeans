@@ -198,7 +198,7 @@ public abstract class FuelPhpModuleImpl {
      * @param fileObject
      * @return module name if module exists, otherwise empty string.
      */
-    public String getModuelName(FileObject fileObject) {
+    public String getModuleName(FileObject fileObject) {
         if (!isInModules(fileObject)) {
             return ""; // NOI18N
         }

@@ -41,16 +41,24 @@
  */
 package org.netbeans.modules.php.fuel;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.netbeans.modules.php.api.framework.BadgeIcon;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.phpmodule.PhpModuleProperties;
+import org.netbeans.modules.php.api.validation.ValidationResult;
 import org.netbeans.modules.php.fuel.commands.FuelPhpFrameworkCommandSupport;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
+import org.netbeans.modules.php.fuel.validator.FuelPhpCustomizerValidator;
 import org.netbeans.modules.php.spi.editor.EditorExtender;
 import org.netbeans.modules.php.spi.framework.PhpFrameworkProvider;
 import org.netbeans.modules.php.spi.framework.PhpModuleActionsExtender;
@@ -58,12 +66,15 @@ import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleIgnoredFilesExtender;
 import org.netbeans.modules.php.spi.framework.commands.FrameworkCommandSupport;
+import org.openide.awt.Notification;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -71,10 +82,11 @@ import org.openide.util.NbBundle;
  */
 public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
+    protected static final RequestProcessor RP = new RequestProcessor(FuelPhpFrameworkProvider.class);
     private static final FuelPhpFrameworkProvider INSTANCE = new FuelPhpFrameworkProvider();
     private static final String ICON_PATH = "org/netbeans/modules/php/fuel/resources/fuel_badge_8.png"; // NOI18N
     private final BadgeIcon badgeIcon;
-    private Map<PhpModule, FileObject> fuelDirectory = new HashMap<PhpModule, FileObject>();
+    private final Map<PhpModule, FileObject> fuelDirectory = new HashMap<PhpModule, FileObject>();
 
     @PhpFrameworkProvider.Registration(position = 700)
     public static FuelPhpFrameworkProvider getInstance() {
@@ -97,19 +109,20 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
 
     @Override
     public boolean isInPhpModule(PhpModule pm) {
-        FileObject sourceDirectory = pm.getSourceDirectory();
-        if (sourceDirectory == null) {
+        if (!FuelPhpPreferences.isEnabled(pm)) {
             return false;
         }
-        FileObject oil = sourceDirectory.getFileObject("oil"); // NOI18N
-        if (oil == null) {
-            return false;
-        }
+
         FileObject fuel = fuelDirectory.get(pm);
         if (fuel != null) {
             return true;
         }
+
         // add file change listener
+        FileObject sourceDirectory = pm.getSourceDirectory();
+        if (sourceDirectory == null) {
+            return false;
+        }
         String fuelName = FuelPhpPreferences.getFuelName(pm);
         fuel = sourceDirectory.getFileObject(fuelName);
         if (fuel != null) {
@@ -118,7 +131,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
                 public void fileRenamed(FileRenameEvent fe) {
                     FileObject file = fe.getFile();
                     String newFuelName = file.getName();
-                    PhpModule phpModule = PhpModule.forFileObject(file);
+                    PhpModule phpModule = PhpModule.Factory.forFileObject(file);
                     String fuelName = FuelPhpPreferences.getFuelName(phpModule);
                     if (newFuelName != null && !newFuelName.equals(fuelName)) {
                         FuelPhpPreferences.setFuelName(phpModule, newFuelName);
@@ -209,4 +222,71 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     public PhpModuleCustomizerExtender createPhpModuleCustomizerExtender(PhpModule phpModule) {
         return new FuelPhpModuleCustomizerExtender(phpModule);
     }
+
+    @NbBundle.Messages({
+        "# {0} - name",
+        "FuelPhpFrameworkProvider.autoditection=FuelPHP autoditection : {0}",
+        "FuelPhpFrameworkProvider.autoditection.action=If you want to enable as FuelPHP project, please click here."
+    })
+    @Override
+    public void phpModuleOpened(final PhpModule phpModule) {
+        if (!isInPhpModule(phpModule) && FuelPhpOptions.getInstance().isNotifyAutodetection()) {
+            // wait 1 minute since after projects is opened, scanning and VCS tasks are running
+            RP.schedule(new FuelPhpAutoDetectionTask(phpModule), 1, TimeUnit.MINUTES);
+        }
+    }
+
+    //~ inner class
+    private class FuelPhpAutoDetectionTask implements Runnable {
+
+        private final PhpModule phpModule;
+        private Notification notification;
+
+        public FuelPhpAutoDetectionTask(PhpModule phpModule) {
+            this.phpModule = phpModule;
+        }
+
+        @Override
+        public void run() {
+            // auto detection
+            FileObject sourceDirectory = phpModule.getSourceDirectory();
+            String fuelName = FuelPhpPreferences.getFuelName(phpModule);
+            if (sourceDirectory != null) {
+                FuelPhpCustomizerValidator validator = new FuelPhpCustomizerValidator()
+                        .validateFuelDirectoryName(sourceDirectory, fuelName)
+                        .validateOilPath(sourceDirectory);
+                ValidationResult result = validator.getResult();
+                if (result.hasWarnings()) {
+                    return;
+                }
+
+                // show notification displayer
+                if (!FuelPhpPreferences.isEnabled(phpModule)) {
+                    NotificationDisplayer notificationDisplayer = NotificationDisplayer.getDefault();
+                    notification = notificationDisplayer.notify(
+                            Bundle.FuelPhpFrameworkProvider_autoditection(phpModule.getDisplayName()), // title
+                            NotificationDisplayer.Priority.LOW.getIcon(), // icon
+                            Bundle.FuelPhpFrameworkProvider_autoditection_action(), // detail
+                            new FuelPhpAutoDetectionActionListener(), // action
+                            NotificationDisplayer.Priority.LOW); // priority
+                }
+            }
+        }
+
+        private class FuelPhpAutoDetectionActionListener implements ActionListener {
+
+            public FuelPhpAutoDetectionActionListener() {
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FuelPhpPreferences.setEnabled(phpModule, true);
+                FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+                phpModule.notifyPropertyChanged(new PropertyChangeEvent(this, PhpModule.PROPERTY_FRAMEWORKS, null, null));
+                fuelModule.notifyPropertyChanged(new PropertyChangeEvent(this, FuelPhpModule.PROPERTY_CHANGE_FUEL, null, null));
+                notification.clear();
+            }
+        }
+    }
+
 }

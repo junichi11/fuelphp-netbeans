@@ -62,13 +62,12 @@ public class FuelDocUtils {
      * @param doc
      * @return
      */
-    @SuppressWarnings("unchecked")
     public static TokenSequence<PHPTokenId> getTokenSequence(Document doc) {
         AbstractDocument abstractDoc = (AbstractDocument) doc;
         abstractDoc.readLock();
         TokenSequence<PHPTokenId> ts = null;
         try {
-            TokenHierarchy hierarchy = TokenHierarchy.get(doc);
+            TokenHierarchy<Document> hierarchy = TokenHierarchy.get(doc);
             ts = hierarchy.tokenSequence(PHPTokenId.language());
         } finally {
             abstractDoc.readUnlock();

@@ -112,7 +112,7 @@ public class FuelPhpBaseActionMenu extends BaseAction implements Presenter.Popup
     @Override
     public JMenuItem getPopupPresenter() {
         JMenu menu = new JMenu(Bundle.LBL_FuelPHP());
-        if (FuelUtils.isFuelPHP(PhpModule.inferPhpModule())) {
+        if (FuelUtils.isFuelPHP(PhpModule.Factory.inferPhpModule())) {
             // create test
             DataObject dataObject = getDataObject();
             if (dataObject != null) {
@@ -129,7 +129,7 @@ public class FuelPhpBaseActionMenu extends BaseAction implements Presenter.Popup
     @Override
     public Component getToolbarPresenter() {
         FuelToolbarPresenter fuelToolbarPresenter = new FuelToolbarPresenter();
-        if (FuelUtils.isFuelPHP(PhpModule.inferPhpModule())) {
+        if (FuelUtils.isFuelPHP(PhpModule.Factory.inferPhpModule())) {
             fuelToolbarPresenter.setVisible(true);
         } else {
             fuelToolbarPresenter.setVisible(false);
@@ -156,10 +156,7 @@ public class FuelPhpBaseActionMenu extends BaseAction implements Presenter.Popup
         Lookup context = Utilities.actionsGlobalContext();
         EditorCookie ec = context.lookup(EditorCookie.class);
         StyledDocument document = ec.getDocument();
-        if (document == null) {
-            return false;
-        }
-        return true;
+        return document != null;
     }
 
     //~ inner class

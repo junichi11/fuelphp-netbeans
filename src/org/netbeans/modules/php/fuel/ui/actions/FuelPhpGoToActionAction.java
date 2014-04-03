@@ -64,8 +64,8 @@ import org.openide.util.Exceptions;
 public class FuelPhpGoToActionAction extends GoToActionAction {
 
     private static final long serialVersionUID = 7088563533898976812L;
-    private FileObject view;
-    private int offset;
+    private final FileObject view;
+    private final int offset;
 
     public FuelPhpGoToActionAction(FileObject view, int offset) {
         this.view = view;

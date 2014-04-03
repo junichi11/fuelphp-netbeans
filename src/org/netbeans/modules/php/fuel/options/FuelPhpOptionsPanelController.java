@@ -44,18 +44,23 @@ package org.netbeans.modules.php.fuel.options;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import javax.swing.JComponent;
+import org.netbeans.modules.php.api.util.UiUtils;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
-@OptionsPanelController.SubRegistration(
-        location = "org-netbeans-modules-php-project-ui-options-PHPOptionsCategory",
-        displayName = "#AdvancedOption_DisplayName_FuelPHP",
-        keywords = "#AdvancedOption_Keywords_FuelPHP",
-        keywordsCategory = "org-netbeans-modules-php-project-ui-options-PHPOptionsCategory/FuelPHP")
-@org.openide.util.NbBundle.Messages({"AdvancedOption_DisplayName_FuelPHP=FuelPHP", "AdvancedOption_Keywords_FuelPHP=FuelPHP"})
+@UiUtils.PhpOptionsPanelRegistration(
+        id = FuelPhpOptionsPanelController.ID,
+        displayName = "#LBL_FuelPhpOptionsName",
+        position = 700
+)
+@NbBundle.Messages({"LBL_FuelPhpOptionsName=FuelPHP", "FuelPhp.options.keywords.TabTitle=Frameworks & Tools"})
+@OptionsPanelController.Keywords(keywords = {"php", "fuelphp", "fuel"},
+        location = UiUtils.OPTIONS_PATH, tabTitle = "#FuelPhp.options.keywords.TabTitle")
 public final class FuelPhpOptionsPanelController extends OptionsPanelController {
 
+    static final String ID = "FuelPHP"; // NOI18N
     private FuelPhpOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private boolean changed;

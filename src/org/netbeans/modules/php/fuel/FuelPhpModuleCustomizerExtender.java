@@ -1,14 +1,19 @@
 package org.netbeans.modules.php.fuel;
 
+import java.beans.PropertyChangeEvent;
 import java.util.EnumSet;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.api.validation.ValidationResult;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
 import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
 import org.netbeans.modules.php.fuel.support.ProjectPropertiesSupport;
 import org.netbeans.modules.php.fuel.ui.FuelPhpCustomizerPanel;
+import org.netbeans.modules.php.fuel.validator.FuelPhpCustomizerValidator;
 import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender.Change;
+import org.openide.filesystems.FileObject;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
@@ -60,17 +65,21 @@ import org.openide.util.NbBundle;
 public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender {
 
     private FuelPhpCustomizerPanel panel;
-    private PhpModule phpModule;
-    private String fuelName;
-    private boolean useTestCaseMethod;
-    private boolean ignoreMVCNode;
-    private String testCasePrefix;
-    private String testCaseSuffix;
+    private final PhpModule phpModule;
+    private final String fuelName;
+    private final String testCasePrefix;
+    private final String testCaseSuffix;
     private final String testGroupAnnotation;
-    private boolean useAutoCreateFile;
+    private final boolean isEnabled;
+    private final boolean useAutoCreateFile;
+    private final boolean useTestCaseMethod;
+    private boolean ignoreMVCNode;
+    private boolean isValid;
+    private String errorMessage;
 
     public FuelPhpModuleCustomizerExtender(PhpModule phpModule) {
         this.phpModule = phpModule;
+        isEnabled = FuelPhpPreferences.isEnabled(phpModule);
         fuelName = FuelPhpPreferences.getFuelName(phpModule);
         useTestCaseMethod = FuelPhpPreferences.useTestCaseMethod(phpModule);
         ignoreMVCNode = FuelPhpPreferences.ignoreMVCNode(phpModule);
@@ -87,10 +96,12 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
 
     @Override
     public void addChangeListener(ChangeListener listener) {
+        getPanel().addChangeListener(listener);
     }
 
     @Override
     public void removeChangeListener(ChangeListener listener) {
+        getPanel().removeChangeListener(listener);
     }
 
     @Override
@@ -109,17 +120,60 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             ignoreMVCNode = false;
             FuelPhpPreferences.setIgnoreMVCNode(phpModule, ignoreMVCNode);
         }
-        return true;
+        validate();
+        return isValid;
     }
 
     @Override
     public String getErrorMessage() {
-        return null;
+        validate();
+        return errorMessage;
+    }
+
+    @NbBundle.Messages("FuelPhpModuleCustomizerExtender.error.source.invalid=Can't find source directory. Project might be broken.")
+    void validate() {
+        FuelPhpCustomizerPanel customizerPanel = getPanel();
+        if (!customizerPanel.isFuelEnabled()) {
+            isValid = true;
+            errorMessage = null;
+            return;
+        }
+
+        // get source directory
+        FileObject sourceDirectory = phpModule.getSourceDirectory();
+        if (sourceDirectory == null) {
+            // broken project
+            isValid = false;
+            errorMessage = Bundle.FuelPhpModuleCustomizerExtender_error_source_invalid();
+            return;
+        }
+
+        FuelPhpCustomizerValidator validator = new FuelPhpCustomizerValidator()
+                .validateOilPath(sourceDirectory)
+                .validateFuelDirectoryName(sourceDirectory, customizerPanel.getFuelName());
+        ValidationResult result = validator.getResult();
+        if (result.hasWarnings()) {
+            isValid = false;
+            errorMessage = result.getWarnings().get(0).getMessage();
+            return;
+        }
+
+        // no problem
+        isValid = true;
+        errorMessage = null;
     }
 
     @Override
     public EnumSet<Change> save(PhpModule phpModule) {
-        EnumSet<Change> enumSet = null;
+        EnumSet<Change> enumSet = EnumSet.noneOf(Change.class);
+        boolean tempIsEnabled = panel.isFuelEnabled();
+        if (tempIsEnabled != isEnabled) {
+            FuelPhpPreferences.setEnabled(phpModule, tempIsEnabled);
+            enumSet.add(Change.FRAMEWORK_CHANGE);
+            FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
+            fuelModule.notifyPropertyChanged(new PropertyChangeEvent(this, FuelPhpModule.PROPERTY_CHANGE_FUEL, isValid, isValid));
+        }
+
         boolean tempUseTestCaseMethod = panel.useTestCaseMethod();
         if (useTestCaseMethod != tempUseTestCaseMethod) {
             FuelPhpPreferences.setUseTestCaseMethod(phpModule, tempUseTestCaseMethod);
@@ -136,7 +190,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
         }
         if (ignoreMVCNode != tmpIgnoreMVCNode) {
             FuelPhpPreferences.setIgnoreMVCNode(phpModule, tmpIgnoreMVCNode);
-            enumSet = EnumSet.of(Change.IGNORED_FILES_CHANGE);
+            enumSet.add(Change.IGNORED_FILES_CHANGE);
         }
 
         String newPrefix = panel.getTestCasePrefixTextField();
@@ -154,7 +208,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             FuelPhpPreferences.setTestGroupAnnotation(phpModule, newGroupAnnotation);
         }
 
-        String newFuelName = panel.getFuelNameTextField().getText();
+        String newFuelName = panel.getFuelName();
         if (!newFuelName.equals("") && !newFuelName.equals(fuelName)) {
             FuelPhpPreferences.setFuelName(phpModule, newFuelName);
             return EnumSet.of(Change.FRAMEWORK_CHANGE);
@@ -166,6 +220,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
     private FuelPhpCustomizerPanel getPanel() {
         if (panel == null) {
             panel = new FuelPhpCustomizerPanel();
+            panel.setFuelEnebled(isEnabled);
             panel.setFuelNameTextField(fuelName);
             panel.setUseTestCaseMethod(useTestCaseMethod);
             panel.setIgnoreMVCNode(ignoreMVCNode);
@@ -173,6 +228,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
             panel.setTestCaseSuffixTextField(testCaseSuffix);
             panel.setTestGroupAnnotation(testGroupAnnotation);
             panel.setAutoCreateFile(useAutoCreateFile);
+            panel.setAllComponentsEnabled(isEnabled);
         }
         return panel;
     }

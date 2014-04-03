@@ -122,7 +122,7 @@ public class FuelPhpGeneratePanel extends JPanel {
     public FuelPhpGeneratePanel(PhpModule phpModule) {
         this.phpModule = phpModule;
         initComponents();
-        JComboBox combo = new JComboBox(MODEL_TYPES);
+        JComboBox<String> combo = new JComboBox<String>(MODEL_TYPES);
         DefaultCellEditor cellEditor = new DefaultCellEditor(combo);
         modelTable.getColumn("Type").setCellEditor(cellEditor); // NOI18N
         migrationTable.getColumn("Type").setCellEditor(cellEditor); // NOI18N
@@ -229,7 +229,7 @@ public class FuelPhpGeneratePanel extends JPanel {
 
     public final void setViewsControllerNameCombobox() {
         FileObject controllerDirectory = FuelUtils.getControllerDirectory(phpModule);
-        DefaultComboBoxModel model = (DefaultComboBoxModel) viewsControllerNameComboBox.getModel();
+        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) viewsControllerNameComboBox.getModel();
         model.removeAllElements();
         if (controllerDirectory != null) {
             String path = controllerDirectory.getPath();
@@ -285,7 +285,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      * @param folder
      * @param rootPath
      */
-    private void addElement(DefaultComboBoxModel model, FileObject folder, String rootPath) {
+    private void addElement(DefaultComboBoxModel<String> model, FileObject folder, String rootPath) {
         FileObject[] children = folder.getChildren();
         FuelUtils.sortFileObject(children);
         for (FileObject child : children) {
@@ -373,7 +373,7 @@ public class FuelPhpGeneratePanel extends JPanel {
         controllerTable = new javax.swing.JTable();
         controllerAddRowButton = new javax.swing.JButton();
         controllerDeleteRowsButton = new javax.swing.JButton();
-        controllerExtendsComboBox = new javax.swing.JComboBox();
+        controllerExtendsComboBox = new javax.swing.JComboBox<String>();
         viewsPanel = new javax.swing.JPanel();
         viewsControllerNameLabel = new javax.swing.JLabel();
         viewsScrollPane = new javax.swing.JScrollPane();
@@ -382,7 +382,7 @@ public class FuelPhpGeneratePanel extends JPanel {
         viewsAddRowButton = new javax.swing.JButton();
         viewsDeleteRowsButton = new javax.swing.JButton();
         viewsResetTableButton = new javax.swing.JButton();
-        viewsControllerNameComboBox = new javax.swing.JComboBox();
+        viewsControllerNameComboBox = new javax.swing.JComboBox<String>();
         modelPanel = new javax.swing.JPanel();
         modelNameLabel = new javax.swing.JLabel();
         modelNameTextField = new javax.swing.JTextField();
@@ -404,7 +404,7 @@ public class FuelPhpGeneratePanel extends JPanel {
         modelDeleteRowsButton = new javax.swing.JButton();
         modelOthersLabel = new javax.swing.JLabel();
         modelOthersTextField = new javax.swing.JTextField();
-        adminAndScaffoldComboBox = new javax.swing.JComboBox();
+        adminAndScaffoldComboBox = new javax.swing.JComboBox<String>();
         adminAndScaffoldLabel = new javax.swing.JLabel();
         modelRadioButton = new javax.swing.JRadioButton();
         adminRadioButton = new javax.swing.JRadioButton();
@@ -488,8 +488,10 @@ public class FuelPhpGeneratePanel extends JPanel {
         });
         configTable.getTableHeader().setReorderingAllowed(false);
         configScrollPane.setViewportView(configTable);
-        configTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.configTable.columnModel.title0")); // NOI18N
-        configTable.getColumnModel().getColumn(1).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.configTable.columnModel.title1")); // NOI18N
+        if (configTable.getColumnModel().getColumnCount() > 0) {
+            configTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.configTable.columnModel.title0")); // NOI18N
+            configTable.getColumnModel().getColumn(1).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.configTable.columnModel.title1")); // NOI18N
+        }
 
         org.openide.awt.Mnemonics.setLocalizedText(configAddRowButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.configAddRowButton.text")); // NOI18N
         configAddRowButton.addActionListener(new java.awt.event.ActionListener() {
@@ -620,7 +622,9 @@ public class FuelPhpGeneratePanel extends JPanel {
         });
         controllerTable.getTableHeader().setReorderingAllowed(false);
         controllerScrollPane.setViewportView(controllerTable);
-        controllerTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.viewsTable.columnModel.title0")); // NOI18N
+        if (controllerTable.getColumnModel().getColumnCount() > 0) {
+            controllerTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.viewsTable.columnModel.title0")); // NOI18N
+        }
 
         org.openide.awt.Mnemonics.setLocalizedText(controllerAddRowButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.controllerAddRowButton.text")); // NOI18N
         controllerAddRowButton.addActionListener(new java.awt.event.ActionListener() {
@@ -730,7 +734,9 @@ public class FuelPhpGeneratePanel extends JPanel {
         });
         viewsTable.getTableHeader().setReorderingAllowed(false);
         viewsScrollPane.setViewportView(viewsTable);
-        viewsTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.viewsTable.columnModel.title0")); // NOI18N
+        if (viewsTable.getColumnModel().getColumnCount() > 0) {
+            viewsTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.viewsTable.columnModel.title0")); // NOI18N
+        }
 
         org.openide.awt.Mnemonics.setLocalizedText(viewsWithViewmodelCheckBox, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.viewsWithViewmodelCheckBox.text")); // NOI18N
 
@@ -836,14 +842,16 @@ public class FuelPhpGeneratePanel extends JPanel {
         });
         modelTable.getTableHeader().setReorderingAllowed(false);
         modelScrollPane1.setViewportView(modelTable);
-        modelTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title0")); // NOI18N
-        modelTable.getColumnModel().getColumn(1).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title1")); // NOI18N
-        modelTable.getColumnModel().getColumn(2).setPreferredWidth(50);
-        modelTable.getColumnModel().getColumn(2).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title2")); // NOI18N
-        modelTable.getColumnModel().getColumn(3).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title3")); // NOI18N
-        modelTable.getColumnModel().getColumn(4).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title4")); // NOI18N
-        modelTable.getColumnModel().getColumn(5).setPreferredWidth(45);
-        modelTable.getColumnModel().getColumn(5).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title5")); // NOI18N
+        if (modelTable.getColumnModel().getColumnCount() > 0) {
+            modelTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title0")); // NOI18N
+            modelTable.getColumnModel().getColumn(1).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title1")); // NOI18N
+            modelTable.getColumnModel().getColumn(2).setPreferredWidth(50);
+            modelTable.getColumnModel().getColumn(2).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title2")); // NOI18N
+            modelTable.getColumnModel().getColumn(3).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title3")); // NOI18N
+            modelTable.getColumnModel().getColumn(4).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title4")); // NOI18N
+            modelTable.getColumnModel().getColumn(5).setPreferredWidth(45);
+            modelTable.getColumnModel().getColumn(5).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title5")); // NOI18N
+        }
 
         org.openide.awt.Mnemonics.setLocalizedText(modelCreatedAtLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelCreatedAtLabel.text")); // NOI18N
 
@@ -1050,7 +1058,9 @@ public class FuelPhpGeneratePanel extends JPanel {
         });
         taskTable.getTableHeader().setReorderingAllowed(false);
         taskScrollPane.setViewportView(taskTable);
-        taskTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.taskTable.columnModel.title0")); // NOI18N
+        if (taskTable.getColumnModel().getColumnCount() > 0) {
+            taskTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.taskTable.columnModel.title0")); // NOI18N
+        }
 
         org.openide.awt.Mnemonics.setLocalizedText(taskAddRowButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.taskAddRowButton.text")); // NOI18N
         taskAddRowButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1185,14 +1195,16 @@ public class FuelPhpGeneratePanel extends JPanel {
         });
         migrationTable.getTableHeader().setReorderingAllowed(false);
         migrationScrollPane.setViewportView(migrationTable);
-        migrationTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title0")); // NOI18N
-        migrationTable.getColumnModel().getColumn(1).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title1")); // NOI18N
-        migrationTable.getColumnModel().getColumn(2).setPreferredWidth(50);
-        migrationTable.getColumnModel().getColumn(2).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title2")); // NOI18N
-        migrationTable.getColumnModel().getColumn(3).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title3")); // NOI18N
-        migrationTable.getColumnModel().getColumn(4).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title4")); // NOI18N
-        migrationTable.getColumnModel().getColumn(5).setPreferredWidth(45);
-        migrationTable.getColumnModel().getColumn(5).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title5")); // NOI18N
+        if (migrationTable.getColumnModel().getColumnCount() > 0) {
+            migrationTable.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title0")); // NOI18N
+            migrationTable.getColumnModel().getColumn(1).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title1")); // NOI18N
+            migrationTable.getColumnModel().getColumn(2).setPreferredWidth(50);
+            migrationTable.getColumnModel().getColumn(2).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title2")); // NOI18N
+            migrationTable.getColumnModel().getColumn(3).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title3")); // NOI18N
+            migrationTable.getColumnModel().getColumn(4).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title4")); // NOI18N
+            migrationTable.getColumnModel().getColumn(5).setPreferredWidth(45);
+            migrationTable.getColumnModel().getColumn(5).setHeaderValue(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.modelTable.columnModel.title5")); // NOI18N
+        }
 
         org.openide.awt.Mnemonics.setLocalizedText(migrationDeleteRowsButton, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationDeleteRowsButton.text")); // NOI18N
         migrationDeleteRowsButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1229,17 +1241,14 @@ public class FuelPhpGeneratePanel extends JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(migrationToLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationToLabel.text")); // NOI18N
 
         migrationTableNameTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationTableNameTextField.text")); // NOI18N
-        migrationTableNameTextField.setNextFocusableComponent(migrationFromTextField);
 
         migrationFromTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationFromTextField.text")); // NOI18N
-        migrationFromTextField.setNextFocusableComponent(migrationToTextField);
 
         migrationToTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationToTextField.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(migrationNameLabel, org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationNameLabel.text")); // NOI18N
 
         migrationNameTextField.setText(org.openide.util.NbBundle.getMessage(FuelPhpGeneratePanel.class, "FuelPhpGeneratePanel.migrationNameTextField.text")); // NOI18N
-        migrationNameTextField.setNextFocusableComponent(migrationTableNameTextField);
 
         javax.swing.GroupLayout migrationPanelLayout = new javax.swing.GroupLayout(migrationPanel);
         migrationPanel.setLayout(migrationPanelLayout);
@@ -1549,7 +1558,7 @@ public class FuelPhpGeneratePanel extends JPanel {
         setEnabledMigrationTable(true);
     }//GEN-LAST:event_migrationDeleteFieldRadioButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox adminAndScaffoldComboBox;
+    private javax.swing.JComboBox<String> adminAndScaffoldComboBox;
     private javax.swing.JLabel adminAndScaffoldLabel;
     private javax.swing.JRadioButton adminRadioButton;
     private javax.swing.JButton configAddRowButton;
@@ -1568,7 +1577,7 @@ public class FuelPhpGeneratePanel extends JPanel {
     private javax.swing.JButton controllerAddRowButton;
     private javax.swing.JCheckBox controllerCrudCheckBox;
     private javax.swing.JButton controllerDeleteRowsButton;
-    private javax.swing.JComboBox controllerExtendsComboBox;
+    private javax.swing.JComboBox<String> controllerExtendsComboBox;
     private javax.swing.JLabel controllerExtendsLabel;
     private javax.swing.JLabel controllerNameLabel;
     private javax.swing.JTextField controllerNameTextField;
@@ -1642,7 +1651,7 @@ public class FuelPhpGeneratePanel extends JPanel {
     private javax.swing.JScrollPane taskScrollPane;
     private javax.swing.JTable taskTable;
     private javax.swing.JButton viewsAddRowButton;
-    private javax.swing.JComboBox viewsControllerNameComboBox;
+    private javax.swing.JComboBox<String> viewsControllerNameComboBox;
     private javax.swing.JLabel viewsControllerNameLabel;
     private javax.swing.JButton viewsDeleteRowsButton;
     private javax.swing.JPanel viewsPanel;
@@ -2008,7 +2017,7 @@ public class FuelPhpGeneratePanel extends JPanel {
 
             // NULL
             Boolean isNULL = (Boolean) table.getValueAt(i, MODEL_FIELD_NULL);
-            if (isNULL != null && isNULL.booleanValue()) {
+            if (isNULL != null && isNULL) {
                 sb.append(":null"); // NOI18N
             }
 

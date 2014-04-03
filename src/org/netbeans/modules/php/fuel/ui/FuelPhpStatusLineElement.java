@@ -79,7 +79,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatusLineElementProvider.class)
 public class FuelPhpStatusLineElement implements StatusLineElementProvider {
 
-    private Lookup.Result result = null;
+    private Lookup.Result<FileObject> result = null;
     private PhpModule phpModule;
     private final JLabel fuelVersionLabel = new JLabel(""); // NOI18N
     private final ImageIcon icon = new ImageIcon(getClass().getResource("/" + FuelPhp.FUEL_ICON_16)); // NOI18N
@@ -145,7 +145,7 @@ public class FuelPhpStatusLineElement implements StatusLineElementProvider {
                 return;
             }
 
-            PhpModule tmpPhpModule = PhpModule.forFileObject(fileObject);
+            PhpModule tmpPhpModule = PhpModule.Factory.forFileObject(fileObject);
             if (!FuelUtils.isFuelPHP(tmpPhpModule)) {
                 clearLabel();
                 phpModule = null;
@@ -172,8 +172,8 @@ public class FuelPhpStatusLineElement implements StatusLineElementProvider {
          * @return current FileObject if exists, otherwise null
          */
         private FileObject getFileObject(LookupEvent lookupEvent) {
-            Lookup.Result lookupResult = (Lookup.Result) lookupEvent.getSource();
-            Collection c = lookupResult.allInstances();
+            Lookup.Result<?> lookupResult = ((Lookup.Result<?>) lookupEvent.getSource());
+            Collection<?> c = (Collection<?>) lookupResult.allInstances();
             FileObject fileObject = null;
             if (!c.isEmpty()) {
                 fileObject = (FileObject) c.iterator().next();
