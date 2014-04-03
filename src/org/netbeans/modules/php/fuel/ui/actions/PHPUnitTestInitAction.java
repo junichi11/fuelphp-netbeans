@@ -128,6 +128,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         serverSettings.add("$_SERVER['vendor_path'] = '" + fuel + "/vendor';"); // NOI18N
         serverSettings.add("$_SERVER['core_path'] = '" + fuel + "/core';"); // NOI18N
         serverSettings.add("$_SERVER['package_path'] = '" + fuel + "/packages';"); // NOI18N
+        serverSettings.add("$_SERVER['FUEL_ENV'] = 'test';"); // NOI18N
 
         // create files
         createBootstrap();
