@@ -84,6 +84,6 @@ public class FuelPhpGoToPresenterAction extends FuelPhpGoToAction {
 
     @Override
     protected String getPureName() {
-        return Bundle.FuelPhpGoToViewModelAction_Name();
+        return Bundle.FuelPhpGoToPresenterAction_Name();
     }
 }

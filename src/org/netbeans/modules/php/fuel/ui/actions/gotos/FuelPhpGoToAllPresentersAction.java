@@ -74,7 +74,7 @@ public class FuelPhpGoToAllPresentersAction extends FuelPhpGoToAction {
 
     @Override
     protected List<GoToItem> getGoToItems(FuelPhpGoToStatus status) {
-        return status.getAllViewModels();
+        return status.getAllPresenters();
     }
 
     @Override
@@ -84,6 +84,6 @@ public class FuelPhpGoToAllPresentersAction extends FuelPhpGoToAction {
 
     @Override
     protected String getPureName() {
-        return Bundle.FuelPhpGoToAllViewModelsAction_Name();
+        return Bundle.FuelPhpGoToAllPresentersAction_Name();
     }
 }
