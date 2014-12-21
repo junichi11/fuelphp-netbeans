@@ -97,7 +97,7 @@ public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
 
     @Override
     public boolean isViewWithAction(FileObject fo) {
-        return (FuelUtils.isView(fo) || FuelUtils.isViewModel(fo));
+        return (FuelUtils.isView(fo) || FuelUtils.isViewModel(fo) || FuelUtils.isPresenter(fo));
     }
 
     @Override

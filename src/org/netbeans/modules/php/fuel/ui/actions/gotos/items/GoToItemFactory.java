@@ -83,6 +83,8 @@ public class GoToItemFactory {
                 return new GoToViewItem(fileObject, offset);
             case VIEW_MODEL:
                 return new GoToViewModelItem(fileObject, offset);
+            case PRESENTER: // since fuel 1.7.2
+                return new GoToPresenterItem(fileObject, offset);
             case MODEL:
                 return new GoToModelItem(fileObject, offset);
             case CONFIG:

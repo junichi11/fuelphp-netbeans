@@ -136,6 +136,9 @@ public class FuelPhp1ModuleImpl extends FuelPhpModuleImpl {
             case VIEW_MODEL:
                 sb.append("classes/view"); // NOI18N
                 break;
+            case PRESENTER: // since fuel 1.7.2
+                sb.append("classes/presenter"); // NOI18N
+                break;
             case CONFIG:
                 sb.append("config"); // NOI18N
                 break;
@@ -237,6 +240,8 @@ public class FuelPhp1ModuleImpl extends FuelPhpModuleImpl {
             return FILE_TYPE.CONTROLLER;
         } else if (path.contains("classes/view/")) { // NOI18N
             return FILE_TYPE.VIEW_MODEL;
+        } else if (path.contains("classes/presenter/")) { // NOI18N
+            return FILE_TYPE.PRESENTER;
         } else if (path.contains("classes/model/")) { // NOI18N
             return FILE_TYPE.MODEL;
         } else if (path.contains("/views/")) { // NOI18N

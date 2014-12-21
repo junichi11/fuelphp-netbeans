@@ -75,7 +75,7 @@ public class GoToViewPanel extends javax.swing.JPanel {
         viewList = new javax.swing.JList<String>();
 
         viewList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "View", "ViewModel" };
+            String[] strings = { "View", "ViewModel", "Presenter" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
