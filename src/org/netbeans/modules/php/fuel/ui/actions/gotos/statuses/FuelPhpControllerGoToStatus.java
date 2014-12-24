@@ -128,6 +128,9 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
 
     private void setGoToItems(Set<String> viewPath, FILE_TYPE fileType, boolean isAll) {
         FileObject targetDirectory = getDirectory(fileType);
+        if (targetDirectory == null) {
+            return;
+        }
         GoToItemFactory itemFactory = GoToItemFactory.getInstance();
         for (String path : viewPath) {
             if (StringUtils.isEmpty(path)) {
