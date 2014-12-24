@@ -44,6 +44,8 @@ package org.netbeans.modules.php.fuel.ui.actions.gotos.statuses;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.netbeans.modules.parsing.spi.ParseException;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.util.StringUtils;
@@ -66,6 +68,7 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
     private final List<GoToItem> allViewModelItems = new ArrayList<GoToItem>();
     private final List<GoToItem> presenterItems = new ArrayList<GoToItem>();
     private final List<GoToItem> allPresenterItems = new ArrayList<GoToItem>();
+    private static final Logger LOGGER = Logger.getLogger(FuelPhpControllerGoToStatus.class.getName());
 
     private FuelPhpControllerGoToStatus() {
     }
@@ -129,6 +132,7 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
     private void setGoToItems(Set<String> viewPath, FILE_TYPE fileType, boolean isAll) {
         FileObject targetDirectory = getDirectory(fileType);
         if (targetDirectory == null) {
+            LOGGER.log(Level.INFO, "{0} directory doesn''t exist", fileType.name()); // NOI18N
             return;
         }
         GoToItemFactory itemFactory = GoToItemFactory.getInstance();
