@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.
@@ -37,41 +37,53 @@
  *
  * Contributor(s):
  *
- * Portions Copyrighted 2012 Sun Microsystems, Inc.
+ * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
-package org.netbeans.modules.php.fuel;
+package org.netbeans.modules.php.fuel.ui.actions.gotos;
 
-import java.util.Arrays;
 import java.util.List;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.items.GoToItem;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.statuses.FuelPhpGoToStatus;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
+import org.openide.util.NbBundle;
 
-/**
- *
- * @author junichi11
- */
-public final class FuelPhp {
+@ActionID(
+        category = "PHP",
+        id = "org.netbeans.modules.php.fuel.ui.actions.gotos.FuelPhpGoToPresenterAction")
+@ActionRegistration(
+        displayName = "#FuelPhpGoToPresenterAction_Name")
+@ActionReferences({
+    @ActionReference(path = "Shortcuts", name = "DS-G P"),
+    @ActionReference(path = "Shortcuts", name = "D-J P")
+})
+@NbBundle.Messages("FuelPhpGoToPresenterAction_Name=FuelPHP Go To Presenter")
+public class FuelPhpGoToPresenterAction extends FuelPhpGoToAction {
 
-    public static final String FUEL_ICON_8 = "org/netbeans/modules/php/fuel/resources/fuel_icon_8.png"; // NOI18N
-    public static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png"; // NOI18N
-    public static final String FUEL_ADD_TEST_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_add_test_icon_16.png"; // NOI18N
-    public static final String GO_TO_CONTROLLER_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_controller_icon.png"; // NOI18N
-    public static final String GO_TO_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_model_icon.png"; // NOI18N
-    public static final String GO_TO_VIEW_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_icon.png"; // NOI18N
-    public static final String GO_TO_VIEW_MODEL_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_view_model_icon.png"; // NOI18N
-    public static final String GO_TO_PRESENTER_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_presenter_icon.png"; // NOI18N
-    public static final String GO_TO_CONFIG_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_config_icon.png"; // NOI18N
-    public static final String GO_TO_TASK_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_task_icon.png"; // NOI18N
-    public static final String GO_TO_TEST_ICON = "org/netbeans/modules/php/fuel/resources/fuel_go_to_test_icon.png"; // NOI18N
+    private static final FuelPhpGoToPresenterAction INSTANCE = new FuelPhpGoToPresenterAction();
+    private static final long serialVersionUID = 7721005869460694516L;
 
-    public static final List<String> CUSTOM_NODES = Arrays.asList(
-            "controller",
-            "model",
-            "views",
-            "tasks",
-            "assets",
-            "modules"
-    );
-
-    private FuelPhp() {
+    private FuelPhpGoToPresenterAction() {
     }
 
+    public static FuelPhpGoToPresenterAction getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    protected List<GoToItem> getGoToItems(FuelPhpGoToStatus status) {
+        return status.getPresenters();
+    }
+
+    @Override
+    protected String getFullName() {
+        return getPureName();
+    }
+
+    @Override
+    protected String getPureName() {
+        return Bundle.FuelPhpGoToPresenterAction_Name();
+    }
 }

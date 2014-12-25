@@ -44,6 +44,8 @@ package org.netbeans.modules.php.fuel.ui.actions.gotos.statuses;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.netbeans.modules.parsing.spi.ParseException;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
 import org.netbeans.modules.php.api.util.StringUtils;
@@ -64,6 +66,9 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
     private final List<GoToItem> allViewItems = new ArrayList<GoToItem>();
     private final List<GoToItem> viewModelItems = new ArrayList<GoToItem>();
     private final List<GoToItem> allViewModelItems = new ArrayList<GoToItem>();
+    private final List<GoToItem> presenterItems = new ArrayList<GoToItem>();
+    private final List<GoToItem> allPresenterItems = new ArrayList<GoToItem>();
+    private static final Logger LOGGER = Logger.getLogger(FuelPhpControllerGoToStatus.class.getName());
 
     private FuelPhpControllerGoToStatus() {
     }
@@ -75,8 +80,10 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
     private void reset() {
         viewItems.clear();
         viewModelItems.clear();
+        presenterItems.clear();
         allViewItems.clear();
         allViewModelItems.clear();
+        allPresenterItems.clear();
     }
 
     @Override
@@ -93,20 +100,29 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
 
         // set view items
         Set<String> viewModelPath = visitor.getViewModelPath();
+        Set<String> presenterPath = visitor.getPresenterPath();
         Set<String> viewPath = visitor.getViewPath();
         if (!viewModelPath.isEmpty()) {
             viewPath.addAll(viewModelPath);
+        }
+        if (!presenterPath.isEmpty()) {
+            viewPath.addAll(presenterPath);
         }
         setGoToItems(viewPath, FILE_TYPE.VIEW, false);
         setGoToItems(visitor.getAllViewPath(), FILE_TYPE.VIEW, true);
         setGoToItems(viewModelPath, FILE_TYPE.VIEW_MODEL, false);
         setGoToItems(visitor.getAllViewModelPath(), FILE_TYPE.VIEW_MODEL, true);
+        // since fuel 1.7.2
+        setGoToItems(presenterPath, FILE_TYPE.PRESENTER, false);
+        setGoToItems(visitor.getAllPresenterPath(), FILE_TYPE.PRESENTER, true);
 
         // sort
         sort(viewItems);
         sort(viewModelItems);
+        sort(presenterItems);
         sort(allViewItems);
         sort(allViewModelItems);
+        sort(allPresenterItems);
     }
 
     private void scanController(FuelPhpControllerVisitor visitor, FileObject targetFile) throws ParseException {
@@ -115,6 +131,10 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
 
     private void setGoToItems(Set<String> viewPath, FILE_TYPE fileType, boolean isAll) {
         FileObject targetDirectory = getDirectory(fileType);
+        if (targetDirectory == null) {
+            LOGGER.log(Level.INFO, "{0} directory doesn''t exist", fileType.name()); // NOI18N
+            return;
+        }
         GoToItemFactory itemFactory = GoToItemFactory.getInstance();
         for (String path : viewPath) {
             if (StringUtils.isEmpty(path)) {
@@ -162,6 +182,13 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
                         viewModelItems.add(item);
                     }
                     break;
+                case PRESENTER:
+                    if (isAll) {
+                        allPresenterItems.add(item);
+                    } else {
+                        presenterItems.add(item);
+                    }
+                    break;
                 default:
                     throw new AssertionError();
             }
@@ -186,9 +213,15 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
         return allViewModelItems;
     }
 
+    @Override
+    public List<GoToItem> getPresenters() {
+        return allPresenterItems;
+    }
+
     public List<GoToItem> getViewAndViewModel() {
         List<GoToItem> items = getView();
         items.addAll(getViewModel());
+        items.addAll(getPresenter());
         return items;
     }
 
@@ -198,5 +231,9 @@ public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
 
     public List<GoToItem> getViewModel() {
         return viewModelItems;
+    }
+
+    public List<GoToItem> getPresenter() {
+        return presenterItems;
     }
 }

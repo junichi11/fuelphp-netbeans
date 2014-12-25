@@ -59,23 +59,25 @@ We can go to specific files relevant to a current file.
 
 (from : to)
 
-- controller : view, view model, test
+- controller : view, view model, presenter, test
 - model : test
 - view: controller
-- view model : controller, test
+- view model, presenter : controller, test
 - test : tested class
 
 ### Go To Actions
 
 It is available the following actions:
 
-- [Ctrl + Shift + G] [C] Controller 
+- [Ctrl + Shift + G] [C] Controller
 - [Ctrl + Shift + G] [V] View
 - [Ctrl + Shift + G] [W] View Model
+- [Ctrl + Shift + G] [P] Presenter
 - [Ctrl + Shift + G] [T] Test
 - [Ctrl + Shift + G] [Ctrl + C] All Controllers
 - [Ctrl + Shift + G] [Ctrl + M] All Models
 - [Ctrl + Shift + G] [Ctrl + W] All View Models
+- [Ctrl + Shift + G] [Ctrl + P] All Presenters
 - [Ctrl + Shift + G] [Ctrl + T] All Tests
 - [Ctrl + Shift + G] [Ctrl + K] All Tasks
 - [Ctrl + Shift + G] [Ctrl + I] All Configurations
@@ -161,7 +163,7 @@ This is valid for the following methods.
 - css
 - js
 
-### View, ViewModel Class
+### View, ViewModel, Presenter Class
 - forge
 
 ### Option for creating file automatically
@@ -182,13 +184,13 @@ Right-click project > FuelPHP > Generate
 
 ## Default Config Option
 
-Tools > Options > PHP > FuelPHP  
-We can set default config(app/conifg/config.php) to the Options.  
+Tools > Options > PHP > FuelPHP
+We can set default config(app/conifg/config.php) to the Options.
 This is used when new project is created.
 
 ## Save Config As Default Action
 
-This is able to set current project config to the Options.  
+This is able to set current project config to the Options.
 Right-click project > Fuel > save config as default
 
 ## Important!

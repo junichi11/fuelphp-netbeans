@@ -238,10 +238,10 @@ public class ViewCompletionProvider extends FuelPhpCompletionProvider {
     }
 
     /**
-     * Check View::forge() or ViewModel::forge()
+     * Check View::forge() or ViewModel::forge() or Presenter::forge()
      *
      * @param ts
-     * @return true if View or ViewModel, otherwise false
+     * @return true if View or ViewModel or Presenter, otherwise false
      */
     private boolean isViewForge(TokenSequence<PHPTokenId> ts) {
         // brace
@@ -263,6 +263,8 @@ public class ViewCompletionProvider extends FuelPhpCompletionProvider {
             fileType = FILE_TYPE.VIEW;
         } else if (viewClass.equals("ViewModel")) { //NOI18N
             fileType = FILE_TYPE.VIEW_MODEL;
+        } else if (viewClass.equals("Presenter")) { //NOI18N
+            fileType = FILE_TYPE.PRESENTER;
         } else {
             fileType = FILE_TYPE.NONE;
             return false;

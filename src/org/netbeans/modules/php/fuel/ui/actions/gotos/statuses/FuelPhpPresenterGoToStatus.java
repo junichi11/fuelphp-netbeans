@@ -41,75 +41,35 @@
  */
 package org.netbeans.modules.php.fuel.ui.actions.gotos.statuses;
 
+import java.util.List;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
-import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule.FILE_TYPE;
+import org.netbeans.modules.php.fuel.ui.actions.gotos.items.GoToItem;
 import org.openide.filesystems.FileObject;
 
-/**
- *
- * @author junichi11
- */
-public final class FuelPhpGoToStatusFactory {
+public class FuelPhpPresenterGoToStatus extends FuelPhpGoToStatus {
 
-    private FileObject targetFile;
-    private int offset;
-    private FuelPhpGoToStatus status;
-    private static final FuelPhpGoToStatusFactory INSTANCE = new FuelPhpGoToStatusFactory();
+    private static final FuelPhpPresenterGoToStatus INSTANCE = new FuelPhpPresenterGoToStatus();
 
-    private FuelPhpGoToStatusFactory() {
+    private FuelPhpPresenterGoToStatus() {
     }
 
-    public static FuelPhpGoToStatusFactory getInstance() {
+    public static FuelPhpPresenterGoToStatus getInstance() {
         return INSTANCE;
     }
 
-    /**
-     * Create object for each file type.
-     *
-     * @param targetFile
-     * @param offset
-     * @return
-     */
-    public FuelPhpGoToStatus create(FileObject targetFile, int offset) {
-        if (this.targetFile == targetFile && this.offset == offset) {
-            if (status != null) {
-                return status;
-            }
-        }
-        PhpModule phpModule = PhpModule.Factory.forFileObject(targetFile);
-        this.targetFile = targetFile;
-        this.offset = offset;
+    @Override
+    protected void scan(PhpModule phpModule, FileObject currentFile, int offset) {
+    }
 
-        // get file type
-        FuelPhpModule fuelModule = FuelPhpModule.forPhpModule(phpModule);
-        FILE_TYPE fileType = fuelModule.getFileType(targetFile);
+    @Override
+    public List<GoToItem> getSmart() {
+        // get controller
+        return getControllers();
+    }
 
-        switch (fileType) {
-            case CONTROLLER:
-                status = FuelPhpControllerGoToStatus.getInstance();
-                break;
-            case MODEL:
-                status = FuelPhpModelGoToStatus.getInstance();
-                break;
-            case VIEW:
-                status = FuelPhpViewGoToStatus.getInstance();
-                break;
-            case VIEW_MODEL:
-                status = FuelPhpViewModelGoToStatus.getInstance();
-                break;
-            case PRESENTER:
-                status = FuelPhpPresenterGoToStatus.getInstance();
-                break;
-            case TESTS:
-                status = FuelPhpTestCaseGoToStatus.getInstance();
-                break;
-            default:
-                status = FuelPhpDefaultGoToStatus.getInstance();
-                break;
-        }
-        status.setCurrentFile(targetFile);
-        status.setCurrentOffset(offset);
-        return status;
+    @Override
+    public List<GoToItem> getControllers() {
+        return getControllers(FILE_TYPE.PRESENTER);
     }
 }

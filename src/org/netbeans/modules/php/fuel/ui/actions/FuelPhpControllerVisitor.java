@@ -67,10 +67,13 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
     private static final String FORGE_METHOD = "forge"; // NOI18N
     private static final String VIEW_CLASS = "View"; // NOI18N
     private static final String VIEW_MODEL_CLASS = "ViewModel"; // NOI18N
+    private static final String PRESENTER_CLASS = "Presenter"; // NOI18N
     private final Set<String> viewPath = new HashSet<String>();
     private final Set<String> allViewPath = new HashSet<String>();
     private final Set<String> viewModelPath = new HashSet<String>();
     private final Set<String> allViewModelPath = new HashSet<String>();
+    private final Set<String> presenterPath = new HashSet<String>();
+    private final Set<String> allPresenterPath = new HashSet<String>();
     private String actionName = ""; // NOI18N
     private String methodName = null;
 
@@ -118,6 +121,14 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
         return allViewModelPath;
     }
 
+    public Set<String> getPresenterPath() {
+        return presenterPath;
+    }
+
+    public Set<String> getAllPresenterPath() {
+        return allPresenterPath;
+    }
+
     @Override
     public void visit(MethodDeclaration node) {
         methodName = CodeUtils.extractMethodName(node);
@@ -129,7 +140,7 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
         super.visit(node);
         Expression classNameExpression = node.getClassName();
         String className = CodeUtils.extractQualifiedName(classNameExpression);
-        if (!VIEW_CLASS.equals(className) && !VIEW_MODEL_CLASS.equals(className)) {
+        if (!VIEW_CLASS.equals(className) && !VIEW_MODEL_CLASS.equals(className) && !PRESENTER_CLASS.equals(className)) {
             return;
         }
         FunctionInvocation fi = node.getMethod();
@@ -157,6 +168,8 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
                     viewPath.add(path);
                 } else if (VIEW_MODEL_CLASS.equals(className)) {
                     viewModelPath.add(path);
+                } else if (PRESENTER_CLASS.equals(className)) {
+                    presenterPath.add(path);
                 }
             }
 
@@ -165,6 +178,8 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
                 allViewPath.add(path);
             } else if (VIEW_MODEL_CLASS.equals(className)) {
                 allViewModelPath.add(path);
+            } else if (PRESENTER_CLASS.equals(className)) {
+                allPresenterPath.add(path);
             }
         }
     }

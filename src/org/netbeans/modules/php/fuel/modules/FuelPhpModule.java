@@ -80,6 +80,7 @@ public class FuelPhpModule {
         CONTROLLER,
         VIEW,
         VIEW_MODEL,
+        PRESENTER,
         MODEL,
         CONFIG,
         TASKS,

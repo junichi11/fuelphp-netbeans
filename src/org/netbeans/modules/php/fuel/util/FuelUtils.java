@@ -79,7 +79,8 @@ public final class FuelUtils {
     public static final String CONTROLLER_PREFIX = "Controller_"; // NOI18N
     private static final String FUEL_APP_CLASSES_CONTROLLER_DIR = "%s/app/classes/controller"; // NOI18N
     private static final String FUEL_APP_CLASSES_MODEL_DIR = "%s/app/classes/model"; // NOI18N
-    private static final String FUEL_APP_CLASSES_VIEW_DIR = "%s/app/classes/view";
+    private static final String FUEL_APP_CLASSES_VIEW_DIR = "%s/app/classes/view"; // NOI18N
+    private static final String FUEL_APP_CLASSES_PRESENTER_DIR = "%s/app/classes/presenter"; // NOI18N
     private static final String FUEL_APP_VIEWS_DIR = "%s/app/views"; // NOI18N
     private static final String FUEL_APP_MODULES_DIR = "%s/app/modules"; // NOI18N
     private static final String FUEL_AUTOCOMPLETION_PHP = "org-netbeans-modules-php-fuel/fuel_autocompletion.php"; // NOI18N
@@ -323,6 +324,16 @@ public final class FuelUtils {
         return isViewsViewModel(viewModel, false);
     }
 
+    /**
+     * Check presenter file
+     *
+     * @param presenter presenter FileObject
+     * @return if the presenter file is in view model directory, return true.
+     */
+    public static boolean isPresenter(FileObject presenter) {
+        return isViewsViewModel(presenter, false);
+    }
+
     private static boolean isViewsViewModel(FileObject fileObject, boolean isViews) {
         if (fileObject == null || !FileUtils.isPhpFile(fileObject)) {
             return false;
@@ -344,7 +355,7 @@ public final class FuelUtils {
         if (isViews) {
             return path.contains("/views/"); // NOI18N
         }
-        return path.contains("/classes/view/"); // NOI18N
+        return path.contains("/classes/view/") || path.contains("/classes/presenter/"); // NOI18N
     }
 
     /**
@@ -418,6 +429,27 @@ public final class FuelUtils {
      */
     public static FileObject getViewModelDirectory(PhpModule phpModule) {
         return getDirectory(phpModule, FUEL_APP_CLASSES_VIEW_DIR);
+    }
+
+    /**
+     * Get presenter directory (fuel/app/classes/presenter)
+     *
+     * @param fo FileObject
+     * @return presenter directory FileObject
+     */
+    public static FileObject getPresenterDirectory(FileObject fo) {
+        PhpModule pm = PhpModule.Factory.forFileObject(fo);
+        return getPresenterDirectory(pm);
+    }
+
+    /**
+     * Get view model directory (fuel/app/classes/presenter)
+     *
+     * @param phpMoudle PhpModule
+     * @return presenter directory FileObject
+     */
+    public static FileObject getPresenterDirectory(PhpModule phpModule) {
+        return getDirectory(phpModule, FUEL_APP_CLASSES_PRESENTER_DIR);
     }
 
     /**
@@ -508,7 +540,8 @@ public final class FuelUtils {
     public static FileObject getInferedController(FileObject view) {
         boolean isView = isView(view);
         boolean isViewModel = isViewModel(view);
-        if (!isView && !isViewModel) {
+        boolean isPresenter = isPresenter(view);
+        if (!isView && !isViewModel && !isPresenter) {
             return null;
         }
         // view file path from views directory
@@ -565,6 +598,8 @@ public final class FuelUtils {
             viewPath = viewPath.replaceAll(".+/views/", ""); // NOI18N
         } else if (isViewModel(view)) {
             viewPath = viewPath.replaceAll(".+/view/", ""); // NOI18N
+        } else if (isPresenter(view)) {
+            viewPath = viewPath.replaceAll(".+/presenter/", ""); // NOI18N
         } else {
             return null;
         }
@@ -578,7 +613,7 @@ public final class FuelUtils {
      * @return action name.
      */
     public static String getInferedActionName(FileObject view) {
-        if (!isView(view) && !isViewModel(view)) {
+        if (!isView(view) && !isViewModel(view) && !isPresenter(view)) {
             return null;
         }
         return ACTION_PREFIX + view.getName();
