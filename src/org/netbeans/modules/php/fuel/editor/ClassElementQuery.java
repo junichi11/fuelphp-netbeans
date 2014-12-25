@@ -51,6 +51,7 @@ import org.netbeans.modules.editor.NbEditorUtilities;
 import org.netbeans.modules.php.editor.lexer.PHPTokenId;
 import org.netbeans.modules.php.fuel.editor.elements.AssetClassElement;
 import org.netbeans.modules.php.fuel.editor.elements.ClassElement;
+import org.netbeans.modules.php.fuel.editor.elements.PresenterClassElement;
 import org.netbeans.modules.php.fuel.editor.elements.ViewClassElement;
 import org.netbeans.modules.php.fuel.editor.elements.ViewModelClassElement;
 import org.netbeans.modules.php.fuel.util.FuelDocUtils;
@@ -119,6 +120,8 @@ public class ClassElementQuery {
                     return new ViewClassElement(method, current);
                 } else if (TokenUtilities.equals(text, "ViewModel")) { // NOI18N
                     return new ViewModelClassElement(method, current);
+                } else if (TokenUtilities.equals(text, "Presenter")) { // NOI18N
+                    return new PresenterClassElement(method, current);
                 }
             }
 

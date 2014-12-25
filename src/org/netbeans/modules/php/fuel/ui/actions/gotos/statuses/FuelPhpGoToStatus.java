@@ -144,6 +144,7 @@ public abstract class FuelPhpGoToStatus {
         items.addAll(getModels());
         items.addAll(getViews());
         items.addAll(getViewModels());
+        items.addAll(getPresenters());
         items.addAll(getTests());
         return items;
     }
@@ -194,6 +195,15 @@ public abstract class FuelPhpGoToStatus {
     }
 
     /**
+     * Get GoToItems for presenter.
+     *
+     * @return GoToItems if it is not empty, otherwise empty list.
+     */
+    public List<GoToItem> getPresenters() {
+        return Collections.emptyList();
+    }
+
+    /**
      * Get GoToItems for test.
      *
      * @return GoToItems if it is not empty, otherwise empty list.
@@ -217,6 +227,9 @@ public abstract class FuelPhpGoToStatus {
                 break;
             case VIEW_MODEL:
                 index = path.indexOf("/view/"); // NOI18N
+                break;
+            case PRESENTER:
+                index = path.indexOf("/presenter/"); // NOI18N
                 break;
             default:
                 // do nothing
@@ -263,6 +276,15 @@ public abstract class FuelPhpGoToStatus {
      */
     public List<GoToItem> getAllViewModels() {
         return getGoToItems(FILE_TYPE.VIEW_MODEL);
+    }
+
+    /**
+     * Get presenter items.
+     *
+     * @return
+     */
+    public List<GoToItem> getAllPresenters() {
+        return getGoToItems(FILE_TYPE.PRESENTER);
     }
 
     /**
@@ -337,7 +359,7 @@ public abstract class FuelPhpGoToStatus {
      * @return
      */
     protected List<GoToItem> getControllers(FILE_TYPE fileType) {
-        if (fileType != FILE_TYPE.VIEW && fileType != FILE_TYPE.VIEW_MODEL) {
+        if (fileType != FILE_TYPE.VIEW && fileType != FILE_TYPE.VIEW_MODEL && fileType != FILE_TYPE.PRESENTER) {
             return Collections.emptyList();
         }
         FileObject view = getCurrentFile();
