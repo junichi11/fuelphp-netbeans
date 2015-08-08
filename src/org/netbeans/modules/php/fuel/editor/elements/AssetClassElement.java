@@ -65,12 +65,17 @@ public class AssetClassElement extends ClassElement {
     @Override
     public FileObject getBaseDirectory(PhpModule phpModule) {
         FileObject baseDirectory = null;
-        if (method.equals("img")) { // NOI18N
-            baseDirectory = FuelUtils.getAssetsImgDirectory(phpModule);
-        } else if (method.equals("js")) { // NOI18N
-            baseDirectory = FuelUtils.getAssetsJsDirectory(phpModule);
-        } else if (method.equals("css")) { // NOI18N
-            baseDirectory = FuelUtils.getAssetsCssDirectory(phpModule);
+        switch (method) {
+            case "img": // NOI18N
+                baseDirectory = FuelUtils.getAssetsImgDirectory(phpModule);
+                break;
+            case "js": // NOI18N
+                baseDirectory = FuelUtils.getAssetsJsDirectory(phpModule);
+                break;
+            case "css": // NOI18N
+                baseDirectory = FuelUtils.getAssetsCssDirectory(phpModule);
+                break;
+            default:
         }
         return baseDirectory;
     }

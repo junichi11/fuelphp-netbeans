@@ -83,7 +83,7 @@ public class PHPUnitTestInitAction extends BaseAction {
     private static final String CONFIG_NET_BEANS_SUITE_PHP = CONFIG_PATH + NET_BEANS_SUITE_PHP;
     private static final String PHPUNIT = "phpunit"; // NOI18N
     private static final String PHPUNIT_PHP = PHPUNIT + ".php"; // NOI18N
-    private static final Map<String, String> messages = new HashMap<>();
+    private static final Map<String, String> MESSAGES = new HashMap<>();
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "fail";
     private static final String BOOTSTRAP = "bootstrap"; // NOI18N
@@ -138,10 +138,10 @@ public class PHPUnitTestInitAction extends BaseAction {
 
         setPhpProjectProperties(phpModule);
         StringBuilder notifyMessage = new StringBuilder();
-        for (String key : messages.keySet()) {
+        for (String key : MESSAGES.keySet()) {
             notifyMessage.append(key);
             notifyMessage.append(":"); // NOI18N
-            notifyMessage.append(messages.get(key));
+            notifyMessage.append(MESSAGES.get(key));
             notifyMessage.append(" \n"); // NOI18N
         }
         NotificationDisplayer.getDefault().notify(getFullName(), ImageUtilities.loadImageIcon(FuelPhp.FUEL_ICON_16, true), notifyMessage.toString(), null);
@@ -175,9 +175,9 @@ public class PHPUnitTestInitAction extends BaseAction {
                         pw.println(line);
                     }
                 }
-                messages.put(BOOTSTRAP, SUCCESS_MSG);
+                MESSAGES.put(BOOTSTRAP, SUCCESS_MSG);
             } catch (IOException ex) {
-                messages.put(BOOTSTRAP, FAIL_MSG);
+                MESSAGES.put(BOOTSTRAP, FAIL_MSG);
             } finally {
                 if (outputStream != null) {
                     try {
@@ -208,10 +208,10 @@ public class PHPUnitTestInitAction extends BaseAction {
         FileObject suite = FileUtil.getConfigFile(CONFIG_NET_BEANS_SUITE_PHP);
         try {
             suite.copy(nbproject, NET_BEANS_SUITE, "php"); // NOI18N
-            messages.put(NET_BEANS_SUITE, SUCCESS_MSG);
+            MESSAGES.put(NET_BEANS_SUITE, SUCCESS_MSG);
         } catch (IOException ex) {
             LOGGER.log(Level.WARNING, null, ex);
-            messages.put(NET_BEANS_SUITE, FAIL_MSG);
+            MESSAGES.put(NET_BEANS_SUITE, FAIL_MSG);
         }
     }
 
@@ -225,7 +225,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         String scriptFileName = getScriptFileName();
         String phpUnit = getPHPUnitPath();
         if (phpUnit == null || phpUnit.isEmpty()) {
-            messages.put(PHPUNIT, FAIL_MSG + "(isn't set phpunit option)");
+            MESSAGES.put(PHPUNIT, FAIL_MSG + "(isn't set phpunit option)");
             return;
         }
         FileObject phpUnitScript = nbproject.getFileObject(scriptFileName);
@@ -245,9 +245,9 @@ public class PHPUnitTestInitAction extends BaseAction {
             } finally {
                 pw.close();
             }
-            messages.put(PHPUNIT, SUCCESS_MSG);
+            MESSAGES.put(PHPUNIT, SUCCESS_MSG);
         } catch (IOException ex) {
-            messages.put(PHPUNIT, FAIL_MSG);
+            MESSAGES.put(PHPUNIT, FAIL_MSG);
         }
         FileObject createdFile = nbproject.getFileObject(scriptFileName);
         FileUtil.toFile(createdFile).setExecutable(true);

@@ -51,7 +51,7 @@ import java.util.zip.ZipEntry;
  */
 public class FuelZipEntryFilter implements ZipEntryFilter {
 
-    private Set<String> topDirectories = new HashSet<>();
+    private final Set<String> topDirectories = new HashSet<>();
 
     public FuelZipEntryFilter() {
         topDirectories.add("docs"); // NOI18N

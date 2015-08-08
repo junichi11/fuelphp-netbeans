@@ -142,7 +142,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
         if (getPanel().getUnzipRadioButton().isSelected()) {
 
             Map<String, String> downloadsMap = getPanel().getDownloadsMap();
-            String url = downloadsMap.get(getPanel().getVersionList().getSelectedValue().toString());
+            String url = downloadsMap.get(getPanel().getVersionList().getSelectedValue());
             UrlZipper zipper = new UrlZipper(url, sourceDirectory, new FuelZipEntryFilter());
             try {
                 zipper.unzip();
@@ -186,9 +186,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
                 submoduleProcess.waitFor();
                 getPanel().setGitCommandLabel("Complete"); // NOI18N
 
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (InterruptedException | IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
