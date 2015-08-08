@@ -63,8 +63,8 @@ import org.openide.filesystems.FileObject;
  */
 public class ClassElementQuery {
 
-    private static final Set<String> assetMethods = new HashSet<String>();
-    private static final Set<String> viewMethods = new HashSet<String>();
+    private static final Set<String> assetMethods = new HashSet<>();
+    private static final Set<String> viewMethods = new HashSet<>();
 
     static {
         // Asset

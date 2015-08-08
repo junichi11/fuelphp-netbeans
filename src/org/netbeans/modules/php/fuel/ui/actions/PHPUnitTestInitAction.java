@@ -82,13 +82,13 @@ public class PHPUnitTestInitAction extends BaseAction {
     private static final String CONFIG_NET_BEANS_SUITE_PHP = CONFIG_PATH + NET_BEANS_SUITE_PHP;
     private static final String PHPUNIT = "phpunit"; // NOI18N
     private static final String PHPUNIT_PHP = PHPUNIT + ".php"; // NOI18N
-    private static final Map<String, String> messages = new HashMap<String, String>();
+    private static final Map<String, String> messages = new HashMap<>();
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "fail";
     private static final String BOOTSTRAP = "bootstrap"; // NOI18N
     private static final String UTF8 = "UTF-8"; // NOI18N
     private FileObject coreDirectory;
-    private final List<String> serverSettings = new ArrayList<String>();
+    private final List<String> serverSettings = new ArrayList<>();
 
     static {
     }

@@ -68,12 +68,12 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
     private static final String VIEW_CLASS = "View"; // NOI18N
     private static final String VIEW_MODEL_CLASS = "ViewModel"; // NOI18N
     private static final String PRESENTER_CLASS = "Presenter"; // NOI18N
-    private final Set<String> viewPath = new HashSet<String>();
-    private final Set<String> allViewPath = new HashSet<String>();
-    private final Set<String> viewModelPath = new HashSet<String>();
-    private final Set<String> allViewModelPath = new HashSet<String>();
-    private final Set<String> presenterPath = new HashSet<String>();
-    private final Set<String> allPresenterPath = new HashSet<String>();
+    private final Set<String> viewPath = new HashSet<>();
+    private final Set<String> allViewPath = new HashSet<>();
+    private final Set<String> viewModelPath = new HashSet<>();
+    private final Set<String> allViewModelPath = new HashSet<>();
+    private final Set<String> presenterPath = new HashSet<>();
+    private final Set<String> allPresenterPath = new HashSet<>();
     private String actionName = ""; // NOI18N
     private String methodName = null;
 

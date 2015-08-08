@@ -94,7 +94,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     }
 
     private void setAvailableNodes() {
-        DefaultListModel<String> defaultListModel = new DefaultListModel<String>();
+        DefaultListModel<String> defaultListModel = new DefaultListModel<>();
         for (String node : FuelPhp.CUSTOM_NODES) {
             defaultListModel.addElement(node);
         }
@@ -254,7 +254,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     }
 
     private List<String> getBranches() {
-        List<String> branches = new ArrayList<String>();
+        List<String> branches = new ArrayList<>();
         isNetworkError = false;
         try {
             // Get JSON
@@ -267,7 +267,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
             }
 
             JSONArray json = new JSONArray(contents.toString());
-            branches = new ArrayList<String>(json.length());
+            branches = new ArrayList<>(json.length());
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jObject = (JSONObject) json.get(i);
                 branches.add(jObject.getString("name")); // NOI18N

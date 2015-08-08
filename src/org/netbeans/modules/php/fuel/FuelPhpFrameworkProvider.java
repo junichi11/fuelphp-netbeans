@@ -83,7 +83,7 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     private static final FuelPhpFrameworkProvider INSTANCE = new FuelPhpFrameworkProvider();
     private static final String ICON_PATH = "org/netbeans/modules/php/fuel/resources/fuel_badge_8.png"; // NOI18N
     private final BadgeIcon badgeIcon;
-    private final Map<PhpModule, FileObject> fuelDirectory = new HashMap<PhpModule, FileObject>();
+    private final Map<PhpModule, FileObject> fuelDirectory = new HashMap<>();
 
     @PhpFrameworkProvider.Registration(position = 700)
     public static FuelPhpFrameworkProvider getInstance() {

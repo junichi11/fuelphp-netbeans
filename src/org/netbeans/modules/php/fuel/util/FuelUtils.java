@@ -644,7 +644,7 @@ public final class FuelUtils {
             }
             if ((o1.isFolder() && o2.isFolder())
                     || (o1.isData() && o2.isData())) {
-                List<String> list = new ArrayList<String>();
+                List<String> list = new ArrayList<>();
                 String name1 = o1.getName();
                 String name2 = o2.getName();
 

@@ -197,7 +197,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
         update(pm);
 
         // set open file
-        Set<FileObject> files = new HashSet<FileObject>();
+        Set<FileObject> files = new HashSet<>();
         FileObject config = sourceDirectory.getFileObject(CONFIG_PHP);
 
         // use default config

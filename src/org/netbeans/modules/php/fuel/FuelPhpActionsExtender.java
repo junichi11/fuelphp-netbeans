@@ -67,7 +67,7 @@ public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
 
     @Override
     public List<? extends Action> getActions() {
-        ArrayList<Action> actions = new ArrayList<Action>();
+        ArrayList<Action> actions = new ArrayList<>();
         actions.add(CreateAutoCompletionFileAction.getInstance());
         actions.add(PHPUnitTestInitAction.getInstance());
         actions.add(FuelPhpOilGenerateAction.getInstance());
