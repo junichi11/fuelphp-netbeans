@@ -52,7 +52,7 @@ import org.netbeans.modules.php.api.phpmodule.PhpModule;
 class FuelPhpModuleFactory {
 
     private static final FuelPhpModuleFactory INSTANCE = new FuelPhpModuleFactory();
-    private final Map<PhpModule, FuelPhpModule> modules = new HashMap<PhpModule, FuelPhpModule>();
+    private final Map<PhpModule, FuelPhpModule> modules = new HashMap<>();
 
     private FuelPhpModuleFactory() {
     }

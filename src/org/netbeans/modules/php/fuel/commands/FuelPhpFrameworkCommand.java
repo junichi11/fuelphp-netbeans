@@ -59,21 +59,21 @@ public class FuelPhpFrameworkCommand extends FrameworkCommand {
     public FuelPhpFrameworkCommand(PhpModule phpModule, String command, String description, String displayName) {
         super(command, description, displayName);
         assert phpModule != null;
-        this.phpModule = new WeakReference<PhpModule>(phpModule);
+        this.phpModule = new WeakReference<>(phpModule);
         existsHelp = true;
     }
 
     public FuelPhpFrameworkCommand(PhpModule phpModule, String[] commands, String description, String displayName) {
         super(commands, description, displayName);
         assert phpModule != null;
-        this.phpModule = new WeakReference<PhpModule>(phpModule);
+        this.phpModule = new WeakReference<>(phpModule);
         existsHelp = true;
     }
 
     public FuelPhpFrameworkCommand(PhpModule phpModule, String[] commands, String description, String displayName, boolean help) {
         super(commands, description, displayName);
         assert phpModule != null;
-        this.phpModule = new WeakReference<PhpModule>(phpModule);
+        this.phpModule = new WeakReference<>(phpModule);
         existsHelp = help;
     }
 

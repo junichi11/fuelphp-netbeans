@@ -113,14 +113,14 @@ public class UrlZipper {
                 }
             }
 
-            // write data
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(unzipFile));
-            int data;
-            while ((data = zipInputStream.read()) != -1) {
-                outputStream.write(data);
+            try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(unzipFile))) {
+                // write data
+                int data;
+                while ((data = zipInputStream.read()) != -1) {
+                    outputStream.write(data);
+                }
+                zipInputStream.closeEntry();
             }
-            zipInputStream.closeEntry();
-            outputStream.close();
         }
     }
 }

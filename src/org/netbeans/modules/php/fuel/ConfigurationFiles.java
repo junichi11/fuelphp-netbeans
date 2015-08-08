@@ -45,7 +45,7 @@ public final class ConfigurationFiles extends FileChangeAdapter implements Impor
         if (sourceDir == null) {
             return Collections.emptyList();
         }
-        List<FileInfo> files = new ArrayList<FileInfo>();
+        List<FileInfo> files = new ArrayList<>();
         String configPath = FuelPhpPreferences.getFuelName(phpModule) + "/app/config"; // NOI18N
         FileObject config = sourceDir.getFileObject(configPath);
         if (config != null) {

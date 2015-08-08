@@ -81,8 +81,8 @@ public class FuelDownloads {
     }
 
     private void initDownloads() {
-        DOWNLOADS_MAP = new HashMap<String, String>();
-        DOWNLOAD_VERSIONS = new ArrayList<String>();
+        DOWNLOADS_MAP = new HashMap<>();
+        DOWNLOAD_VERSIONS = new ArrayList<>();
         try {
             Document doc = Jsoup.connect(DL_URL).get();
             Elements downloads = doc.select("#downloads tr"); // NOI18N

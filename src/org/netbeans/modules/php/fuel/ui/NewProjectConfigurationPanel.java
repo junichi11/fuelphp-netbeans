@@ -60,7 +60,7 @@ import org.openide.util.Exceptions;
 public class NewProjectConfigurationPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 7874450246517944114L;
-    private final Map<String, String> downloadsMap = new HashMap<String, String>();
+    private final Map<String, String> downloadsMap = new HashMap<>();
     private String errorMessage = null; // NOI18N
 
     /**

@@ -146,18 +146,19 @@ public final class FuelUtils {
         FileObject nbprojectDirectory = projectDirectory.getFileObject(NBPROJECT_DIR_NAME);
         FileObject autoCompletionFile = FileUtil.getConfigFile(FUEL_AUTOCOMPLETION_PHP);
 
-        if (nbprojectDirectory.getFileObject(autoCompletionFile.getNameExt()) != null) {
-            // already exists
-            return;
-        }
-
         if (nbprojectDirectory != null && autoCompletionFile != null) {
+            if (nbprojectDirectory.getFileObject(autoCompletionFile.getNameExt()) != null) {
+                // already exists
+                return;
+            }
+
             try {
                 autoCompletionFile.copy(nbprojectDirectory, autoCompletionFile.getName(), autoCompletionFile.getExt());
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
+        // XXX add log?
     }
 
     public static void createAutoCompletionFile(PhpModule phpModule, boolean useTestCaseMethod) throws Exception {
@@ -644,7 +645,7 @@ public final class FuelUtils {
             }
             if ((o1.isFolder() && o2.isFolder())
                     || (o1.isData() && o2.isData())) {
-                List<String> list = new ArrayList<String>();
+                List<String> list = new ArrayList<>();
                 String name1 = o1.getName();
                 String name2 = o2.getName();
 

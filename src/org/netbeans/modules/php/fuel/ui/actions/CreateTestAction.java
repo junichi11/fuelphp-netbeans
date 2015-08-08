@@ -142,29 +142,23 @@ public final class CreateTestAction extends BaseAction {
         String prefix = FuelPhpPreferences.getTestCasePrefix(phpModule);
         String suffix = FuelPhpPreferences.getTestCaseSuffix(phpModule);
         try {
-            OutputStream outuptStream = targetTestDirectory.createAndOpen(testFileName);
-            try {
-                PrintWriter pw = new PrintWriter(new OutputStreamWriter(outuptStream, encoding));
-                try {
-                    pw.println("<?php"); //NOI18N
-                    pw.println("/**"); //NOI18N
-                    String group = " * @group " + FuelPhpPreferences.getTestGroupAnnotation(phpModule); //NOI18N
-                    pw.println(group);
-                    pw.println(" */"); //NOI18N
-                    pw.format("class %s%s%s extends TestCase", prefix, className, suffix); //NOI18N
-                    pw.flush();
-                    pw.println();
-                    pw.println("{"); //NOI18N
-                    for (Method method : methods) {
-                        pw.format("\tpublic function test_%s()\n\t{\n\t}\n\n", method.getName()); //NOI18N
-                    }
-                    pw.flush();
-                    pw.println("}"); //NOI18N
-                } finally {
-                    pw.close();
+            try (OutputStream outuptStream = targetTestDirectory.createAndOpen(testFileName);
+                    PrintWriter pw = new PrintWriter(new OutputStreamWriter(outuptStream, encoding))) {
+                pw.println("<?php"); //NOI18N
+                pw.println("/**"); //NOI18N
+                String group = " * @group " + FuelPhpPreferences.getTestGroupAnnotation(phpModule); //NOI18N
+
+                pw.println(group);
+                pw.println(" */"); //NOI18N
+                pw.format("class %s%s%s extends TestCase", prefix, className, suffix); //NOI18N
+                pw.flush();
+                pw.println();
+                pw.println("{"); //NOI18N
+                for (Method method : methods) {
+                    pw.format("\tpublic function test_%s()\n\t{\n\t}\n\n", method.getName()); //NOI18N
                 }
-            } finally {
-                outuptStream.close();
+                pw.flush();
+                pw.println("}"); //NOI18N
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);

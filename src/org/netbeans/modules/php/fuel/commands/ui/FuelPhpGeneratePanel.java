@@ -122,7 +122,7 @@ public class FuelPhpGeneratePanel extends JPanel {
     public FuelPhpGeneratePanel(PhpModule phpModule) {
         this.phpModule = phpModule;
         initComponents();
-        JComboBox<String> combo = new JComboBox<String>(MODEL_TYPES);
+        JComboBox<String> combo = new JComboBox<>(MODEL_TYPES);
         DefaultCellEditor cellEditor = new DefaultCellEditor(combo);
         modelTable.getColumn("Type").setCellEditor(cellEditor); // NOI18N
         migrationTable.getColumn("Type").setCellEditor(cellEditor); // NOI18N
@@ -138,7 +138,7 @@ public class FuelPhpGeneratePanel extends JPanel {
     public List<String> getParameters() {
         // get current tab
         Component selectedComponent = generateTabbedPane.getSelectedComponent();
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         params.addAll(DEFAUL_PARAMS);
         if (selectedComponent == null) {
             return params;
@@ -179,7 +179,7 @@ public class FuelPhpGeneratePanel extends JPanel {
     }
 
     private List<String> getOthers(JTextField jtf) {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         String others = jtf.getText();
         if (!StringUtils.isEmpty(others)) {
             others = others.trim().replaceAll(" +", " "); // NOI18N
@@ -250,7 +250,7 @@ public class FuelPhpGeneratePanel extends JPanel {
             coreControllerDirectory = coreDirectory.getFileObject("classes/controller"); // NOI18N
         }
 
-        List<FileObject> controllers = new LinkedList<FileObject>();
+        List<FileObject> controllers = new LinkedList<>();
 
         // core
         if (coreControllerDirectory != null) {
@@ -1667,7 +1667,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      * @return parameters
      */
     private List<String> getControllerParameters() {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         // name
         String name = controllerNameTextField.getText().trim();
         if (StringUtils.isEmpty(name)) {
@@ -1717,7 +1717,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      * @return
      */
     private List<String> getModelParameters() {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         // name
         String name = modelNameTextField.getText().trim();
         if (StringUtils.isEmpty(name)) {
@@ -1795,7 +1795,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      * @return config parameters
      */
     private List<String> getConfigParameters() {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         String name = configNameTextField.getText().trim();
         if (StringUtils.isEmpty(name)) {
             return params;
@@ -1836,7 +1836,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      * @return views parameters
      */
     private List<String> getViewsParameters() {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         // controller name
         String name = (String) viewsControllerNameComboBox.getSelectedItem();
         if (StringUtils.isEmpty(name)) {
@@ -1868,7 +1868,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      * @return task parameters
      */
     private List<String> getTaskParameters() {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         // name
         String name = taskNameTextField.getText().trim();
         if (StringUtils.isEmpty(name)) {
@@ -1895,7 +1895,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      * @return
      */
     private List<String> getMigrationParameters() {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         String subCommand = ""; // NOI18N
         String migrationName = migrationNameTextField.getText().trim();
         String tableName = migrationTableNameTextField.getText().trim();
@@ -1961,7 +1961,7 @@ public class FuelPhpGeneratePanel extends JPanel {
      * @return
      */
     private List<String> getModelTableParameters(JTable table) {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
         int rowCount = table.getRowCount();
         for (int i = 0; i < rowCount; i++) {
             StringBuilder sb = new StringBuilder();
