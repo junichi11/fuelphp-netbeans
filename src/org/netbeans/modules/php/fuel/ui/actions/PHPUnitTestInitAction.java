@@ -61,6 +61,7 @@ import org.netbeans.modules.php.spi.framework.actions.BaseAction;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -155,7 +156,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         FileObject bootstrapPhpunit = coreDirectory.getFileObject(BOOTSTRAP_PHPUNIT);
         FileObject bootstrapMakegood = coreDirectory.getFileObject(BOOTSTRAP_MAKEGOOD);
         if (bootstrapPhpunit != null) {
-            OutputStream outputStream;
+            OutputStream outputStream = null;
             try {
                 if (bootstrapMakegood == null) {
                     outputStream = coreDirectory.createAndOpen(BOOTSTRAP_MAKEGOOD);
@@ -163,20 +164,28 @@ public class PHPUnitTestInitAction extends BaseAction {
                     outputStream = bootstrapMakegood.getOutputStream();
                 }
                 List<String> lines = bootstrapPhpunit.asLines();
-                PrintWriter pw = new PrintWriter(outputStream);
-                for (String line : lines) {
-                    if (line.startsWith("$app_path")) { // NOI18N
-                        for (String str : serverSettings) {
-                            pw.println(str);
+                try (PrintWriter pw = new PrintWriter(outputStream)) {
+                    for (String line : lines) {
+                        if (line.startsWith("$app_path")) { // NOI18N
+                            for (String str : serverSettings) {
+                                pw.println(str);
+                            }
+                            serverSettings.clear();
                         }
-                        serverSettings.clear();
+                        pw.println(line);
                     }
-                    pw.println(line);
                 }
-                pw.close();
                 messages.put(BOOTSTRAP, SUCCESS_MSG);
             } catch (IOException ex) {
                 messages.put(BOOTSTRAP, FAIL_MSG);
+            } finally {
+                if (outputStream != null) {
+                    try {
+                        outputStream.close();
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
             }
         }
     }
