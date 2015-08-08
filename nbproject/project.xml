@@ -15,6 +15,15 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.netbeans.api.annotations.common</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.25.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.netbeans.modules.csl.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -75,6 +84,15 @@
                     <run-dependency>
                         <release-version>2</release-version>
                         <specification-version>1.36.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.netbeans.modules.extexecution.base</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>2</release-version>
+                        <specification-version>1.1.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -184,6 +202,15 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.netbeans.modules.projectuiapi.base</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.82.1.9</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.actions</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -261,6 +288,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>8.11.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.util.ui</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.3.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

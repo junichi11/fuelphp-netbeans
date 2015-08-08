@@ -44,10 +44,7 @@ package org.netbeans.modules.php.fuel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.netbeans.modules.php.api.framework.BadgeIcon;
@@ -66,12 +63,12 @@ import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleExtender;
 import org.netbeans.modules.php.spi.framework.PhpModuleIgnoredFilesExtender;
 import org.netbeans.modules.php.spi.framework.commands.FrameworkCommandSupport;
+import org.netbeans.modules.php.spi.phpmodule.ImportantFilesImplementation;
 import org.openide.awt.Notification;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -146,30 +143,8 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     }
 
     @Override
-    public File[] getConfigurationFiles(PhpModule pm) {
-        List<File> files = new LinkedList<File>();
-        FileObject sourceDirectory = pm.getSourceDirectory();
-        FileObject config = null;
-        if (sourceDirectory != null) {
-            String configPath = FuelPhpPreferences.getFuelName(pm) + "/app/config"; // NOI18N
-            config = sourceDirectory.getFileObject(configPath);
-        }
-        if (config != null) {
-            FileObject[] children = config.getChildren();
-            for (FileObject child : children) {
-                if (!child.isFolder()) {
-                    files.add(FileUtil.toFile(child));
-                } else {
-                    for (FileObject c : child.getChildren()) {
-                        if (!c.isFolder()) {
-                            files.add(FileUtil.toFile(c));
-                        }
-                    }
-                }
-            }
-        }
-
-        return files.toArray(new File[files.size()]);
+    public ImportantFilesImplementation getConfigurationFiles2(PhpModule pm) {
+        return new ConfigurationFiles(pm);
     }
 
     @Override
