@@ -44,6 +44,7 @@ package org.netbeans.modules.php.fuel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -83,17 +84,21 @@ public class FuelPhpFrameworkProvider extends PhpFrameworkProvider {
     private static final FuelPhpFrameworkProvider INSTANCE = new FuelPhpFrameworkProvider();
     private static final String ICON_PATH = "org/netbeans/modules/php/fuel/resources/fuel_badge_8.png"; // NOI18N
     private final BadgeIcon badgeIcon;
-    private final Map<PhpModule, FileObject> fuelDirectory = new HashMap<>();
+    private final Map<PhpModule, FileObject> fuelDirectory = Collections.synchronizedMap(new HashMap<PhpModule, FileObject>());
 
     @PhpFrameworkProvider.Registration(position = 700)
     public static FuelPhpFrameworkProvider getInstance() {
         return INSTANCE;
     }
 
+    @NbBundle.Messages({
+        "LBL_FrameworkName=FuelPHP PHP Web Framework",
+        "LBL_FrameworkDescription=FuelPHP PHP Web Framework"
+    })
     private FuelPhpFrameworkProvider() {
         super("fuelphp", // NOI18N
-                NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkName"),
-                NbBundle.getMessage(FuelPhpFrameworkProvider.class, "LBL_FrameworkDescription"));
+                Bundle.LBL_FrameworkName(),
+                Bundle.LBL_FrameworkDescription());
         badgeIcon = new BadgeIcon(
                 ImageUtilities.loadImage(ICON_PATH),
                 FuelPhpFrameworkProvider.class.getResource("/" + ICON_PATH)); // NOI18N
