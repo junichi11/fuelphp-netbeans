@@ -48,6 +48,7 @@ import org.netbeans.api.lexer.Token;
 import org.netbeans.api.lexer.TokenSequence;
 import org.netbeans.modules.editor.NbEditorUtilities;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.api.util.FileUtils;
 import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.editor.lexer.PHPTokenId;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
@@ -66,7 +67,7 @@ import org.openide.filesystems.FileObject;
  *
  * @author junichi11
  */
-@MimeRegistration(mimeType = "text/x-php5", service = CompletionProvider.class)
+@MimeRegistration(mimeType = FileUtils.PHP_MIME_TYPE, service = CompletionProvider.class)
 public class ViewCompletionProvider extends FuelPhpCompletionProvider {
 
     private static final String SLASH = "/"; //NOI18N

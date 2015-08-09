@@ -92,18 +92,18 @@ public class FuelPhpGeneratePanel extends JPanel {
     private static final String MIGRATION_DELETE_FIELD_FORMAT = "delete_%s_from_%s"; // NOI18N
     private static final List<String> DEFAUL_PARAMS = Arrays.asList(GENERATE_COMMAND);
     private static final String[] MODEL_TYPES = {
-        "blob",
-        "date",
-        "datetime",
-        "decimal",
-        "enum",
-        "float",
-        "int",
-        "string",
-        "text",
-        "time",
-        "timestamp",
-        "varchar"};
+        "blob", // NOI18N
+        "date", // NOI18N
+        "datetime", // NOI18N
+        "decimal", // NOI18N
+        "enum", // NOI18N
+        "float", // NOI18N
+        "int", // NOI18N
+        "string", // NOI18N
+        "text", // NOI18N
+        "time", // NOI18N
+        "timestamp", // NOI18N
+        "varchar"}; // NOI18N
     // model table
     private static final int MODEL_FIELD_NAME = 0;
     private static final int MODEL_FIELD_TYPE = 1;

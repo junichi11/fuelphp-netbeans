@@ -74,7 +74,7 @@ public class FuelPhpOilGenerateAction extends BaseAction {
 
     @Override
     protected String getFullName() {
-        return NbBundle.getMessage(FuelPhpOilGenerateAction.class, "LBL_FuelPhpAction", getPureName());
+        return Bundle.LBL_FuelPhpAction(getPureName());
     }
 
     @NbBundle.Messages("LBL.FuelPhpOilGenerateAction.name=Generate")

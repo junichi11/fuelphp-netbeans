@@ -51,7 +51,7 @@ import org.netbeans.modules.php.editor.lexer.PHPTokenId;
  *
  * @author junichi11
  */
-public class FuelDocUtils {
+public final class FuelDocUtils {
 
     private FuelDocUtils() {
     }

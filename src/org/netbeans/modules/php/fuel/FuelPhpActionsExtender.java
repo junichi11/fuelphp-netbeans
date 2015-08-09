@@ -81,8 +81,9 @@ public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
     }
 
     @Override
+    @NbBundle.Messages("LBL_MenuName=FuelPHP")
     public String getMenuName() {
-        return NbBundle.getMessage(FuelPhpActionsExtender.class, "LBL_MenuName"); // NOI18N
+        return Bundle.LBL_MenuName(); // NOI18N
     }
 
     @Override

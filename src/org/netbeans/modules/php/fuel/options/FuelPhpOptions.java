@@ -94,7 +94,7 @@ import org.openide.util.NbPreferences;
 public class FuelPhpOptions {
 
     private static final FuelPhpOptions INSTANCE = new FuelPhpOptions();
-    private static final String NOTIFY_AUTODETECTION = "notify.autodetection";
+    private static final String NOTIFY_AUTODETECTION = "notify.autodetection"; // NOI18N
     private static final String PREFERENCES_PATH = "fuelphp"; // NOI18N
     private static final String GIT_BRANCH_NAME = "git.branch.name"; // NOI18N
     private static final String DEFAULT_CONFIG = "default.config"; // NOI18N

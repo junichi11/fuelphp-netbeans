@@ -63,7 +63,7 @@ import org.jsoup.select.Elements;
 public class FuelDownloads {
 
     private static final Logger LOGGER = Logger.getLogger(FuelDownloads.class.getName());
-    private static final String DL_URL = "http://fuelphp.com/downloads";
+    private static final String DL_URL = "http://fuelphp.com/downloads"; // NOI18N
     private static final String DL_URL_PREFIX = "http://fuelphp.com/files/download/"; // NOI18N
     private Map<String, String> DOWNLOADS_MAP;
     private List<String> DOWNLOAD_VERSIONS;
@@ -101,7 +101,7 @@ public class FuelDownloads {
 
             }
         } catch (IOException ex) {
-            LOGGER.log(Level.WARNING, "Can't connect to " + DL_URL, ex);
+            LOGGER.log(Level.WARNING, "Can't connect to " + DL_URL, ex); // NOI18N
         }
     }
 

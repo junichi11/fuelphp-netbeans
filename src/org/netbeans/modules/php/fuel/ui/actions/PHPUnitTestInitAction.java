@@ -84,8 +84,8 @@ public class PHPUnitTestInitAction extends BaseAction {
     private static final String PHPUNIT = "phpunit"; // NOI18N
     private static final String PHPUNIT_PHP = PHPUNIT + ".php"; // NOI18N
     private static final Map<String, String> MESSAGES = new HashMap<>();
-    private static final String SUCCESS_MSG = "success";
-    private static final String FAIL_MSG = "fail";
+    private static final String SUCCESS_MSG = "success"; // NOI18N
+    private static final String FAIL_MSG = "fail"; // NOI18N
     private static final String BOOTSTRAP = "bootstrap"; // NOI18N
     private static final String UTF8 = "UTF-8"; // NOI18N
     private FileObject coreDirectory;
@@ -103,12 +103,13 @@ public class PHPUnitTestInitAction extends BaseAction {
 
     @Override
     protected String getFullName() {
-        return NbBundle.getMessage(PHPUnitTestInitAction.class, "LBL_FuelPhpAction", getPureName()); // NOI18N
+        return Bundle.LBL_FuelPhpAction(getPureName());
     }
 
     @Override
+    @NbBundle.Messages("LBL_PHPUnitTestInit=PHPUnit Test Init")
     protected String getPureName() {
-        return NbBundle.getMessage(PHPUnitTestInitAction.class, "LBL_PHPUnitTestInit"); // NOI18N
+        return Bundle.LBL_PHPUnitTestInit();
     }
 
     @Override
@@ -225,7 +226,7 @@ public class PHPUnitTestInitAction extends BaseAction {
         String scriptFileName = getScriptFileName();
         String phpUnit = getPHPUnitPath();
         if (phpUnit == null || phpUnit.isEmpty()) {
-            MESSAGES.put(PHPUNIT, FAIL_MSG + "(isn't set phpunit option)");
+            MESSAGES.put(PHPUNIT, FAIL_MSG + "(isn't set phpunit option)"); // NOI18N
             return;
         }
         FileObject phpUnitScript = nbproject.getFileObject(scriptFileName);

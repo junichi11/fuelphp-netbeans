@@ -216,7 +216,7 @@ public abstract class FuelPhpGoToStatus {
         }
         FILE_TYPE fileType = fuelModule.getFileType(currentFile);
         String path = currentFile.getPath();
-        String relativePath = "";
+        String relativePath = ""; // NOI18N
         int index = 0;
         switch (fileType) {
             case CONTROLLER:

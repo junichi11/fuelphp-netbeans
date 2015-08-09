@@ -91,7 +91,7 @@ public class FuelPhpGoToHyperlinkProvider extends FuelPhpHyperlinkProviderExt {
         Token<PHPTokenId> token = ts.token();
         PHPTokenId id = token.id();
         String text = token.text().toString();
-        if (id != PHPTokenId.PHP_CONSTANT_ENCAPSED_STRING || text.equals("")) {
+        if (id != PHPTokenId.PHP_CONSTANT_ENCAPSED_STRING || text.equals("")) { // NOI18N
             return false;
         }
 

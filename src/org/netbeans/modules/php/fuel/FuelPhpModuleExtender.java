@@ -82,21 +82,21 @@ import org.openide.util.NbBundle;
  */
 public class FuelPhpModuleExtender extends PhpModuleExtender {
 
-    private static final String ADD_COMMAND = "add";
-    private static final String BRANCH_MASTER_MERGE = "branch.master.merge";
-    private static final String BRANCH_MASTER_REMOTE = "branch.master.remote";
-    private static final String CONFIG_COMMAND = "config";
+    private static final String ADD_COMMAND = "add"; // NOI18N
+    private static final String BRANCH_MASTER_MERGE = "branch.master.merge"; // NOI18N
+    private static final String BRANCH_MASTER_REMOTE = "branch.master.remote"; // NOI18N
+    private static final String CONFIG_COMMAND = "config"; // NOI18N
     private static final String CONFIG_PHP = "fuel/app/config/config.php"; // NOI18N
-    private static final String GIT = "git";
-    private static final String GIT_DIR = "--git-dir=";
-    private static final String GIT_GITHUB_COM_FUEL_FUEL_GIT = "git://github.com/fuel/fuel.git";
-    private static final String GIT_REPO = "/.git";
-    private static final String INIT_COMMAND = "init";
-    private static final String ORIGIN = "origin";
-    private static final String PULL_COMMAND = "pull";
-    private static final String REFS_HEADS = "refs/heads/";
-    private static final String REMOTE_COMMAND = "remote";
-    private static final String WORK_TREE = "--work-tree=";
+    private static final String GIT = "git"; // NOI18N
+    private static final String GIT_DIR = "--git-dir="; // NOI18N
+    private static final String GIT_GITHUB_COM_FUEL_FUEL_GIT = "git://github.com/fuel/fuel.git"; // NOI18N
+    private static final String GIT_REPO = "/.git"; // NOI18N
+    private static final String INIT_COMMAND = "init"; // NOI18N
+    private static final String ORIGIN = "origin"; // NOI18N
+    private static final String PULL_COMMAND = "pull"; // NOI18N
+    private static final String REFS_HEADS = "refs/heads/"; // NOI18N
+    private static final String REMOTE_COMMAND = "remote"; // NOI18N
+    private static final String WORK_TREE = "--work-tree="; // NOI18N
     private NewProjectConfigurationPanel panel = null;
     private static final Logger LOGGER = Logger.getLogger(FuelPhpModuleExtender.class.getName());
 
@@ -209,7 +209,7 @@ public class FuelPhpModuleExtender extends PhpModuleExtender {
             // add a file to nbproject directory for auto completion
             FuelUtils.createAutoCompletionFile(pm, true);
         } catch (Exception ex) {
-            LOGGER.log(Level.WARNING, "Can't create a file for auto completion", ex);
+            LOGGER.log(Level.WARNING, "Can't create a file for auto completion", ex); // NOI18N
         }
 
         return files;

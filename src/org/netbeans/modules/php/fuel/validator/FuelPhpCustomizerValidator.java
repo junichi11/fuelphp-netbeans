@@ -104,12 +104,12 @@ public final class FuelPhpCustomizerValidator {
     public FuelPhpCustomizerValidator validateFuelDirectoryName(FileObject sourceDirectory, String path) {
         FileObject targetDirectory = sourceDirectory.getFileObject(path);
         if (targetDirectory == null) {
-            result.addWarning(new ValidationResult.Message("fuel.path", Bundle.FuelPhpCustomizerValidator_error_fuel_path_invalid()));
+            result.addWarning(new ValidationResult.Message("fuel.path", Bundle.FuelPhpCustomizerValidator_error_fuel_path_invalid())); // NOI18N
             return this;
         }
 
         if (!targetDirectory.isFolder()) {
-            result.addWarning(new ValidationResult.Message("fuel.dir", Bundle.FuelPhpCustomizerValidator_error_fuel_dir_invalid()));
+            result.addWarning(new ValidationResult.Message("fuel.dir", Bundle.FuelPhpCustomizerValidator_error_fuel_dir_invalid())); // NOI18N
         }
         return this;
     }
@@ -118,9 +118,9 @@ public final class FuelPhpCustomizerValidator {
         "FuelPhpCustomizerValidator.error.oil.script.invalid=Not found oil script."
     })
     public FuelPhpCustomizerValidator validateOilPath(FileObject sourceDirectory) {
-        FileObject targetDirectory = sourceDirectory.getFileObject("oil");
+        FileObject targetDirectory = sourceDirectory.getFileObject("oil"); // NOI18N
         if (targetDirectory == null || targetDirectory.isFolder()) {
-            result.addWarning(new ValidationResult.Message("oil.script", Bundle.FuelPhpCustomizerValidator_error_oil_script_invalid()));
+            result.addWarning(new ValidationResult.Message("oil.script", Bundle.FuelPhpCustomizerValidator_error_oil_script_invalid())); // NOI18N
         }
 
         return this;

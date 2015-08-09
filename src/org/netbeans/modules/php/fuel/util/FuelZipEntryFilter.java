@@ -51,12 +51,15 @@ import java.util.zip.ZipEntry;
  */
 public class FuelZipEntryFilter implements ZipEntryFilter {
 
-    private final Set<String> topDirectories = new HashSet<>();
+    private static final Set<String> TOP_DIRECTORIES = new HashSet<>();
+
+    static {
+        TOP_DIRECTORIES.add("docs"); // NOI18N
+        TOP_DIRECTORIES.add("fuel"); // NOI18N
+        TOP_DIRECTORIES.add("public"); // NOI18N
+    }
 
     public FuelZipEntryFilter() {
-        topDirectories.add("docs"); // NOI18N
-        topDirectories.add("fuel"); // NOI18N
-        topDirectories.add("public"); // NOI18N
     }
 
     @Override
@@ -78,7 +81,7 @@ public class FuelZipEntryFilter implements ZipEntryFilter {
         String[] splits = splitPath(name);
         String topDirectory = splits[0];
         int length = splits.length;
-        if (!topDirectories.contains(topDirectory)) {
+        if (!TOP_DIRECTORIES.contains(topDirectory)) {
             if (length != 1) {
                 name = name.replaceFirst(topDirectory + "/", ""); // NOI18N
             }

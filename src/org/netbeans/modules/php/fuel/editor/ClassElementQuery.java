@@ -63,16 +63,16 @@ import org.openide.filesystems.FileObject;
  */
 public class ClassElementQuery {
 
-    private static final Set<String> assetMethods = new HashSet<>();
-    private static final Set<String> viewMethods = new HashSet<>();
+    private static final Set<String> ASSET_METHODS = new HashSet<>();
+    private static final Set<String> VIEW_METHODS = new HashSet<>();
 
     static {
         // Asset
-        assetMethods.add("img"); // NOI18N
-        assetMethods.add("js"); // NOI18N
-        assetMethods.add("css"); // NOI18N
+        ASSET_METHODS.add("img"); // NOI18N
+        ASSET_METHODS.add("js"); // NOI18N
+        ASSET_METHODS.add("css"); // NOI18N
         // View, ViewModel
-        viewMethods.add("forge"); // NOI18N
+        VIEW_METHODS.add("forge"); // NOI18N
     }
 
     /**
@@ -109,13 +109,13 @@ public class ClassElementQuery {
                 continue;
             }
             String textString = text.toString();
-            if (assetMethods.contains(textString) || viewMethods.contains(textString)) {
+            if (ASSET_METHODS.contains(textString) || VIEW_METHODS.contains(textString)) {
                 method = textString;
                 continue;
             }
 
             // View::forge, ViewModel::forge
-            if (viewMethods.contains(method)) {
+            if (VIEW_METHODS.contains(method)) {
                 if (TokenUtilities.equals(text, "View")) { // NOI18N
                     return new ViewClassElement(method, current);
                 } else if (TokenUtilities.equals(text, "ViewModel")) { // NOI18N
@@ -126,7 +126,7 @@ public class ClassElementQuery {
             }
 
             // Asset::js, Asset::css, Asset::img
-            if (assetMethods.contains(method)) {
+            if (ASSET_METHODS.contains(method)) {
                 if (TokenUtilities.equals(text, "Asset")) { // NOI18N
                     return new AssetClassElement(method, current);
                 }
