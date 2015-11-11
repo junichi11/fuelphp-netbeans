@@ -77,7 +77,7 @@ public final class FuelPhpSaveAsDefaultConfigAction extends BaseAction {
 
     @Override
     protected String getFullName() {
-        return NbBundle.getMessage(FuelPhpSaveAsDefaultConfigAction.class, "LBL_FuelPhpAction", getPureName());
+        return Bundle.LBL_FuelPhpAction(getPureName());
     }
 
     @Override

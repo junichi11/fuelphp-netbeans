@@ -139,7 +139,7 @@ public abstract class FuelPhpGoToStatus {
      * @return all GoToItems
      */
     public List<GoToItem> getAll() {
-        List<GoToItem> items = new ArrayList<GoToItem>();
+        List<GoToItem> items = new ArrayList<>();
         items.addAll(getControllers());
         items.addAll(getModels());
         items.addAll(getViews());
@@ -216,7 +216,7 @@ public abstract class FuelPhpGoToStatus {
         }
         FILE_TYPE fileType = fuelModule.getFileType(currentFile);
         String path = currentFile.getPath();
-        String relativePath = "";
+        String relativePath = ""; // NOI18N
         int index = 0;
         switch (fileType) {
             case CONTROLLER:
@@ -327,7 +327,7 @@ public abstract class FuelPhpGoToStatus {
         }
 
         Enumeration<? extends FileObject> children = directory.getChildren(true);
-        List<GoToItem> items = new ArrayList<GoToItem>();
+        List<GoToItem> items = new ArrayList<>();
         GoToItemFactory factory = GoToItemFactory.getInstance();
         while (children.hasMoreElements()) {
             FileObject child = children.nextElement();
@@ -405,7 +405,7 @@ public abstract class FuelPhpGoToStatus {
         }
 
         GoToItemFactory factory = GoToItemFactory.getInstance();
-        List<GoToItem> items = new ArrayList<GoToItem>(2);
+        List<GoToItem> items = new ArrayList<>(2);
         items.add(factory.create(controller, DEFAULT_OFFSET, "")); // NOI18N
         if (!methodName.isEmpty()) {
             items.add(factory.create(controller, methodOffset, methodName));

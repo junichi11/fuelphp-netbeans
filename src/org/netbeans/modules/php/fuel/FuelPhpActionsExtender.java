@@ -67,7 +67,7 @@ public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
 
     @Override
     public List<? extends Action> getActions() {
-        ArrayList<Action> actions = new ArrayList<Action>();
+        ArrayList<Action> actions = new ArrayList<>();
         actions.add(CreateAutoCompletionFileAction.getInstance());
         actions.add(PHPUnitTestInitAction.getInstance());
         actions.add(FuelPhpOilGenerateAction.getInstance());
@@ -81,8 +81,9 @@ public class FuelPhpActionsExtender extends PhpModuleActionsExtender {
     }
 
     @Override
+    @NbBundle.Messages("LBL_MenuName=FuelPHP")
     public String getMenuName() {
-        return NbBundle.getMessage(FuelPhpActionsExtender.class, "LBL_MenuName"); // NOI18N
+        return Bundle.LBL_MenuName(); // NOI18N
     }
 
     @Override

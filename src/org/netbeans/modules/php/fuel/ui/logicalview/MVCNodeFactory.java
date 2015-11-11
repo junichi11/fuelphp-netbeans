@@ -95,7 +95,7 @@ public class MVCNodeFactory implements NodeFactory {
             if (FuelUtils.isFuelPHP(phpModule)) {
                 FuelPhpOptions options = FuelPhpOptions.getInstance();
                 List<String> availableNodes = options.getAvailableNodes();
-                List<Node> list = new ArrayList<Node>();
+                List<Node> list = new ArrayList<>();
 
                 for (String node : availableNodes) {
                     FileObject rootNode = getRootNode(node);

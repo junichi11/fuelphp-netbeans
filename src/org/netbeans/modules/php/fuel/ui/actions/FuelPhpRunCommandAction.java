@@ -73,6 +73,6 @@ public class FuelPhpRunCommandAction extends RunCommandAction {
 
     @Override
     protected String getFullName() {
-        return NbBundle.getMessage(FuelPhpRunCommandAction.class, "LBL_FuelPhpAction", getPureName());
+        return Bundle.LBL_FuelPhpAction(getPureName());
     }
 }

@@ -76,7 +76,7 @@ public class FuelPhpIgnoredFilesExtender extends PhpModuleIgnoredFilesExtender {
 
     @Override
     public Set<File> getIgnoredFiles() {
-        Set<File> ignoreFiles = new HashSet<File>();
+        Set<File> ignoreFiles = new HashSet<>();
         ignoreFiles.add(docs);
         if (controller != null) {
             ignoreFiles.add(controller);

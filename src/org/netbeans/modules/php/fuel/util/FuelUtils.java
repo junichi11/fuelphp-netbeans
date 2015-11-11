@@ -87,14 +87,14 @@ public final class FuelUtils {
     private static final String FUEL_AUTOCOMPLETION_TESTCASE_TXT = "org-netbeans-modules-php-fuel/fuel_autocompletion_testcase.txt"; // NOI18N
     private static final String NBPROJECT_DIR_NAME = "nbproject"; // NOI18N
     private static final String UTF8 = "UTF-8"; // NOI18N
-    private static final String CLASS_REGEX = "^(class |abstract class )((.+) extends .+|(.+) implements .+|(.+))$";
-    private static final String FUEL_AUTOCOMPLETION = "fuel_autocompletion";
-    private static final String PHP_EXT = "php";
-    private static final String FUEL_AUTOCOMPLETION_WITH_EXT = FUEL_AUTOCOMPLETION + "." + PHP_EXT;
-    private static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png";
-    private static final String SUCCESS_MSG = "Complete success : " + NBPROJECT_DIR_NAME + "/" + FUEL_AUTOCOMPLETION_WITH_EXT;
-    private static final String NOTIFY_TITLE = "Create auto completion file";
-    private static final String FAIL_MSG = "Fail : Not Found fuel/core";
+    private static final String CLASS_REGEX = "^(class |abstract class )((.+) extends .+|(.+) implements .+|(.+))$"; // NOI18N
+    private static final String FUEL_AUTOCOMPLETION = "fuel_autocompletion"; // NOI18N
+    private static final String PHP_EXT = "php"; // NOI18N
+    private static final String FUEL_AUTOCOMPLETION_WITH_EXT = FUEL_AUTOCOMPLETION + "." + PHP_EXT; // NOI18N
+    private static final String FUEL_ICON_16 = "org/netbeans/modules/php/fuel/resources/fuel_icon_16.png"; // NOI18N
+    private static final String SUCCESS_MSG = "Complete success : " + NBPROJECT_DIR_NAME + "/" + FUEL_AUTOCOMPLETION_WITH_EXT; // NOI18N
+    private static final String NOTIFY_TITLE = "Create auto completion file"; // NOI18N
+    private static final String FAIL_MSG = "Fail : Not Found fuel/core"; // NOI18N
     private static final String PUBLIC_ASSETS_DIR = "public/assets"; // NOI18N
     private static final String PUBLIC_ASSETS_JS_DIR = PUBLIC_ASSETS_DIR + "/js"; // NOI18N
     private static final String PUBLIC_ASSETS_CSS_DIR = PUBLIC_ASSETS_DIR + "/css"; // NOI18N
@@ -146,18 +146,19 @@ public final class FuelUtils {
         FileObject nbprojectDirectory = projectDirectory.getFileObject(NBPROJECT_DIR_NAME);
         FileObject autoCompletionFile = FileUtil.getConfigFile(FUEL_AUTOCOMPLETION_PHP);
 
-        if (nbprojectDirectory.getFileObject(autoCompletionFile.getNameExt()) != null) {
-            // already exists
-            return;
-        }
-
         if (nbprojectDirectory != null && autoCompletionFile != null) {
+            if (nbprojectDirectory.getFileObject(autoCompletionFile.getNameExt()) != null) {
+                // already exists
+                return;
+            }
+
             try {
                 autoCompletionFile.copy(nbprojectDirectory, autoCompletionFile.getName(), autoCompletionFile.getExt());
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
+        // XXX add log?
     }
 
     public static void createAutoCompletionFile(PhpModule phpModule, boolean useTestCaseMethod) throws Exception {
@@ -644,7 +645,7 @@ public final class FuelUtils {
             }
             if ((o1.isFolder() && o2.isFolder())
                     || (o1.isData() && o2.isData())) {
-                List<String> list = new ArrayList<String>();
+                List<String> list = new ArrayList<>();
                 String name1 = o1.getName();
                 String name2 = o2.getName();
 

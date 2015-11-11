@@ -68,12 +68,12 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
     private static final String VIEW_CLASS = "View"; // NOI18N
     private static final String VIEW_MODEL_CLASS = "ViewModel"; // NOI18N
     private static final String PRESENTER_CLASS = "Presenter"; // NOI18N
-    private final Set<String> viewPath = new HashSet<String>();
-    private final Set<String> allViewPath = new HashSet<String>();
-    private final Set<String> viewModelPath = new HashSet<String>();
-    private final Set<String> allViewModelPath = new HashSet<String>();
-    private final Set<String> presenterPath = new HashSet<String>();
-    private final Set<String> allPresenterPath = new HashSet<String>();
+    private final Set<String> viewPath = new HashSet<>();
+    private final Set<String> allViewPath = new HashSet<>();
+    private final Set<String> viewModelPath = new HashSet<>();
+    private final Set<String> allViewModelPath = new HashSet<>();
+    private final Set<String> presenterPath = new HashSet<>();
+    private final Set<String> allPresenterPath = new HashSet<>();
     private String actionName = ""; // NOI18N
     private String methodName = null;
 
@@ -164,22 +164,36 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
         }
         if (!path.isEmpty() && actionName != null) {
             if (methodName.equals(actionName)) {
-                if (VIEW_CLASS.equals(className)) {
-                    viewPath.add(path);
-                } else if (VIEW_MODEL_CLASS.equals(className)) {
-                    viewModelPath.add(path);
-                } else if (PRESENTER_CLASS.equals(className)) {
-                    presenterPath.add(path);
+                if (null != className) {
+                    switch (className) {
+                        case VIEW_CLASS:
+                            viewPath.add(path);
+                            break;
+                        case VIEW_MODEL_CLASS:
+                            viewModelPath.add(path);
+                            break;
+                        case PRESENTER_CLASS:
+                            presenterPath.add(path);
+                            break;
+                        default:
+                    }
                 }
             }
 
             // all
-            if (VIEW_CLASS.equals(className)) {
-                allViewPath.add(path);
-            } else if (VIEW_MODEL_CLASS.equals(className)) {
-                allViewModelPath.add(path);
-            } else if (PRESENTER_CLASS.equals(className)) {
-                allPresenterPath.add(path);
+            if (className != null) {
+                switch (className) {
+                    case VIEW_CLASS:
+                        allViewPath.add(path);
+                        break;
+                    case VIEW_MODEL_CLASS:
+                        allViewModelPath.add(path);
+                        break;
+                    case PRESENTER_CLASS:
+                        allPresenterPath.add(path);
+                        break;
+                    default:
+                }
             }
         }
     }

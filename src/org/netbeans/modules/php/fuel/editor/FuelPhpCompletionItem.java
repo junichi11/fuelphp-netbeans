@@ -109,13 +109,13 @@ public class FuelPhpCompletionItem implements CompletionItem {
     }
 
     private String getLeftText() {
-        return "<b>" + text + "</b>";
+        return "<b>" + text + "</b>"; // NOI18N
     }
 
     private String getRightText() {
         String rightText = null;
         if (!isExist) {
-            rightText = ":new file[Alt+Enter]";
+            rightText = ":new file[Alt+Enter]"; // NOI18N
         }
         return rightText;
     }

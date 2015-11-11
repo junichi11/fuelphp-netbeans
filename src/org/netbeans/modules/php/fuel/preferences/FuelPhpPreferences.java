@@ -97,7 +97,7 @@ public class FuelPhpPreferences {
     }
 
     public static String getTestCasePrefix(PhpModule phpModule) {
-        return getPreferences(phpModule).get(TEST_CASE_PREFIX, "Test_");
+        return getPreferences(phpModule).get(TEST_CASE_PREFIX, "Test_"); // NOI18N
     }
 
     public static void setTestCasePrefix(PhpModule phpModule, String prefix) {
@@ -105,7 +105,7 @@ public class FuelPhpPreferences {
     }
 
     public static String getTestCaseSuffix(PhpModule phpModule) {
-        return getPreferences(phpModule).get(TEST_CASE_SUFFIX, "");
+        return getPreferences(phpModule).get(TEST_CASE_SUFFIX, ""); // NOI18N
     }
 
     public static void setTestCaseSuffix(PhpModule phpModule, String suffix) {

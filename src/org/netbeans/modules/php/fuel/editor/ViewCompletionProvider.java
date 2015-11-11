@@ -48,6 +48,7 @@ import org.netbeans.api.lexer.Token;
 import org.netbeans.api.lexer.TokenSequence;
 import org.netbeans.modules.editor.NbEditorUtilities;
 import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.api.util.FileUtils;
 import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.editor.lexer.PHPTokenId;
 import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
@@ -66,7 +67,7 @@ import org.openide.filesystems.FileObject;
  *
  * @author junichi11
  */
-@MimeRegistration(mimeType = "text/x-php5", service = CompletionProvider.class)
+@MimeRegistration(mimeType = FileUtils.PHP_MIME_TYPE, service = CompletionProvider.class)
 public class ViewCompletionProvider extends FuelPhpCompletionProvider {
 
     private static final String SLASH = "/"; //NOI18N
@@ -161,18 +162,22 @@ public class ViewCompletionProvider extends FuelPhpCompletionProvider {
             return;
         }
 
-        if (moduleSplit.length == 2) {
-            moduleName = moduleSplit[0];
-            filter = moduleSplit[1];
-        } else if (moduleSplit.length == 1) {
-            if (filter.endsWith("::")) { // NOI18N
+        switch (moduleSplit.length) {
+            case 2:
                 moduleName = moduleSplit[0];
-                filter = ""; // NOI18N
-            } else {
+                filter = moduleSplit[1];
+                break;
+            case 1:
+                if (filter.endsWith("::")) { // NOI18N
+                    moduleName = moduleSplit[0];
+                    filter = ""; // NOI18N
+                } else {
+                    moduleName = ""; // NOI18N
+                }
+                break;
+            default:
                 moduleName = ""; // NOI18N
-            }
-        } else {
-            moduleName = ""; // NOI18N
+                break;
         }
     }
 
@@ -259,15 +264,19 @@ public class ViewCompletionProvider extends FuelPhpCompletionProvider {
         if (ts.token().id() != PHPTokenId.PHP_STRING) {
             return false;
         }
-        if (viewClass.equals("View")) { //NOI18N
-            fileType = FILE_TYPE.VIEW;
-        } else if (viewClass.equals("ViewModel")) { //NOI18N
-            fileType = FILE_TYPE.VIEW_MODEL;
-        } else if (viewClass.equals("Presenter")) { //NOI18N
-            fileType = FILE_TYPE.PRESENTER;
-        } else {
-            fileType = FILE_TYPE.NONE;
-            return false;
+        switch (viewClass) {
+            case "View": // NOI18N
+                fileType = FILE_TYPE.VIEW;
+                break;
+            case "ViewModel": // NOI18N
+                fileType = FILE_TYPE.VIEW_MODEL;
+                break;
+            case "Presenter": // NOI18N
+                fileType = FILE_TYPE.PRESENTER;
+                break;
+            default:
+                fileType = FILE_TYPE.NONE;
+                return false;
         }
         return true;
     }

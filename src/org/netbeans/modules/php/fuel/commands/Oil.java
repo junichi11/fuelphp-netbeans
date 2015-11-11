@@ -57,9 +57,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.netbeans.api.extexecution.ExecutionDescriptor;
-import org.netbeans.api.extexecution.input.InputProcessor;
-import org.netbeans.api.extexecution.input.InputProcessors;
-import org.netbeans.api.extexecution.input.LineProcessor;
+import org.netbeans.api.extexecution.base.input.InputProcessor;
+import org.netbeans.api.extexecution.base.input.InputProcessors;
+import org.netbeans.api.extexecution.base.input.LineProcessor;
 import org.netbeans.modules.php.api.editor.EditorSupport;
 import org.netbeans.modules.php.api.editor.PhpClass;
 import org.netbeans.modules.php.api.executable.InvalidPhpExecutableException;
@@ -97,8 +97,8 @@ public class Oil {
     private static final String REFINE_COMMAND = "refine"; // NOI18N
     // default params
     private static final List<String> DEFAULT_PARAMS = Collections.emptyList();
-    private static final Set<String> IGNORE_HELP_COMMANDS = new HashSet<String>();
-    private static final Set<String> IGNORE_TASK_METHOD_NAMES = new HashSet<String>();
+    private static final Set<String> IGNORE_HELP_COMMANDS = new HashSet<>();
+    private static final Set<String> IGNORE_TASK_METHOD_NAMES = new HashSet<>();
     private final String oilPath;
     private static final Logger LOGGER = Logger.getLogger(Oil.class.getName());
 
@@ -230,7 +230,7 @@ public class Oil {
     public List<FrameworkCommand> getCommands(PhpModule phpModule) {
         // get commands from help
         String[] commands = getCommands(phpModule, new String[]{}, MAIN_COMMAND_REGEX);
-        ArrayList<FrameworkCommand> commandList = new ArrayList<FrameworkCommand>();
+        ArrayList<FrameworkCommand> commandList = new ArrayList<>();
 
         // add commands
         for (String command : commands) {
@@ -243,7 +243,7 @@ public class Oil {
                     commandList.add(new FuelPhpFrameworkCommand(phpModule, new String[]{command, subCommand}, fullCommand, fullCommand));
                 }
             } else if (command.equals(REFINE_COMMAND)) {
-                List<FileObject> tasks = new LinkedList<FileObject>();
+                List<FileObject> tasks = new LinkedList<>();
                 getTasks(phpModule, tasks);
                 EditorSupport editorSupport = Lookup.getDefault().lookup(EditorSupport.class);
                 for (FileObject task : tasks) {
@@ -363,7 +363,7 @@ public class Oil {
             }
         }
 
-        List<String> allParams = new ArrayList<String>();
+        List<String> allParams = new ArrayList<>();
         if (params.length > 1 && params[0].equals(REFINE_COMMAND)) {
             List<String> explode = StringUtils.explode(params[1], ":"); // NOI18N
             allParams.add(REFINE_COMMAND);
@@ -399,7 +399,7 @@ public class Oil {
      * @return
      */
     private List<String> getAllParams(List<String> params) {
-        List<String> allParams = new ArrayList<String>();
+        List<String> allParams = new ArrayList<>();
         allParams.addAll(DEFAULT_PARAMS);
         allParams.addAll(params);
         return allParams;
@@ -427,8 +427,8 @@ public class Oil {
      * @param lineProcessor
      * @return
      */
-    private ExecutionDescriptor.InputProcessorFactory getOutProcessorFactory(final LineProcessor lineProcessor) {
-        return new ExecutionDescriptor.InputProcessorFactory() {
+    private ExecutionDescriptor.InputProcessorFactory2 getOutProcessorFactory(final LineProcessor lineProcessor) {
+        return new ExecutionDescriptor.InputProcessorFactory2() {
             @Override
             public InputProcessor newInputProcessor(InputProcessor defaultProcessor) {
                 return InputProcessors.ansiStripping(InputProcessors.bridge(lineProcessor));

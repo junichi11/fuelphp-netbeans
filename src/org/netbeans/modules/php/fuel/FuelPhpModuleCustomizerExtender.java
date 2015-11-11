@@ -1,22 +1,3 @@
-package org.netbeans.modules.php.fuel;
-
-import java.beans.PropertyChangeEvent;
-import java.util.EnumSet;
-import javax.swing.JComponent;
-import javax.swing.event.ChangeListener;
-import org.netbeans.modules.php.api.phpmodule.PhpModule;
-import org.netbeans.modules.php.api.validation.ValidationResult;
-import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
-import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
-import org.netbeans.modules.php.fuel.support.ProjectPropertiesSupport;
-import org.netbeans.modules.php.fuel.ui.FuelPhpCustomizerPanel;
-import org.netbeans.modules.php.fuel.validator.FuelPhpCustomizerValidator;
-import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender;
-import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender.Change;
-import org.openide.filesystems.FileObject;
-import org.openide.util.HelpCtx;
-import org.openide.util.NbBundle;
-
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -58,6 +39,25 @@ import org.openide.util.NbBundle;
  *
  * Portions Copyrighted 2012 Sun Microsystems, Inc.
  */
+package org.netbeans.modules.php.fuel;
+
+import java.beans.PropertyChangeEvent;
+import java.util.EnumSet;
+import javax.swing.JComponent;
+import javax.swing.event.ChangeListener;
+import org.netbeans.modules.php.api.phpmodule.PhpModule;
+import org.netbeans.modules.php.api.validation.ValidationResult;
+import org.netbeans.modules.php.fuel.modules.FuelPhpModule;
+import org.netbeans.modules.php.fuel.preferences.FuelPhpPreferences;
+import org.netbeans.modules.php.fuel.support.ProjectPropertiesSupport;
+import org.netbeans.modules.php.fuel.ui.FuelPhpCustomizerPanel;
+import org.netbeans.modules.php.fuel.validator.FuelPhpCustomizerValidator;
+import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender;
+import org.netbeans.modules.php.spi.framework.PhpModuleCustomizerExtender.Change;
+import org.openide.filesystems.FileObject;
+import org.openide.util.HelpCtx;
+import org.openide.util.NbBundle;
+
 /**
  *
  * @author junichi11
@@ -90,8 +90,9 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
     }
 
     @Override
+    @NbBundle.Messages("LBL_FuelPHP=Fuel PHP")
     public String getDisplayName() {
-        return NbBundle.getMessage(FuelPhpModuleCustomizerExtender.class, "LBL_FuelPHP");
+        return Bundle.LBL_FuelPHP();
     }
 
     @Override
@@ -209,7 +210,7 @@ public class FuelPhpModuleCustomizerExtender extends PhpModuleCustomizerExtender
         }
 
         String newFuelName = panel.getFuelName();
-        if (!newFuelName.equals("") && !newFuelName.equals(fuelName)) {
+        if (!newFuelName.equals("") && !newFuelName.equals(fuelName)) { // NOI18N
             FuelPhpPreferences.setFuelName(phpModule, newFuelName);
             return EnumSet.of(Change.FRAMEWORK_CHANGE);
         }

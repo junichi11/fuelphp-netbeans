@@ -62,13 +62,18 @@ public final class CreateAutoCompletionFileAction extends BaseAction {
     }
 
     @Override
+    @NbBundle.Messages({
+        "# {0} - name",
+        "LBL_FuelPhpAction=FuelPHP: {0}"
+    })
     protected String getFullName() {
-        return NbBundle.getMessage(CreateAutoCompletionFileAction.class, "LBL_FuelPhpAction", getPureName()); // NOI18N
+        return Bundle.LBL_FuelPhpAction(getPureName());
     }
 
     @Override
+    @NbBundle.Messages("LBL_CreateAutoCompletionFile=create auto completion file")
     protected String getPureName() {
-        return NbBundle.getMessage(CreateAutoCompletionFileAction.class, "LBL_CreateAutoCompletionFile"); // NOI18N
+        return Bundle.LBL_CreateAutoCompletionFile();
     }
 
     @Override

@@ -62,12 +62,12 @@ import org.openide.util.Exceptions;
 public class FuelPhpControllerGoToStatus extends FuelPhpGoToStatus {
 
     private static final FuelPhpControllerGoToStatus INSTANCE = new FuelPhpControllerGoToStatus();
-    private final List<GoToItem> viewItems = new ArrayList<GoToItem>();
-    private final List<GoToItem> allViewItems = new ArrayList<GoToItem>();
-    private final List<GoToItem> viewModelItems = new ArrayList<GoToItem>();
-    private final List<GoToItem> allViewModelItems = new ArrayList<GoToItem>();
-    private final List<GoToItem> presenterItems = new ArrayList<GoToItem>();
-    private final List<GoToItem> allPresenterItems = new ArrayList<GoToItem>();
+    private final List<GoToItem> viewItems = new ArrayList<>();
+    private final List<GoToItem> allViewItems = new ArrayList<>();
+    private final List<GoToItem> viewModelItems = new ArrayList<>();
+    private final List<GoToItem> allViewModelItems = new ArrayList<>();
+    private final List<GoToItem> presenterItems = new ArrayList<>();
+    private final List<GoToItem> allPresenterItems = new ArrayList<>();
     private static final Logger LOGGER = Logger.getLogger(FuelPhpControllerGoToStatus.class.getName());
 
     private FuelPhpControllerGoToStatus() {

@@ -46,6 +46,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -94,7 +95,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     }
 
     private void setAvailableNodes() {
-        DefaultListModel<String> defaultListModel = new DefaultListModel<String>();
+        DefaultListModel<String> defaultListModel = new DefaultListModel<>();
         for (String node : FuelPhp.CUSTOM_NODES) {
             defaultListModel.addElement(node);
         }
@@ -254,12 +255,12 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
     }
 
     private List<String> getBranches() {
-        List<String> branches = new ArrayList<String>();
+        List<String> branches = new ArrayList<>();
         isNetworkError = false;
         try {
             // Get JSON
             URL branchesJson = new URL(GITHUB_API_REPOS_BRANCHES);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(branchesJson.openStream(), "UTF-8")); // NOI18N
+            BufferedReader reader = new BufferedReader(new InputStreamReader(branchesJson.openStream(), StandardCharsets.UTF_8));
             StringBuilder contents = new StringBuilder();
             String str;
             while ((str = reader.readLine()) != null) {
@@ -267,7 +268,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
             }
 
             JSONArray json = new JSONArray(contents.toString());
-            branches = new ArrayList<String>(json.length());
+            branches = new ArrayList<>(json.length());
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jObject = (JSONObject) json.get(i);
                 branches.add(jObject.getString("name")); // NOI18N
@@ -276,7 +277,7 @@ final class FuelPhpOptionsPanel extends javax.swing.JPanel {
             LOGGER.log(Level.WARNING, null, ex);
         } catch (IOException ex) {
             isNetworkError = true;
-            LOGGER.log(Level.WARNING, "Can not connect to Internet.");
+            LOGGER.log(Level.WARNING, "Can not connect to Internet."); // NOI18N
         }
         return branches;
     }

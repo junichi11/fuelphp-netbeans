@@ -52,6 +52,7 @@ import org.netbeans.modules.php.api.util.StringUtils;
 import org.netbeans.modules.php.fuel.options.FuelPhpOptions;
 import org.netbeans.modules.php.fuel.util.FuelDownloads;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -60,12 +61,13 @@ import org.openide.util.Exceptions;
 public class NewProjectConfigurationPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 7874450246517944114L;
-    private final Map<String, String> downloadsMap = new HashMap<String, String>();
+    private final Map<String, String> downloadsMap = new HashMap<>();
     private String errorMessage = null; // NOI18N
 
     /**
      * Creates new form NewProjectConfigurationPanel
      */
+    @NbBundle.Messages("NewProjectConfigurationPanel.connection.error.message=Isn't connected to network.")
     public NewProjectConfigurationPanel() {
         initComponents();
         this.unzipRadioButton.setSelected(true);
@@ -74,7 +76,7 @@ public class NewProjectConfigurationPanel extends javax.swing.JPanel {
         versionList.setListData(fuelDownloads.getDownloadVersions());
         versionList.setSelectedIndex(0);
         if (!FuelDownloads.isInternetReachable()) {
-            errorMessage = "Is not connected to the network.";
+            errorMessage = Bundle.NewProjectConfigurationPanel_connection_error_message();
         }
         gettingFileInfoLabel.setText(errorMessage);
     }
