@@ -138,7 +138,7 @@ public final class FuelPhpControllerVisitor extends DefaultVisitor {
     @Override
     public void visit(StaticMethodInvocation node) {
         super.visit(node);
-        Expression classNameExpression = node.getClassName();
+        Expression classNameExpression = node.getDispatcher();
         String className = CodeUtils.extractQualifiedName(classNameExpression);
         if (!VIEW_CLASS.equals(className) && !VIEW_MODEL_CLASS.equals(className) && !PRESENTER_CLASS.equals(className)) {
             return;
